@@ -1,0 +1,9 @@
+{
+	"version": 1,
+	"attached_datasets": [
+		{
+			"id": "7603f7a9-14d8-4274-9d63-e39a58c31413",
+			"mount": "ecephys_AS20_2025-03-11_11-08-51_v2_sorted"
+		}
+	]
+}

@@ -1,0 +1,50 @@
+{
+	"edges": [
+		{
+			"id": "xy-edge__7603f7a9-14d8-4274-9d63-e39a58c31413-capsule_geffenlab_ecephys_phy_export_1",
+			"selected": true,
+			"source": "7603f7a9-14d8-4274-9d63-e39a58c31413",
+			"target": "capsule_geffenlab_ecephys_phy_export_1"
+		},
+		{
+			"id": "xy-edge__capsule_geffenlab_ecephys_phy_export_1-results",
+			"source": "capsule_geffenlab_ecephys_phy_export_1",
+			"target": "results"
+		}
+	],
+	"nodes": [
+		{
+			"id": "7603f7a9-14d8-4274-9d63-e39a58c31413",
+			"position": {
+				"x": 675,
+				"y": 255
+			},
+			"type": "dataset"
+		},
+		{
+			"data": {
+				"capsule_id": "dfa653e1-1168-413f-989a-53c75f848b58"
+			},
+			"id": "capsule_geffenlab_ecephys_phy_export_1",
+			"position": {
+				"x": 840,
+				"y": 585
+			},
+			"type": "capsule"
+		},
+		{
+			"id": "results",
+			"position": {
+				"x": 960,
+				"y": 985
+			},
+			"type": "results"
+		}
+	],
+	"timestamp": 1749757547812,
+	"viewport": {
+		"x": 0,
+		"y": 0,
+		"zoom": 0.75
+	}
+}

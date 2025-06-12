@@ -1,0 +1,30 @@
+{
+	"version": 2,
+	"processes": [
+		{
+			"name": "capsule_geffenlab_ecephys_phy_export_1",
+			"capsule": {
+				"id": "dfa653e1-1168-413f-989a-53c75f848b58",
+				"name": "geffenlab-ecephys-phy-export",
+				"slug": "3318936",
+				"app_panel": true
+			},
+			"resources": {
+				"cpus": 4,
+				"memory": 32
+			},
+			"inputs": [
+				{
+					"id": "cORHlBJk9opPgeTY",
+					"source_id": "7603f7a9-14d8-4274-9d63-e39a58c31413",
+					"type": "dataset",
+					"name": "ecephys_AS20_2025-03-11_11-08-51_v2_sorted",
+					"source_path": "ecephys_AS20_2025-03-11_11-08-51_v2_sorted/"
+				}
+			],
+			"results": {
+				"id": "dfa653e1-1168-413f-989a-53c75f848b58"
+			}
+		}
+	]
+}
