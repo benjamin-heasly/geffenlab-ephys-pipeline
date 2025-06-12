@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-// hash:sha256:daeb3b1d4941b8814900f312fdfb32d942955f530272b77e3d5ffa85d618d8be
+// hash:sha256:78ed200fe64a9c464b9cf5339667b94f5a7f28844e7b4f088d44927775f7dadb
 
 // capsule - geffenlab-ecephys-phy-export
 process capsule_geffenlab_ecephys_phy_export_1 {
@@ -37,7 +37,7 @@ process capsule_geffenlab_ecephys_phy_export_1 {
 	else
 		git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-3318936.git" capsule-repo
 	fi
-	git -C capsule-repo checkout dd06e325234b5eda784402397d72fe899dc643ca --quiet
+	git -C capsule-repo checkout c50c2cc430ddf10e7798a4aba30b2418088b293d --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
