@@ -7,6 +7,8 @@
 				"id": "dfa653e1-1168-413f-989a-53c75f848b58",
 				"name": "geffenlab-ecephys-phy-export",
 				"slug": "3318936",
+				"commit": "dd06e325234b5eda784402397d72fe899dc643ca",
+				"image_tag": "f20535eb0428df68f53002718f3e88e1",
 				"app_panel": true
 			},
 			"resources": {
@@ -15,11 +17,20 @@
 			},
 			"inputs": [
 				{
-					"id": "cORHlBJk9opPgeTY",
+					"id": "5kJG9kXY9EXoMvHx",
+					"source_id": "2429fd9e-80c5-4cf0-a281-9c8043cfc402",
+					"type": "dataset",
+					"name": "ecephys",
+					"source_path": "ecephys/",
+					"collect": true
+				},
+				{
+					"id": "Gdf5H8ZynfwhnlBp",
 					"source_id": "7603f7a9-14d8-4274-9d63-e39a58c31413",
 					"type": "dataset",
 					"name": "ecephys_AS20_2025-03-11_11-08-51_v2_sorted",
-					"source_path": "ecephys_AS20_2025-03-11_11-08-51_v2_sorted/"
+					"source_path": "ecephys_AS20_2025-03-11_11-08-51_v2_sorted/",
+					"collect": true
 				}
 			],
 			"results": {

@@ -1,18 +1,15 @@
 #!/usr/bin/env nextflow
-// hash:sha256:e4bcaed923803c9dfde289f13e55aa35f64dae47092e794f895eddd93c080d8d
+// hash:sha256:daeb3b1d4941b8814900f312fdfb32d942955f530272b77e3d5ffa85d618d8be
 
 // capsule - geffenlab-ecephys-phy-export
 process capsule_geffenlab_ecephys_phy_export_1 {
 	tag 'capsule-3318936'
-	container "$REGISTRY_HOST/capsule/dfa653e1-1168-413f-989a-53c75f848b58"
+	container "$REGISTRY_HOST/capsule/dfa653e1-1168-413f-989a-53c75f848b58:f20535eb0428df68f53002718f3e88e1"
 
 	cpus 4
 	memory '30 GB'
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
-
-	input:
-	val path1
 
 	output:
 	path 'capsule/results/*'
@@ -31,7 +28,8 @@ process capsule_geffenlab_ecephys_phy_export_1 {
 	mkdir -p capsule/results && ln -s \$PWD/capsule/results /results
 	mkdir -p capsule/scratch && ln -s \$PWD/capsule/scratch /scratch
 
-	ln -s "/tmp/data/ecephys_AS20_2025-03-11_11-08-51_v2_sorted/$path1" "capsule/data/$path1" # id: 7603f7a9-14d8-4274-9d63-e39a58c31413
+	ln -s "/tmp/data/ecephys" "capsule/data/ecephys" # id: 2429fd9e-80c5-4cf0-a281-9c8043cfc402
+	ln -s "/tmp/data/ecephys_AS20_2025-03-11_11-08-51_v2_sorted" "capsule/data/ecephys_AS20_2025-03-11_11-08-51_v2_sorted" # id: 7603f7a9-14d8-4274-9d63-e39a58c31413
 
 	echo "[${task.tag}] cloning git repo..."
 	if [[ "\$(printf '%s\n' "2.20.0" "\$(git version | awk '{print \$3}')" | sort -V | head -n1)" = "2.20.0" ]]; then
@@ -39,6 +37,7 @@ process capsule_geffenlab_ecephys_phy_export_1 {
 	else
 		git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-3318936.git" capsule-repo
 	fi
+	git -C capsule-repo checkout dd06e325234b5eda784402397d72fe899dc643ca --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -52,9 +51,6 @@ process capsule_geffenlab_ecephys_phy_export_1 {
 }
 
 workflow {
-	// input data
-	ecephys_as20_2025_03_11_11_08_51_v2_sorted_to_geffenlab_ecephys_phy_export_1 = Channel.fromPath("../data/ecephys_AS20_2025-03-11_11-08-51_v2_sorted/*", type: 'any', relative: true)
-
 	// run processes
-	capsule_geffenlab_ecephys_phy_export_1(ecephys_as20_2025_03_11_11_08_51_v2_sorted_to_geffenlab_ecephys_phy_export_1)
+	capsule_geffenlab_ecephys_phy_export_1()
 }
