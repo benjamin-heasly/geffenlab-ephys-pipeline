@@ -5,7 +5,7 @@ set -e
 ANALYSIS_ROOT=/home/ninjaben/codin/geffen-lab-data/analysis
 SUBJECT=AS20-minimal
 DATE=03112025
-export DATA_PATH="$ANALYSIS_ROOT/$SUBJECT/$DATE/"
+export ANALYSIS_PATH="$ANALYSIS_ROOT/$SUBJECT/$DATE/"
 export RESULTS_PATH="$ANALYSIS_ROOT/$SUBJECT/$DATE/exported"
 mkdir -p "$RESULTS_PATH"
 
