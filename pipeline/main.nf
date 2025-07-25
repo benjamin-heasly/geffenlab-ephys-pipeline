@@ -2,7 +2,7 @@ println "params: ${params}"
 
 process geffenlab_ecephys_catgt {
     tag 'geffenlab_ecephys_catgt'
-    container "ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.0"
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.0'
 
     input:
     path data_path
@@ -42,7 +42,7 @@ process geffenlab_ecephys_phy_export {
     path analysis_path
 
     output:
-    path 'results/*', emit: results
+    path 'results/*', emit: phy_export_results
 
     publishDir "${params.analysis_path}/exported",
         mode: 'copy',
@@ -62,14 +62,14 @@ process geffenlab_ecephys_phy_export {
 
 process geffenlab_ecephys_tprime {
     tag 'geffenlab_ecephys_tprime'
-    container "ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.0"
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.0'
 
     input:
     path catgt_results
-    path phy_results
+    path phy_export_results
 
     output:
-    path 'results/*', emit: results
+    path 'results/*', emit: tprime_results
 
     publishDir "${params.analysis_path}/exported",
         mode: 'copy',
@@ -96,17 +96,73 @@ process geffenlab_ecephys_tprime {
         **/*nidq.xd_8_4_500.txt:**/*nidq.xid_8_3_5.txt \
       --phy-from-stream **/**/*imec0.ap.*.txt \
       --probe-id block0_imec0.ap_recording1 \
-      --phy-pattern $phy_results/**/params.py
+      --phy-pattern $phy_export_results/**/params.py
     """
 }
 
+process geffenlab_phy_desktop {
+    tag 'geffenlab_phy_desktop'
+    container 'ghcr.io/benjamin-heasly/geffenlab-phy-desktop:v0.0.1'
+
+    input:
+    path phy_export_results
+
+    output:
+    path 'results/*', emit: phy_desktop_results
+
+    publishDir "${params.analysis_path}/curated",
+        mode: 'copy',
+        overwrite: true,
+        pattern: 'results/*',
+        saveAs: { filename -> file(filename).name }
+
+    script:
+    """
+    #!/usr/bin/env bash
+    set -e
+    mkdir -p results
+    conda_run python /opt/code/run_phy.py --data-root $phy_export_results --results-root results $params.interactive --params-py-pattern **/params.py
+    """
+}
+
+process geffenlab_synthesis {
+    tag 'geffenlab_synthesis'
+    container 'ghcr.io/benjamin-heasly/geffenlab-synthesis:v0.0.4'
+
+    input:
+    path data_path
+    path phy_export_results, name: "analysis/exported/*"
+    path tprime_results, name: "analysis/exported/*"
+    path phy_desktop_results, name: "analysis/curated/*"
+
+    output:
+    path 'results/*', emit: synthesis_results
+
+    publishDir "${params.analysis_path}/synthesis",
+        mode: 'copy',
+        overwrite: true,
+        pattern: 'results/*',
+        saveAs: { filename -> file(filename).name }
+
+    script:
+    """
+    #!/usr/bin/env bash
+    set -e
+    mkdir -p results
+    conda_run python /opt/code/run.py --data-path=$data_path --analysis-path=analysis --results-path=results
+    """
+}
 
 workflow {
     def data_channel = channel.fromPath(params.data_path)
     catgt_results = geffenlab_ecephys_catgt(data_channel)
 
     def analysis_channel = channel.fromPath(params.analysis_path)
-    phy_results = geffenlab_ecephys_phy_export(analysis_channel)
+    phy_export_results = geffenlab_ecephys_phy_export(analysis_channel)
 
-    geffenlab_ecephys_tprime(catgt_results, phy_results)
+    tprime_results = geffenlab_ecephys_tprime(catgt_results, phy_export_results)
+
+    phy_desktop_results = geffenlab_phy_desktop(phy_export_results)
+
+    synthesis_results = geffenlab_synthesis(data_channel, phy_export_results, tprime_results, phy_desktop_results)
 }
