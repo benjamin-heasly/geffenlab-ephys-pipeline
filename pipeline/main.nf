@@ -1,20 +1,18 @@
-println "params: ${params}"
-
 process geffenlab_ecephys_catgt {
     tag 'geffenlab_ecephys_catgt'
     container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.0'
-
-    input:
-    path data_path
-
-    output:
-    path 'results/*', emit: catgt_results
 
     publishDir "${params.analysis_path}/exported",
         mode: 'copy',
         overwrite: true,
         pattern: 'results/*',
         saveAs: { filename -> file(filename).name }
+
+    input:
+    path data_path
+
+    output:
+    path 'results/*', emit: catgt_results
 
     script:
     """
@@ -38,17 +36,17 @@ process geffenlab_ecephys_phy_export {
     tag 'geffenlab_ecephys_phy_export'
     container 'ghcr.io/benjamin-heasly/geffenlab-ecephys-phy-export:v0.0.4'
 
-    input:
-    path analysis_path
-
-    output:
-    path 'results/*', emit: phy_export_results
-
     publishDir "${params.analysis_path}/exported",
         mode: 'copy',
         overwrite: true,
         pattern: 'results/*',
         saveAs: { filename -> file(filename).name }
+
+    input:
+    path analysis_path
+
+    output:
+    path 'results/*', emit: phy_export_results
 
     script:
     """
@@ -64,18 +62,18 @@ process geffenlab_ecephys_tprime {
     tag 'geffenlab_ecephys_tprime'
     container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.0'
 
+    publishDir "${params.analysis_path}/exported",
+        mode: 'copy',
+        overwrite: true,
+        pattern: 'results/*',
+        saveAs: { filename -> file(filename).name }
+
     input:
     path catgt_results
     path phy_export_results
 
     output:
     path 'results/*', emit: tprime_results
-
-    publishDir "${params.analysis_path}/exported",
-        mode: 'copy',
-        overwrite: true,
-        pattern: 'results/*',
-        saveAs: { filename -> file(filename).name }
 
     script:
     """
@@ -104,17 +102,17 @@ process geffenlab_phy_desktop {
     tag 'geffenlab_phy_desktop'
     container 'ghcr.io/benjamin-heasly/geffenlab-phy-desktop:v0.0.1'
 
-    input:
-    path phy_export_results
-
-    output:
-    path 'results/*', emit: phy_desktop_results
-
     publishDir "${params.analysis_path}/curated",
         mode: 'copy',
         overwrite: true,
         pattern: 'results/*',
         saveAs: { filename -> file(filename).name }
+
+    input:
+    path phy_export_results
+
+    output:
+    path 'results/*', emit: phy_desktop_results
 
     script:
     """
@@ -129,6 +127,12 @@ process geffenlab_synthesis {
     tag 'geffenlab_synthesis'
     container 'ghcr.io/benjamin-heasly/geffenlab-synthesis:v0.0.4'
 
+    publishDir "${params.analysis_path}/synthesis",
+        mode: 'copy',
+        overwrite: true,
+        pattern: 'results/*',
+        saveAs: { filename -> file(filename).name }
+
     input:
     path data_path
     path phy_export_results, name: "analysis/exported/*"
@@ -137,12 +141,6 @@ process geffenlab_synthesis {
 
     output:
     path 'results/*', emit: synthesis_results
-
-    publishDir "${params.analysis_path}/synthesis",
-        mode: 'copy',
-        overwrite: true,
-        pattern: 'results/*',
-        saveAs: { filename -> file(filename).name }
 
     script:
     """
@@ -154,6 +152,8 @@ process geffenlab_synthesis {
 }
 
 workflow {
+    println "params: ${params}"
+
     def data_channel = channel.fromPath(params.data_path)
     catgt_results = geffenlab_ecephys_catgt(data_channel)
 
