@@ -140,7 +140,7 @@ process geffenlab_synthesis {
     path data_path
     path phy_export_results, name: 'analysis/exported/*'
     path tprime_results, name: 'analysis/exported/*'
-    path phy_desktop_results, name: 'analysis/exported/*'
+    path phy_desktop_results, name: 'analysis/curated/*'
 
     output:
     path 'results/*', emit: synthesis_results
