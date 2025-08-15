@@ -119,7 +119,10 @@ process geffenlab_phy_desktop {
     #!/usr/bin/env bash
     set -e
     mkdir -p results
-    conda_run python /opt/code/run_phy.py --data-root $phy_export_results --results-root results $params.interactive --params-py-pattern **/params.py
+    conda_run python /opt/code/run_phy.py \
+      --data-root $phy_export_results \
+      --results-root results $params.interactive \
+      --params-py-pattern **/params.py
     """
 }
 
@@ -135,9 +138,9 @@ process geffenlab_synthesis {
 
     input:
     path data_path
-    path phy_export_results, name: "analysis/exported/*"
-    path tprime_results, name: "analysis/exported/*"
-    path phy_desktop_results, name: "analysis/curated/*"
+    path phy_export_results, name: 'analysis/exported/*'
+    path tprime_results, name: 'analysis/exported/*'
+    path phy_desktop_results, name: 'analysis/exported/*'
 
     output:
     path 'results/*', emit: synthesis_results
@@ -147,7 +150,11 @@ process geffenlab_synthesis {
     #!/usr/bin/env bash
     set -e
     mkdir -p results
-    conda_run python /opt/code/run.py --data-path=$data_path --analysis-path=analysis --results-path=results
+    conda_run python /opt/code/run.py \
+      --data-path=$data_path \
+      --analysis-path=analysis \
+      --results-path=results \
+      --title="${params.subject}-${params.date}"
     """
 }
 
