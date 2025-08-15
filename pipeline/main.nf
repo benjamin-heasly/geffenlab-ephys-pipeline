@@ -100,7 +100,7 @@ process geffenlab_ecephys_tprime {
 
 process geffenlab_phy_desktop {
     tag 'geffenlab_phy_desktop'
-    container 'ghcr.io/benjamin-heasly/geffenlab-phy-desktop:v0.0.1'
+    container 'ghcr.io/benjamin-heasly/geffenlab-phy-desktop:v0.0.2'
 
     publishDir "${params.analysis_path}/curated",
         mode: 'copy',
