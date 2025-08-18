@@ -6,6 +6,12 @@ For each datset:
  - First we want to run the [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline).  This will do spike sorting and automated curation based on quality metrics.
  - Then we want to run this Geffen lab ephys pipeline.  This will convert sorting outputs to Phy format, optionally invoke Phy for intearactive curation, then save outputs from some of the lab's [population-analysis](https://github.com/jcollina/population-analysis) code.
 
+# Getting started on cortex
+
+For docs on getting started with processing on the cortex server, please see:
+ - [cortex-user-setup.md](./aind-ephys-pipeline/cortex-user-setup.md)
+ - [corted-first-run.md](./aind-ephys-pipeline/corted-first-run.md)
+
 # Overview
 
 Here's an overview of the pipeline.
