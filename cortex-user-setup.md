@@ -173,38 +173,36 @@ screen
 
 Then you can continue typing commands as normal.
 
-## disconnect
+## detach
 
-When you want to disconnect:
-
-```
-# disconnect from screen
-screen -d
-```
-
-If you need to disconnect while a long command is still running you can use hotkeys.  First press
+When you want to detach:
 
 ```
-# enable hotkeys
-crtl-a
+screen -d   # detach from screen
 ```
 
-then press
+If you need to detach while a long command is still running you can enable hot keys with `ctrl-a` then immediately press `d` (no need to press enter).
+
+First press:
 
 ```
-# hotkey to disconnect from screen
-d
+crtl-a      # enable hot keys
+```
+
+Then press:
+
+```
+d           # hotkey to detach from screen
 ```
 
 This should bring you back to the terminal you saw right after you logged in with `ssh`.
 
-## reconnect
+## reattach
 
-Later, when you want to reconnect to your screen session, you can `ssh` to cortex and type:
+Later, when you want to reattach to your screen session, you can `ssh` to cortex and type:
 
 ```
-# connect to existing screen session
-screen -x
+screen -x   # reattach to existing screen session
 ```
 
 This should bring you back to your running process, just as you left it.
@@ -221,10 +219,10 @@ Here's a summary of the command flow above.
 │ local  │        │ cortex │             │ screen │
 │        │◄───────│        │◄────────────┤        │
 └────────┘  exit  └────────┘  screen -d  └────────┘
-                              or                  
+                              or hotkeys          
                               ctrl-a, d           
 ```
 
-# more
+## more
 
 The commands above should get you started with screen.  Screen has many more capabilities, as in this [screen cheatsheet](https://gist.github.com/jctosta/af918e1618682638aa82).

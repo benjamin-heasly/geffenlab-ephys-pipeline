@@ -54,6 +54,18 @@ The subject id `AS20-minimal2` is unusual.  It means the original data are from 
 
 Let's start by processing a small testing dataset for subject `AS20-minimal2`.  This processing run should only take a few minutes.
 
+Log in to cortex and connect to a screen session.
+
+```
+ssh -Y ben@128.91.19.199
+
+screen
+# or
+screen -x
+```
+
+Use your own cortex username rather than `ben`.
+
 ## AIND ephys pipeline
 
 First we'll run the [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) for spike sorting and quality metrics.
