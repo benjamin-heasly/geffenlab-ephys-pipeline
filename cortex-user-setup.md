@@ -2,7 +2,7 @@
 
 This doc should help you configure your cortex user account for running Geffen lab pipelines with Nextflow.
 
-When you're done here please see [corted-first-run.md](./corted-first-run.md) to try processing some known data.
+When you're done here please see [cortex-first-run.md](./cortex-first-run.md) to try processing some known data.
 
 # WSL (on lab Windows machine)
 
@@ -111,7 +111,7 @@ With conda installed we can create our own conda environment for running Nextflo
 
 ```
 cd ~/nextflow
-conda env create -f aind-ephys-pipeline/nextflow.yml
+conda env create -f geffenlab-ephys-pipeline/nextflow.yml
 conda activate nextflow
 ```
 

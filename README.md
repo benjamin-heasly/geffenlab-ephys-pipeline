@@ -9,8 +9,8 @@ For each datset:
 # Getting started on cortex
 
 For docs on getting started with processing on the cortex server, please see:
- - [cortex-user-setup.md](./aind-ephys-pipeline/cortex-user-setup.md)
- - [corted-first-run.md](./aind-ephys-pipeline/corted-first-run.md)
+ - [cortex-user-setup.md](./cortex-user-setup.md)
+ - [cortex-first-run.md](./cortex-first-run.md)
 
 # Overview
 
