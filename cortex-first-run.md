@@ -196,9 +196,9 @@ Here's a summary of the data and analysis subdirectories, after running the Geff
             ├── curated/    # new
             ├── exported/   # new
             └── synthesis/  # new
-                ├── 'Multiplot!.pkl'
+                ├── AS20-minimal2-03112025.pkl
                 └── figures/
-                    └── 'Multiplot!_neurons_1.png'
+                    └── AS20-minimal2-03112025_neurons_1.png
 ```
 
 The `synthesis/` subdirectory contains the results of the lab's [population-analysis](https://github.com/jcollina/population-analysis) code, including a Python `.pkl` with dataframes from different modalities aligned in time, and summary figure(s).
