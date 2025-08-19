@@ -361,6 +361,5 @@ The AIND ephys pipeline also produces some of its own visualizations related to 
 
 ```
 cd /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20/03112025
-mkdir sorted/visualization/
 scp -r ben@128.91.19.199:/vol/cortex/cd4/geffenlab/analysis/anjali/AS20/03112025/sorted/visualization/ sorted/visualization/
 ```
