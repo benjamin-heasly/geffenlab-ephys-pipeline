@@ -71,7 +71,7 @@ Use your own cortex username rather than `ben`.
 First we'll run the [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) for spike sorting and quality metrics.
 We use the pipeline code exactly as-is, from the AIND GitHub repo.
 
-We use our own [cortex.config](./cortex.config) file to configure Nextflow for running on cortex.  This is where we specify the lab's storage directory `/vol/cortex/cd4/geffenlab/`.  This is also how we share resources with other cortex users -- instead of taking up all available resources.  In particular:
+We use our own [cortex.config](./aind-ephys-pipeline/cortex.config) file to configure Nextflow for running on cortex.  This is where we specify the lab's storage directory `/vol/cortex/cd4/geffenlab/`.  This is also how we share resources with other cortex users -- instead of taking up all available resources.  In particular:
  - Use GPU at index 3, rather all GPUs or defaulting to GPU index 0.
  - Use 10 CPU cores at a time, instead of all of them.
  - Use up to 64GB of memory at a time, instead of unbounded memory.
