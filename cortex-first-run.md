@@ -172,6 +172,8 @@ NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
 
 Assuming you logged in to cortex using `ssh -Y` one of the pipeline steps will bring up a [Phy](https://phy.readthedocs.io/en/latest/) window on your local machine, where you can do manual sorting curation.  Close the Phy window to allow the pipeline to continue.
 
+In Phy you should mark several clusters as "good" so that downstream analysis will have clusters to work with.
+
 This pipeline should finish in a few minutes (plus Phy curation time) and should end by printing a short summary.
 
 ## Geffen lab ephys pipeline results
