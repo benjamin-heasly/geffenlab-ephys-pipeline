@@ -205,7 +205,7 @@ The `synthesis/` subdirectory contains the results of the lab's [population-anal
 
 ## Getting pipeline results
 
-When the pipelines are finished, you can log out from cortex and copy pipeline results to your local machine.
+When the pipelines are finished you can log out from cortex and copy pipeline results to your local machine.
 
 Detach from screen and exit from cortex:
 
@@ -214,22 +214,27 @@ screen -d
 exit
 ```
 
-From WSL on your local machine create a directory to contain the results.  The following will create a folder on the Windows desktop called `ephys-pipeline-outputs`.  We can copy results here and organize them by subject and date.
+From WSL on your local machine use the script [download-results.py](./data/download-results.py) to create a folder on the Windows desktop and copy selected pipeline outputs from cortex to this folder.
 
 ```
-mkdir -p /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025
+cd ~
+conda activate geffen-pipelines
+python geffenlab-ephys-pipeline/data/download-results.py
 ```
 
-In WSL change to this directory and copy results from cortex using `scp`.  "scp" stands for "secure copy."  It will prompt you for the same password you use with `ssh`:
+This script includes several default values for cortex, like the cortex server address.  It will prompt you for the subject and session date, and your cortex user credentials (same as you used for `ssh`).  When prompted, enter the following:
 
 ```
-cd /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025
-scp -r ben@128.91.19.199:/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/synthesis .
+Subject ID: AS20-minimal2
+Session date MMDDYYYY: 03112025
 ```
 
-As with `ssh` you'd use your own username rather than `ben`.
+This should find pipeline analysis results on cortex and download them to the windows Desktop in a folder named `ephys-pipeline-outputs`.  You should be able to open this folder and browse to the results, including:
+ - Session summary figures and dataframe `.pkl`: `AS20-minimal2/03112025/synthesis/`
+ - Nextflow visualizations for the Geffen lab ephys pipeline: `AS20-minimal2/03112025/nextflow`
+ - Nextflow visualizations for the AIND ephys pipeline: `AS20-minimal2/03112025/sorted/nextflow`
+ - Quality control visualizations from the AIND ephys pipeline: `AS20-minimal2/03112025/sorted/visualization`
 
-Now you should now be able to open `ephys-pipeline-outputs` on the Windows desktop and browse to the results.
 
 # Process a full `AS20` dataset
 
@@ -326,40 +331,23 @@ screen -d
 exit
 ```
 
-In WSL on your local machine create a directory to contain the results.
+As above, use the script [download-results.py](./data/download-results.py) to copy selected pipeline outputs to a folder on the Windows desktop.  This time, we'll specify the `--analysis-root` explicitly:
 
 ```
-mkdir -p /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20/03112025
+cd ~
+conda activate geffen-pipelines
+python geffenlab-ephys-pipeline/data/download-results.py --analysis-root /vol/cortex/cd4/geffenlab/analysis/anjali/
 ```
 
-Change to the `ephys-pipeline-outputs` directory and copy results from cortex using `scp`:
+When prompted use:
 
 ```
-cd /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20/03112025
-scp -r ben@128.91.19.199:/vol/cortex/cd4/geffenlab/analysis/anjali/AS20/03112025/synthesis .
+Subject ID: AS20
+Session date MMDDYYYY: 03112025
 ```
 
-### Nextflow visualzations
-
-It might also be interesting to see pipeline visualizations created by Nextflow.
-
-Create a subfolder for these and `scp` them:
-
-```
-cd /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20/03112025
-mkdir sorted
-scp -r ben@128.91.19.199:/vol/cortex/cd4/geffenlab/analysis/anjali/AS20/03112025/sorted/nextflow sorted/nextflow
-scp -r ben@128.91.19.199:/vol/cortex/cd4/geffenlab/analysis/anjali/AS20/03112025/nextflow .
-```
-
-You should now be able to open `ephys-pipeline-outputs` on the Windows desktop and browse to the Nextflow visualizations.
-Visualizations for the AIND ephys pipeline are in the `sorted/nextflow/` subfolder.  Visualizations for the Geffen lab ephys pipeline are in the `nextflow/` subfolder.
-
-### AIND pipeline visualizations
-
-The AIND ephys pipeline also produces some of its own visualizations related to spike sorting and quality control.  You might copy these as well:
-
-```
-cd /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20/03112025
-scp -r ben@128.91.19.199:/vol/cortex/cd4/geffenlab/analysis/anjali/AS20/03112025/sorted/visualization/ sorted/visualization/
-```
+As above, this should copy pipeline results to the Windows desktop in a folder named `ephys-pipeline-outputs`.  It should contain:
+ - Session summary figures and dataframe `.pkl`: `AS20/03112025/synthesis/`
+ - Nextflow visualizations for the Geffen lab ephys pipeline: `AS20/03112025/nextflow`
+ - Nextflow visualizations for the AIND ephys pipeline: `AS20/03112025/sorted/nextflow`
+ - Quality control visualizations from the AIND ephys pipeline: `AS20/03112025/sorted/visualization`

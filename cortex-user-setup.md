@@ -9,7 +9,7 @@ When you're done here please see [cortex-first-run.md](./cortex-first-run.md) to
 If you're working from a Windows machine in the lab, it will be useful to set up [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) first.  "WSL" stands for "Windows Subsystem for Linux".  It's a Windows feature that provides a full Linux environment running within and alongside Windows.
 
 Working from a Linux environment will have some advantages:
- - The local and cortex environments and command languages will be similar.
+ - The local and cortex environments and command languages will be the same.
  - You'll be able run interactive programs like Phy with the processing and data on cortex, but the windows appearing on your local machine.
 
 To install WSL find Windows Powershell in the task bar, open a Powershell window, and type:
@@ -38,6 +38,53 @@ wsl
 ```
 
 From there you'll be working in Linux environment and you're ready to run all the commands below.
+
+## Conda
+
+We can use [Conda](https://anaconda.org/anaconda/conda) to manage dependencies on the lab machine and on cortex.  To install conda on the local lab machine run the following:
+
+```
+wget https://repo.anaconda.com/miniconda/Miniconda3-py311_24.5.0-0-Linux-x86_64.sh -O miniconda.sh
+chmod +x ./miniconda.sh 
+./miniconda.sh 
+# Follow the prompts.
+# Choose "yes" to automatically initialize conda for shell.
+```
+
+To finish installing conda you'll need to log out from WSL and log in again.
+
+```
+# from WSL
+exit
+
+# from Powershell
+wsl
+```
+
+Check that conda is installed in your WSL environment.
+
+```
+conda --version
+# expect conda 24.5.0
+```
+
+## Conda environment
+
+With conda installed we can create our own conda environment for running lab Python scripts.  The environment is defined here in this repo in [geffen-pipelines.yml](./geffen-pipelines.yml).  To create and activate the environment in WSL:
+
+```
+cd ~
+git clone https://github.com/benjamin-heasly/geffenlab-ephys-pipeline.git
+conda env create -f geffenlab-ephys-pipeline/geffen-pipelines.yml
+conda activate geffen-pipelines
+```
+
+Check that the environment is active and has the expected version of Python
+
+```
+python --version
+# expect Python 3.13.5
+```
 
 # Connect to cortex
 
@@ -78,7 +125,7 @@ git clone https://github.com/benjamin-heasly/geffenlab-ephys-pipeline.git
 
 ## Conda
 
-We can use [Conda](https://anaconda.org/anaconda/conda) to manage dependencies.  To install conda for your user run the following:
+We can use [Conda](https://anaconda.org/anaconda/conda) to manage dependencies on cortex as well as local lab machines.  To install conda for your cortex user run the following:
 
 ```
 wget https://repo.anaconda.com/miniconda/Miniconda3-py311_24.5.0-0-Linux-x86_64.sh -O miniconda.sh
@@ -107,7 +154,7 @@ conda --version
 
 ## Conda environment
 
-With conda installed we can create our own conda environment for running Nextflow pipelines.  The environment is defined here in this repo in [geffen-pipelines.yml](./geffen-pipelines.yml).  To create and activate the environment on cortex:
+With conda installed we can create our own conda environment for running Nextflow pipelines.  The environment is defined here in this repo in [geffen-pipelines.yml](./geffen-pipelines.yml).  It's the same one we used locally, above, for WSL.  To create and activate the environment on cortex:
 
 ```
 cd ~/nextflow
