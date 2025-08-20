@@ -80,7 +80,7 @@ To run the pipeline we invoke Nextflow.  We tell it which pipeline to `run`, and
 
 ```
 cd ~/nextflow
-conda activate nextflow
+conda activate geffen-pipelines
 
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
   -C geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
@@ -108,7 +108,7 @@ For example, run the same pipeline again:
 
 ```
 cd ~/nextflow
-conda activate nextflow
+conda activate geffen-pipelines
 
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
   -C geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
@@ -161,7 +161,7 @@ Again we invoke Nextflow, telling it which pipeline to `run` and which config to
 
 ```
 cd ~/nextflow
-conda activate nextflow
+conda activate geffen-pipelines
 
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
   -C geffenlab-ephys-pipeline/pipeline/cortex.config \
@@ -269,7 +269,7 @@ Running the AIND ephys pipeline on the full dataset looks almost exactly like ru
 
 ```
 cd ~/nextflow
-conda activate nextflow
+conda activate geffen-pipelines
 
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
   -C geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
@@ -297,7 +297,7 @@ We can run the Geffen lab ephys pipeline in much the same way:
 
 ```
 cd ~/nextflow
-conda activate nextflow
+conda activate geffen-pipelines
 
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
   -C geffenlab-ephys-pipeline/pipeline/cortex.config \

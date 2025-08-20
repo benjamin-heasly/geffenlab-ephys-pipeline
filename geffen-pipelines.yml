@@ -1,6 +1,7 @@
-name: nextflow
+name: geffen-pipelines
 channels:
   - conda-forge
   - defaults
 dependencies:
   - openjdk=17.0.14
+  - python=3.13

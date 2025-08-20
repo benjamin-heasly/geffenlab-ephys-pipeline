@@ -107,12 +107,12 @@ conda --version
 
 ## Conda environment
 
-With conda installed we can create our own conda environment for running Nextflow pipelines.  The environment is defined here in this repo in [nextflow.yml](./nextflow.yml).  To create and activate the environment on cortex:
+With conda installed we can create our own conda environment for running Nextflow pipelines.  The environment is defined here in this repo in [geffen-pipelines.yml](./geffen-pipelines.yml).  To create and activate the environment on cortex:
 
 ```
 cd ~/nextflow
-conda env create -f geffenlab-ephys-pipeline/nextflow.yml
-conda activate nextflow
+conda env create -f geffenlab-ephys-pipeline/geffen-pipelines.yml
+conda activate geffen-pipelines
 ```
 
 Check that the environment is active and has the expected version of Java
