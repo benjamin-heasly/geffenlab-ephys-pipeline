@@ -28,7 +28,7 @@ def run_main(
     username: str,
     password: str
 ):
-    # Use consistend date formatting like MMDDYYYY.
+    # Use consistent date formatting like MMDDYYYY.
     date_string = session_date.strftime("%m%d%Y")
 
     logging.info(f"Connecting to remote host: {remote_host}.")
