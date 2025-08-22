@@ -196,7 +196,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument(
         "--qualifier", "-q",
         type=str,
-        help="Additional that must match for uploaded file names, for example 'training', 'test', or 'ap.bin'. (default: None, upload all files)",
+        help="Additional text that must match uploaded file names, for example 'training', 'test', or 'ap.bin'. (default: None, upload all files)",
         default=None
     )
 

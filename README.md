@@ -11,6 +11,8 @@ For each datset:
 For docs on getting started with processing on the cortex server, please see:
  - [cortex-user-setup.md](./cortex-user-setup.md)
  - [cortex-first-run.md](./cortex-first-run.md)
+
+To upload data to cortex and download results from cortex, plese see:
  - [cortex-moving-data.md](./cortex-moving-data.md)
 
 # Overview
