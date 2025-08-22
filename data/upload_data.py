@@ -85,8 +85,7 @@ def run_main(
         for spikglx_file in walk_flat(run_dir):
             spikglx_relative = spikglx_file.relative_to(spikeglx_path)
             logging.info(f"  {spikglx_relative}")
-            destination_relative = Path(subject_id, session_mmddyyyy, "ecephys",
-                                        spikglx_file.relative_to(run_dir.parent))
+            destination_relative = Path(subject_id, session_mmddyyyy, "ecephys", spikglx_file.relative_to(run_dir.parent))
             to_upload.append((spikeglx_path, spikglx_relative, destination_relative))
 
     if qualifier:
@@ -115,9 +114,11 @@ def run_main(
             # Call to open() will log connection attempts, results.
             c.open()
 
+            logging.info(f"Uploading to {data_path}:")
             for source_root, source_relative, destination_relative in to_upload:
                 source = Path(source_root, source_relative)
                 destination = Path(data_path, destination_relative)
+                logging.info(f"  {destination_relative}")
                 c.run(f"mkdir -p {destination.parent.as_posix()}")
                 c.put(source.as_posix(), destination.as_posix())
 
