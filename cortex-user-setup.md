@@ -1,6 +1,6 @@
 # Cortex User Setup
 
-This doc should help you configure your cortex user account for running Geffen lab pipelines with Nextflow.
+This doc should help you configure your cortex user account and local lab machine for running Geffen lab pipelines with Nextflow.
 
 When you're done here please see [cortex-first-run.md](./cortex-first-run.md) to try processing some known data.
 

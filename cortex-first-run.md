@@ -2,13 +2,11 @@
 
 This doc should help with your first pipeline run on cortex, using some known data.
 
-Before running pipelines you'll need to do some one-time [cortex user setup](./cortex-user-setup.md) for your cortex user account.
+Before running pipelines you'll need to do some one-time [cortex user setup](./cortex-user-setup.md) for your cortex user account and local lab machine.
 
 The instructions below show how to process lab data using the [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) for spike sorting and quality metrics, and the [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline) for combining data modalities and producing summary figures.
 
-
 # Data locations
-
 
 Before processing we need to put the data on cortex.  Geffen lab data have been assigned to a specific directory on cortex:
 
@@ -214,12 +212,12 @@ screen -d
 exit
 ```
 
-From WSL on your local machine use the script [download-results.py](./data/download-results.py) to create a folder on the Windows desktop and copy selected pipeline outputs from cortex to this folder.
+From WSL on your local machine use the script [download_results.py](./data/download_results.py) to create a folder on the Windows desktop and copy selected pipeline outputs from cortex to this folder.
 
 ```
 cd ~
 conda activate geffen-pipelines
-python geffenlab-ephys-pipeline/data/download-results.py
+python geffenlab-ephys-pipeline/data/download_results.py
 ```
 
 This script includes several default values for cortex, like the cortex server address.  It will prompt you for the subject and session date, and your cortex user credentials (same as you used for `ssh`).  When prompted, enter the following:
@@ -331,12 +329,12 @@ screen -d
 exit
 ```
 
-As above, use the script [download-results.py](./data/download-results.py) to copy selected pipeline outputs to a folder on the Windows desktop.  This time, we'll specify the `--analysis-root` explicitly:
+As above, use the script [download_results.py](./data/download_results.py) to copy selected pipeline outputs to a folder on the Windows desktop.  This time, we'll specify the `--analysis-root` explicitly:
 
 ```
 cd ~
 conda activate geffen-pipelines
-python geffenlab-ephys-pipeline/data/download-results.py --analysis-root /vol/cortex/cd4/geffenlab/analysis/anjali/
+python geffenlab-ephys-pipeline/data/download_results.py --analysis-root /vol/cortex/cd4/geffenlab/analysis/anjali/
 ```
 
 When prompted use:
