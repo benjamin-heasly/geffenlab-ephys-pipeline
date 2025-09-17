@@ -77,7 +77,7 @@ We use our own [cortex.config](./aind-ephys-pipeline/cortex.config) file to conf
 To run the pipeline we invoke Nextflow.  We tell it which pipeline to `run`, and to use our `cortex.config` configuration with `-C`.  We pass as parameters the `--subject` and `--date` of the dataset we want to process.
 
 ```
-cd ~/nextflow
+cd /vol/cortex/cd4/geffenlab/nextflow
 conda activate geffen-pipelines
 
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
@@ -105,7 +105,7 @@ Nextflow has the ability to reuse processing results from previous runs.  If it 
 For example, run the same pipeline again:
 
 ```
-cd ~/nextflow
+cd /vol/cortex/cd4/geffenlab/nextflow
 conda activate geffen-pipelines
 
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
@@ -158,7 +158,7 @@ Now we can run the [Geffen lab ephys pipeline](https://github.com/benjamin-heasl
 Again we invoke Nextflow, telling it which pipeline to `run` and which config to use with `-C`.  We pass in the `--subject` and `--date`.
 
 ```
-cd ~/nextflow
+cd /vol/cortex/cd4/geffenlab/nextflow
 conda activate geffen-pipelines
 
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
@@ -215,7 +215,7 @@ exit
 From WSL on your local machine use the script [download_results.py](./data/download_results.py) to create a folder on the Windows desktop and copy selected pipeline outputs from cortex to this folder.
 
 ```
-cd ~
+cd /vol/cortex/cd4/geffenlab
 conda activate geffen-pipelines
 python geffenlab-ephys-pipeline/data/download_results.py
 ```
@@ -271,7 +271,7 @@ This dataset looks similar to the testing dataset above, but the files are bigge
 Running the AIND ephys pipeline on the full dataset looks almost exactly like running on the minimal testing dataset.
 
 ```
-cd ~/nextflow
+cd /vol/cortex/cd4/geffenlab/nextflow
 conda activate geffen-pipelines
 
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
@@ -299,7 +299,7 @@ Succeeded   : 12
 We can run the Geffen lab ephys pipeline in much the same way:
 
 ```
-cd ~/nextflow
+cd /vol/cortex/cd4/geffenlab/nextflow
 conda activate geffen-pipelines
 
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
