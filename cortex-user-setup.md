@@ -107,7 +107,7 @@ xeyes
 
 You should see a little window on your local machine, with two cartoon eyeballs that follow the mouse cursor.
 
-# One-time cortex user setup
+# One-time cortex geffenlab and user setup
 
 Before running your first pipeline you'll need to do some setup for your cortex user account.  This is to obtain pipeline code and install dependencies.
 
@@ -115,11 +115,11 @@ Before running your first pipeline you'll need to do some setup for your cortex 
 
 We're using two Nexftlow pipelines: the [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) for spike sorting and quality metrics, and the [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline) for combining data modalities and producing summary figures.
 
-Clone these two Git repos into your cortex home folder:
+Clone these two Git repos the geffenlab data directory.  They might already be present if someone has already run this step, in which case you're all set!
 
 ```
-mkdir ~/nextflow
-cd ~/nextflow
+mkdir /vol/cortex/cd4/geffenlab/nextflow
+cd /vol/cortex/cd4/geffenlab/nextflow
 git clone https://github.com/AllenNeuralDynamics/aind-ephys-pipeline.git
 git clone https://github.com/benjamin-heasly/geffenlab-ephys-pipeline.git
 ```
@@ -176,7 +176,7 @@ java -version
 Install the [Nextflow](https://www.nextflow.io/) pipeline tool for your cortex user.
 
 ```
-cd ~/nextflow
+cd /vol/cortex/cd4/geffenlab/nextflow
 wget https://github.com/nextflow-io/nextflow/releases/download/v25.04.6/nextflow-25.04.6-dist
 chmod +x nextflow-25.04.6-dist
 ```
