@@ -173,7 +173,7 @@ java -version
 
 ## Nextflow
 
-Install the [Nextflow](https://www.nextflow.io/) pipeline tool for your cortex user.
+Install the [Nextflow](https://www.nextflow.io/) pipeline tool into the geffenlab data directory.  Someone might have done this already, in which case you're all set.
 
 ```
 cd /vol/cortex/cd4/geffenlab/nextflow
