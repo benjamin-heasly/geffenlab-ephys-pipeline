@@ -1,95 +1,142 @@
 # Pipeline Configurations
 
-This document describes ways to configure existing pipelines to work with different experiment configurations or on different machines.
+This document describes ways to configure existing pipelines to work with different experiment configurations.
 
-This follows on from our other docs [cortex user setup](./cortex-user-setup.md) and [cortex first run](./cortex-first-run.md).  Those used generic "cortex" configurations for the AIND ephys pipeline and for the Geffen Lab ephys pipeline.  These are good for getting started.  Read on for additional configuration options.
+This follows on from other docs [cortex user setup](./cortex-user-setup.md) and [cortex first run](./cortex-first-run.md).  Those used generic configurations for the AIND ephys pipeline and Geffen Lab ephys pipeline.  These are good for getting started, read on for additional configuration options.
 
 # AIND ephys pipeline
 
-We can configure Nextflow pipelines using configuration files.  For the AIND ephys pipeline our default configuration file is [aind-ephys-pipeline/cortex.config](./aind-ephys-pipeline/cortex.config).
+We use two configuration files for the AIND ephys pipeline:
+ - a Nextflow `.config` file for the pipeline itself, like [aind-ephys-pipeline/cortex.config](./aind-ephys-pipeline/cortex.config)
+ - a parameters JSON file for individual SpikeInterface and Kilosort steps, like [aind-ephys-pipeline/spikeglx-ks4-default.json](./aind-ephys-pipeline/spikeglx-ks4-default.json)
 
-To modify the configuration for a given machine or experiment setup, make a copy of this file and modify it.  Commit your copy to this repo and push to GitHub, so that you and others can track and re-run with the same configuration.
+To make new configurations, copy and modify one or both of these files.  Commit copies to this repository and push to GitHub, so that you and others can track, reference, and reuse each configuration.
 
-To run the AIND ephys pipeline with your new configuration, pass your new file name on the Nextflow command line using `-C`.  For example:
+## AIND nextflow `.config` file
+
+When running the pipeline, specify your Nextflow `.config` file on the command line using using `-C`.  For example:
 
 ```
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/my_config.config \    <-- specify your config file with -C
-  run aind-ephys-pipeline/pipeline/main_multi_backend.nf
+  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/my-configuration.config \
+  run aind-ephys-pipeline/pipeline/main_multi_backend.nf \
   # ...etc...
 ```
 
-## What's configurable
+### Choose a `params_file`
 
-The config file [aind-ephys-pipeline/cortex.config](./aind-ephys-pipeline/cortex.config) itself is the source of truth for what's configurable, and the coments there in the `params` section should explain these options.  I'll call out a few of these below.
-
-### Select a `gpu_device`
-
-Depending on the current processing load on cortex, you might need to select a specific GPU device.  You can look at GPU device status by running `nvidia-smi`.  You can list GPU devices and their unique IDs with `nvidia-smi -L`.
-
-You can edit `gpu_device` in the config file to specify which GPU to use by default.  You can also pass a value for `--gpu_device` on the Nextflow command line.
+You can specify a default JSON `params_file` within your Nextflow `.config` file.  You can also pass a value for `--params_file` on the Nextflow command line.  For example:
 
 ```
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/my_config.config \
+  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/my-configuration.config \
   run aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+  --params_file geffenlab-ephys-pipeline/aind-ephys-pipeline/my-parameters.json \
+  # ...etc...
+```
+
+### Choose a `gpu_device`
+
+Depending on the current processing load on cortex, you might need to select a specific GPU device.  You can look at GPU device load by running `nvidia-smi`.  You can list GPU devices and their unique UUIDs with `nvidia-smi -L`.
+
+You can specify a default `gpu_device` within your Nextflow `.config` file.  You can also pass a value for `--gpu_device` on the Nextflow command line.  For example:
+
+```
+NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
+  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/my-configuration.config \
+  run aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+  --params_file geffenlab-ephys-pipeline/aind-ephys-pipeline/my-parameters.json \
   --gpu_device 2
   # ...etc...
 ```
 
-### Spike sorting and postprocessing args
+## Parameters JSON
 
-The AIND ephys pipeline accepts many parameters for spike sorting with Kilosort4 and postprocessing with SpikeInterface.  The parameters themselves are described in the [Kilosort4 docs](https://kilosort.readthedocs.io/en/latest/README.html) and [SpikeInterface postprocessing docs](https://spikeinterface.readthedocs.io/en/stable/modules/postprocessing.html).
+The AIND pipeline parameters JSON file contains many parameters for preprocessing, spike sorting, and postprocessing and automated curation.  Here are some highlights.
 
-Some of these parameters can be set in groups, per brain area, including the expected refractory period in ms and the thresholds Kilosort4 uses during sorting.  To choose a parameter group you can edit `brain_region` in the config file.  You can also pass a value for `--brain_region` on the Nextflow command line.
+### Documentation
 
-```
-NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/my_config.config \
-  run aind-ephys-pipeline/pipeline/main_multi_backend.nf \
-  --brain_region medulla
-  # ...etc...
-```
+The AIND ephys pipeline repo [README](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/blob/6e805354e428ff8e935750bb5bbe604847a5f0f9/README.md) links to documentation for each step, including what parameters are available.
 
-You can edit many additional parameters in your config file, within `spikesorting_args` or `postprocessing_args`.  Each of these is a multiline block of JSON text.  The block formatting matters, so it would be best to edit specific parameter values and not change the overall structure.  The default values we have here came from the AIND ephys pipeline [default_params.json](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/blob/main/pipeline/default_params.json).
+For SpikeInterface steps, the [SpikeInterface docs](https://spikeinterface.readthedocs.io/en/stable/) may describe what the different parameters do.  The [Kilosort4 docs](https://kilosort.readthedocs.io/en/latest/parameters.html) describe several of its parameters and also link to the code for further comments.
 
+### Original
+
+The original, default JSON parameters file comes from the AIND ephys pipeline repo, specifically at revision `6e805354e428ff8e935750bb5bbe604847a5f0f9` from 4 June 2025: [default_params.json](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/blob/6e805354e428ff8e935750bb5bbe604847a5f0f9/pipeline/default_params.json).
+
+Our copy, [aind-ephys-pipeline/spikeglx-ks4-default.json](./aind-ephys-pipeline/spikeglx-ks4-default.json), modifies this in two ways:
+ - `input` format defaults to `spikeglx` in the `job_dispatch` section
+ - `skip_lfp` defaults to `true` in the `nwb` section
+
+### Brain-region-specific parameters
+
+You might create alternative parameters JSON files for different brain regions.  Region-specific parameters might be:
+ - `refractory_period_ms` in the `postprocessing` section
+ - `Th_universal` in the `spikesorting` section
+ - `Th_learned` in the `spikesorting` section
+
+### Filtering / de-noising the recordings
+
+The AIND ephys pipline does filtering / de-noising of recordings (we won't use CatGT for this purpose).  The filtering happens during the [preprocessing](https://github.com/AllenNeuralDynamics/aind-ephys-preprocessing/?tab=readme-ov-file#parameters) step.  The relevant parameter seems to be:
+ - `denoising_strategy` in the `preprocessing` section
 
 # Geffen lab ephys pipeline
 
-For the Geffen lab ephys pipeline our default configuration file is [./pipeline/cortex.config](./pipeline/cortex.config).
+We only need one configuration files for the Geffen lab ephys pipeline:
+ - a Nextflow `.config` file for the pipeline itself and for individual steps, like [pipeline/cortex.config](./pipeline/cortex.config)
 
-To modify the configuration for a given machine or experiment setup, make a copy of this file and modify it.  Commit your copy to this repo and push to GitHub, so that you and others can track and re-run with the same configuration.
+To make new configurations, copy and modify this file.  Commit copies to this repository and push to GitHub, so that you and others can track, reference, and reuse each configuration.
 
-To run the Geffen lab ephys pipeline with your new configuration, pass your new file name on the Nextflow command line using `-C`.  For example:
+## Geffen lab nextflow `.config` file
+
+When running the pipeline, specify your Nextflow `.config` file on the command line using using `-C`.  For example:
 
 ```
-cd /vol/cortex/cd4/geffenlab/nextflow
-conda activate geffen-pipelines
-
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/pipeline/my_config.config \               <-- specify your config file with -C
+  -C geffenlab-ephys-pipeline/pipeline/my_config.config \
   run geffenlab-ephys-pipeline/pipeline/main.nf \
   # ...etc...
 ```
 
-## Work in progress below :-)
+## Work in Progress below...
 
-CatGT args
+### CatGT
 
-probe_id imec0
-spike_glx_gate 0
-spike_glx_trigger 0
-spike_glx_run AS20_03112025_trainingSingle6Tone2024_Snk3.1
-cat_gt_args -ni -ap -prb_fld -out_prb_fld -no_tshift -xa=0,0,0,1,3,500 -xia=0,0,1,3,3,0 -xd=0,0,8,3,0 -xid=0,0,-1,2,1.7 -xid=0,0,-1,3,5
+For SpikeGLX rigs, we need to configure CatGT.
+We could ask for one giant command string, or break this up into parts.
 
-TPrime args
+ - probe_id imec0
+ - spike_glx_gate 0
+ - spike_glx_trigger 0
+ - spike_glx_run AS20_03112025_trainingSingle6Tone2024_Snk3.1
+ - streams -ap -ni, (-ni optional)
+ - onebox -obx=0 (optional)
+ - events to extract '-xa=0,0,0,1,3,500 -xia=0,0,1,3,3,0 -xd=0,0,8,3,0 -xid=0,0,-1,2,1.7 -xid=0,0,-1,3,5'
 
-sync_period 1.0
-probe_id imec0
-    --to-stream and --phy-from-stream based on short probe_id
-tprime_streams
+Since we're not filtering the binary, we also need
+ - -no_tshift
+
+Misc
+ - -prb_fld -out_prb_fld
+
+### TPrime
+
+For SpikeGLX rigs, we need to configure TPrime.
+This is easier to break into parts and give to our Python wrapper
+
+ - --sync_period 1.0
+ - --probe-id imec0
+ - --to-stream based on --probe-id
+ - --phy-from-stream based on --probe-id
+ - events sync_pattern:event_pattern
     **/*nidq.xd_8_4_500.txt:**/*nidq.xa_0_500.txt \
     **/*nidq.xd_8_4_500.txt:**/*nidq.xia_1_0.txt \
     **/*nidq.xd_8_4_500.txt:**/*nidq.xd_8_3_0.txt \
     **/*nidq.xd_8_4_500.txt:**/*nidq.xid_8_2_1p7.txt \
     **/*nidq.xd_8_4_500.txt:**/*nidq.xid_8_3_5.txt \
+
+### Synthesis
+
+Our synthesis step copies events from one source into an "events.csv" for Phy and downstream analysis.
+
+ - event_pattern **/*nidq.xd_8_3_0.txt
