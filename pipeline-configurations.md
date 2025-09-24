@@ -14,8 +14,9 @@ To run the AIND ephys pipeline with your new configuration, pass your new file n
 
 ```
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/my_config.config \            <-- config file with -C
+  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/my_config.config \            <-- specify your config file with -C
   run aind-ephys-pipeline/pipeline/main_multi_backend.nf
+  # ...etc...
 ```
 
 ## What's configurable
@@ -32,14 +33,26 @@ You can edit `gpu_device` in the config file to specify which GPU to use by defa
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
   -C geffenlab-ephys-pipeline/aind-ephys-pipeline/my_config.config \
   run aind-ephys-pipeline/pipeline/main_multi_backend.nf \
-  --gpu_device 2                                                                <-- GPU device param
+  --gpu_device 2                                                                <-- choose a GPU with --gpu_device
+  # ...etc...
 ```
 
-### Spike sorting args.
+### Spike sorting and postprocessing args
 
-The AIND ephys pipeline accepts a full list of parameters to pass to Kilosort4.  The parameters themselves are described in the [Kilosort4 docs](https://kilosort.readthedocs.io/en/latest/README.html).
+The AIND ephys pipeline accepts many parameters for spike sorting with Kilosort4 and postprocessing with SpikeInterface.  The parameters themselves are described in the [Kilosort4 docs](https://kilosort.readthedocs.io/en/latest/README.html) and [SpikeInterface postprocessing docs](https://spikeinterface.readthedocs.io/en/stable/modules/postprocessing.html).
 
-To change Kilosort4 parameters, edit the value of `spikesorting_args` in your config file.  This value is a multiline block of JSON text.  It's probably best to just edit specific parameter values, and not to restructure this block of text.
+Some of these parameters can be set in groups, per brain area -- the expected refractory period in ms, and the thresholds Kilosort4 uses during sorting.  To choose a parameter set you can edit `brain_region` in the config file.  You can also pass a value for `--brain_region` on the Nextflow command line.
+
+```
+NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
+  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/my_config.config \
+  run aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+  --brain_region medulla                                                        <-- choose a parameter set with --brain_region
+  # ...etc...
+```
+
+You can edit many additional parameters in your config file, within `spikesorting_args` or `postprocessing_args`.  Each of these is a multiline block of JSON text.  The block formatting matters so it would be best to edit specific parameter values, but not change the overall structure.  The default we have here came from the AIND ephys pipeline [default_params.json](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/blob/main/pipeline/default_params.json).
+
 
 # Geffen lab ephys pipeline
 
