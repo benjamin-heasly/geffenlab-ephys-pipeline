@@ -67,6 +67,7 @@ The original, default JSON parameters file comes from the AIND ephys pipeline re
 Our copy, [aind-ephys-pipeline/spikeglx-ks4-default.json](./aind-ephys-pipeline/spikeglx-ks4-default.json), modifies this in two ways:
  - `input` format defaults to `spikeglx` in the `job_dispatch` section
  - `skip_lfp` defaults to `true` in the `nwb` section
+ - `min_preprocessing_duration` defaults to `20` in the `preprocessing` section (allows processing shorter test data)
 
 ### Brain-region-specific parameters
 
