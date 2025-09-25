@@ -79,6 +79,8 @@ process geffenlab_ecephys_tprime {
     set -e
 
     mkdir -p results/tprime
+    echo $catgt_results
+    ls -alth $catgt_results
     conda_run python /opt/code/tprime.py \
       $catgt_results \
       results/tprime \
