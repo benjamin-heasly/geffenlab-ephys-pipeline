@@ -21,14 +21,12 @@ process geffenlab_ecephys_catgt {
 
     mkdir -p results/catgt
     conda_run python /opt/code/catgt.py \
-      --probe-id imec0 \
-      --gate 0 \
-      --trigger 0 \
+      --probe-id $params.probe_id \
+      --gate $params.catgt_gate \
+      --trigger $params.catgt_trigger \
       $data_path/ecephys \
       results/catgt \
-      AS20_03112025_trainingSingle6Tone2024_Snk3.1 \
-      -ni -ap -prb_fld -out_prb_fld -no_tshift \
-      -xa=0,0,0,1,3,500 -xia=0,0,1,3,3,0 -xd=0,0,8,3,0 -xid=0,0,-1,2,1.7 -xid=0,0,-1,3,5
+      $params.catgt_args
     """
 }
 
@@ -84,16 +82,11 @@ process geffenlab_ecephys_tprime {
     conda_run python /opt/code/tprime.py \
       $catgt_results \
       results/tprime \
-      --sync-period 1.0 \
-      --to-stream **/**/*imec0.ap.*.txt \
-      --from-streams \
-        **/*nidq.xd_8_4_500.txt:**/*nidq.xa_0_500.txt \
-        **/*nidq.xd_8_4_500.txt:**/*nidq.xia_1_0.txt \
-        **/*nidq.xd_8_4_500.txt:**/*nidq.xd_8_3_0.txt \
-        **/*nidq.xd_8_4_500.txt:**/*nidq.xid_8_2_1p7.txt \
-        **/*nidq.xd_8_4_500.txt:**/*nidq.xid_8_3_5.txt \
-      --phy-from-stream **/**/*imec0.ap.*.txt \
-      --probe-id block0_imec0.ap_recording1 \
+      --sync-period $params.tprime_sync_period \
+      --to-stream $params.tprime_to_stream \
+      --from-streams $params.tprime_from_streams \
+      --phy-from-stream $params.tprime_phy_from_stream \
+      --probe-id $params.probe_id \
       --phy-pattern $phy_export_results/**/params.py
     """
 }
@@ -154,7 +147,8 @@ process geffenlab_synthesis {
       --data-path=$data_path \
       --analysis-path=analysis \
       --results-path=results \
-      --title="${params.subject}-${params.date}"
+      --event-times-pattern $params.event_times \
+      --title="$params.subject-$params.date"
     """
 }
 

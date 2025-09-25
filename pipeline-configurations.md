@@ -14,7 +14,7 @@ To make new configurations, copy and modify one or both of these files.  Commit 
 
 ## AIND nextflow `.config` file
 
-When running the pipeline, specify your Nextflow `.config` file on the command line using using `-C`.  For example:
+When running the AIND pipeline, specify your Nextflow `.config` file on the command line using using `-C`.  For example:
 
 ```
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
@@ -90,7 +90,7 @@ To make new configurations, copy and modify this file.  Commit copies to this re
 
 ## Geffen lab nextflow `.config` file
 
-When running the pipeline, specify your Nextflow `.config` file on the command line using using `-C`.  For example:
+When running the Geffen lab pipeline, specify your Nextflow `.config` file on the command line using using `-C`.  For example:
 
 ```
 NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
