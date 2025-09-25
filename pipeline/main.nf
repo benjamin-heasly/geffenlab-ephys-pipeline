@@ -149,7 +149,7 @@ process geffenlab_synthesis {
       --data-path=$data_path \
       --analysis-path=analysis \
       --results-path=results \
-      --event-times-pattern $params.event_times \
+      --event-times-pattern $params.synthesis_event_times_pattern \
       --title="$params.subject-$params.date"
     """
 }
