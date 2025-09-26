@@ -15,6 +15,9 @@ For docs on getting started with processing on the cortex server, please see:
 To upload data to cortex and download results from cortex, plese see:
  - [cortex-moving-data.md](./cortex-moving-data.md)
 
+To configure pipelines for different experiment setups, plese see:
+ - [pipeline-configurations.md](./pipeline-configurations.md)
+
 # Overview
 
 Here's an overview of the pipeline.
