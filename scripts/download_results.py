@@ -89,7 +89,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default="128.91.19.199"
     )
     parser.add_argument(
-        "--username", "-u",
+        "--user", "-u",
         type=str,
         help="Remote (eg cortex) username. (default: prompt for input)",
         default=None
@@ -101,13 +101,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default="/vol/cortex/cd4/geffenlab/analysis/"
     )
     parser.add_argument(
-        "--subject-id", "-s",
+        "--subject", "-s",
         type=str,
         help="Subject id for a session that was processed. (default: prompt for input)",
         default=None
     )
     parser.add_argument(
-        "--session-date", "-d",
+        "--date", "-d",
         type=str,
         help="Date of a session that was processed: MMDDYYYY. (default: prompt for input)",
         default=None
@@ -135,12 +135,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     analysis_subdirs = cli_args.analysis_subdirs
     logging.info(f"Downloading analysis session subdirs: {analysis_subdirs}")
 
-    subject_id = cli_args.subject_id
-    if subject_id is None:
-        subject_id = input("Subject ID: ").strip()
-    logging.info(f"Downloading files for subject id: {subject_id}")
+    subject = cli_args.subject
+    if subject is None:
+        subject = input("Subject ID: ").strip()
+    logging.info(f"Downloading files for subject id: {subject}")
 
-    session_dates_string = cli_args.session_date
+    session_dates_string = cli_args.date
     if session_dates_string is None:
         session_dates_string = input("Session date MMDDYYYY: ").strip()
 
@@ -161,7 +161,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             remote_host,
             analysis_path,
             analysis_subdirs,
-            subject_id,
+            subject,
             session_date,
             username,
             password

@@ -48,16 +48,16 @@ def run_main(
     spikeglx_nidq_pattern: str,
     remote_host: str,
     data_path: Path,
-    subject_id: str,
+    subject: str,
     session_date: str,
     username: str,
     password: str,
     qualifier: str
 ):
     # Resolve session-specific placeholders in glob patterns.
-    behavior_txt_pattern = apply_session(behavior_txt_pattern, subject_id, session_date)
-    behavior_mat_pattern = apply_session(behavior_mat_pattern, subject_id, session_date)
-    spikeglx_nidq_pattern = apply_session(spikeglx_nidq_pattern, subject_id, session_date)
+    behavior_txt_pattern = apply_session(behavior_txt_pattern, subject, session_date)
+    behavior_mat_pattern = apply_session(behavior_mat_pattern, subject, session_date)
+    spikeglx_nidq_pattern = apply_session(spikeglx_nidq_pattern, subject, session_date)
 
     # Collect files to upload as a list of (source_root, source_relative, destination_relative)
     to_upload = []
@@ -68,14 +68,14 @@ def run_main(
     for txt_match in behavior_path.glob(behavior_txt_pattern):
         txt_relative = txt_match.relative_to(behavior_path)
         logging.info(f"  {txt_relative}")
-        destination_relative = Path(subject_id, session_mmddyyyy, "behavior", txt_match.name)
+        destination_relative = Path(subject, session_mmddyyyy, "behavior", txt_match.name)
         to_upload.append((behavior_path, txt_relative, destination_relative))
 
     logging.info(f"Searching local behavior_root for .mat like: {behavior_mat_pattern}")
     for mat_match in behavior_path.glob(behavior_mat_pattern):
         mat_relative = mat_match.relative_to(behavior_path)
         logging.info(f"  {mat_relative}")
-        destination_relative = Path(subject_id, session_mmddyyyy, "behavior", mat_match.name)
+        destination_relative = Path(subject, session_mmddyyyy, "behavior", mat_match.name)
         to_upload.append((behavior_path, mat_relative, destination_relative))
 
     # Locate spikeglx nidq.meta files as representatives of overall run dirs.
@@ -85,7 +85,7 @@ def run_main(
         for spikglx_file in walk_flat(run_dir):
             spikglx_relative = spikglx_file.relative_to(spikeglx_path)
             logging.info(f"  {spikglx_relative}")
-            destination_relative = Path(subject_id, session_mmddyyyy, "ecephys", spikglx_file.relative_to(run_dir.parent))
+            destination_relative = Path(subject, session_mmddyyyy, "ecephys", spikglx_file.relative_to(run_dir.parent))
             to_upload.append((spikeglx_path, spikglx_relative, destination_relative))
 
     if qualifier:
@@ -170,7 +170,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default="128.91.19.199"
     )
     parser.add_argument(
-        "--username", "-u",
+        "--user", "-u",
         type=str,
         help="Remote (eg cortex) username. (default: prompt for input)",
         default=None
@@ -182,13 +182,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default="/vol/cortex/cd4/geffenlab/data/"
     )
     parser.add_argument(
-        "--subject-id", "-s",
+        "--subject", "-s",
         type=str,
         help="Subject id for a session that was processed. (default: prompt for input)",
         default=None
     )
     parser.add_argument(
-        "--session-date", "-d",
+        "--date", "-d",
         type=str,
         help="Date of a session that was processed: MMDDYYYY. (default: prompt for input)",
         default=None
@@ -224,10 +224,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     data_path = Path(cli_args.data_root)
     logging.info(f"Uploading files to remote data root: {data_path}")
 
-    subject_id = cli_args.subject_id
-    if subject_id is None:
-        subject_id = input("Subject ID: ").strip()
-    logging.info(f"Uploading files for subject id: {subject_id}")
+    subject = cli_args.subject
+    if subject is None:
+        subject = input("Subject ID: ").strip()
+    logging.info(f"Uploading files for subject id: {subject}")
 
     session_dates_string = cli_args.session_date
     if session_dates_string is None:
@@ -260,7 +260,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             spikeglx_nidq_pattern,
             remote_host,
             data_path,
-            subject_id,
+            subject,
             session_date,
             username,
             password,
