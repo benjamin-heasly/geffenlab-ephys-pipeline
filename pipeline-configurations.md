@@ -16,24 +16,31 @@ To make new configurations, copy and modify one or both of these files.  Commit 
 
 ## AIND nextflow `.config` file
 
-When running the AIND pipeline, specify your Nextflow `.config` file on the command line using using `-C`.  For example:
+When running the AIND pipeline, specify your Nextflow `.config` file as the `--config` argument to [run_pipeline.py](./scripts/run_pipeline.py).  For example:
 
 ```
-NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/my-configuration.config \
+cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
+conda activate geffen-pipelines
+
+python run_pipeline.py \
+  --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+  --config geffenlab-ephys-pipeline/aind-ephys-pipeline/my-aind-configuration.config \
   ...
 ```
 
 ### Choose a parameters JSON file
 
-Within your AIND Nextflow `.config` file you can edit `params_file` to choose a parameters JSON file for SpikeInterface and Kilosort.
+Within your AIND Nextflow `.config` file you can edit `params_file` to specify a parameters JSON file for SpikeInterface and Kilosort.
 
-You can also pass a value for `--params_file` on the Nextflow command line.  For example:
+You can also pass a value for `--params_file` on the command line.  Extra parameters like this will be passed on to Nextflow and the pipeline.  For example:
 
 ```
-NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/my-configuration.config \
-  run aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
+conda activate geffen-pipelines
+
+python run_pipeline.py \
+  --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+  --config geffenlab-ephys-pipeline/aind-ephys-pipeline/my-aind-configuration.config \
   --params_file geffenlab-ephys-pipeline/aind-ephys-pipeline/my-parameters.json \
   ...
 ```
@@ -42,14 +49,17 @@ NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
 
 Depending on the current processing load on cortex, you might need to select a specific GPU device.  You can look at GPU device load by running `nvidia-smi`.  You can list GPU devices and their unique UUIDs with `nvidia-smi -L`.
 
-You can specify a default `gpu_device` within your Nextflow `.config` file.  You can also pass a value for `--gpu_device` on the Nextflow command line.  For example:
+You can specify a default `gpu_device` within your Nextflow `.config` file.  You can also pass a value for `--gpu_device` on the command line.  For example:
 
 ```
-NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/my-configuration.config \
-  run aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
+conda activate geffen-pipelines
+
+python run_pipeline.py \
+  --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+  --config geffenlab-ephys-pipeline/aind-ephys-pipeline/my-aind-configuration.config \
   --params_file geffenlab-ephys-pipeline/aind-ephys-pipeline/my-parameters.json \
-  --gpu_device 2
+  --gpu_device 2 \
   ...
 ```
 
@@ -95,11 +105,15 @@ To make new configurations, copy and modify this file.  Commit copies to this re
 
 ## Geffen lab nextflow `.config` file
 
-When running the Geffen lab pipeline, specify your Nextflow `.config` file on the command line using using `-C`.  For example:
+When running the Geffen lab pipeline, specify your Nextflow `.config` file as the `--config` argument to [run_pipeline.py](./scripts/run_pipeline.py).  For example:
 
 ```
-NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/pipeline/my_config.config \
+cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
+conda activate geffen-pipelines
+
+python run_pipeline.py \
+  --workflow geffenlab-ephys-pipeline/pipeline/main.nf \
+  --config geffenlab-ephys-pipeline/pipeline/my-geffen-config.config \
   ...
 ```
 
@@ -109,12 +123,15 @@ For SpikeGLX rigs, we run CatGT to extract event times from data streams.  Since
 
 Our [pipeline/cortex.config](./pipeline/cortex.config) has several parameters starting with `catgt_` that you can edit to suit your experiment setup.  For example, you can edit `catgt_events` to configure the events for CatGT to extract.
 
-These same parameters can be specified from the command line.  For example, you can specify the `catgt_run`, `catgt_gate`, and `catgt_trigger`:
+These same parameters can be specified from the command line.  For example, you can pass values for `--catgt_run`, `--catgt_gate`, and `--catgt_trigger`:
 
 ```
-NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/pipeline/my_config.config \
-  run geffenlab-ephys-pipeline/pipeline/main.nf \
+cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
+conda activate geffen-pipelines
+
+python run_pipeline.py \
+  --workflow geffenlab-ephys-pipeline/pipeline/main.nf \
+  --config geffenlab-ephys-pipeline/pipeline/my-geffen-config.config \
   --catgt_run 'AS20_03112025_trainingSingle6Tone2024_Snk3.1' \
   --catgt_gate 0 \
   --catgt_trigger 0 \

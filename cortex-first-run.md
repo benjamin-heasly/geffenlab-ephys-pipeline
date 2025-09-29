@@ -74,20 +74,19 @@ We use our own [cortex.config](./aind-ephys-pipeline/cortex.config) file to conf
  - Use 10 CPU cores at a time, instead of all of them.
  - Use up to 64GB of memory at a time, instead of unbounded memory.
 
-To run the pipeline we invoke Nextflow.  We tell it which pipeline to `run`, and to use our `cortex.config` configuration with `-C`.  We pass as parameters the `--subject` and `--date` of the dataset we want to process.
+To run the pipeline use our Python script [run_pipeline.py](./scripts/run_pipeline.py).  This script calls `nextflow run` to run the pipeline and also saves detailed logs along with other pipeline outputs.
+We tell it which pipeline to run with the `--workflow` argument.  We specifiy the configuration with `--config`.  We also pass the `--subject` and `--date` for the session we want to process.
 
 ```
-cd /vol/cortex/cd4/geffenlab/nextflow
+cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
 conda activate geffen-pipelines
 
-NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
-  run aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+python run_pipeline.py \
+  --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+  --config geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
   --subject AS20-minimal2 \
   --date 03112025
 ```
-
-We need to set a Nextflow option, `NXF_DISABLE_PARAMS_TYPE_DETECTION=1`.  This allows us to use dates with a leading `0`.  Otherwise Nextflow would treat the date as a number, and discard the leading `0`.
 
 The pipeline run should take only a few minutes.  A clean run should end with a summary like this:
 
@@ -105,16 +104,18 @@ Nextflow has the ability to reuse processing results from previous runs.  If it 
 For example, run the same pipeline again:
 
 ```
-cd /vol/cortex/cd4/geffenlab/nextflow
+cd /vol/cortex/cd4/cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
 conda activate geffen-pipelines
 
-NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
-  run aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+python run_pipeline.py \
+  --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+  --config geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
   --subject AS20-minimal2 \
   --date 03112025 \
   -resume
 ```
+
+We are calling Nextflow via our Python wrapper script [run_pipeline.py](./scripts/run_pipeline.py).  Extra command line arguments like `-resume` will be passed on to Nextflow iteslf.
 
 This should take only a few seconds and end with a similar summary as before.  Nextflow should detect that nothing has changed and reuse all of the existing results.
 
@@ -155,15 +156,15 @@ Here's a summary of the `data/` and `analysis/` subdirectories, after running th
 
 Now we can run the [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline) for combining data modalities and producing summary figures.
 
-Again we invoke Nextflow, telling it which pipeline to `run` and which config to use with `-C`.  We pass in the `--subject` and `--date`.
+Again we use [run_pipeline.py](./scripts/run_pipeline.py).  This time we specify differnt `--workflow` and `--config`, but the same `--subject` and `--date`.
 
 ```
-cd /vol/cortex/cd4/geffenlab/nextflow
+cd /vol/cortex/cd4/cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
 conda activate geffen-pipelines
 
-NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/pipeline/cortex.config \
-  run geffenlab-ephys-pipeline/pipeline/main.nf \
+python run_pipeline.py \
+  --workflow geffenlab-ephys-pipeline/pipeline/main.nf \
+  --config geffenlab-ephys-pipeline/pipeline/cortex.config \
   --subject AS20-minimal2 \
   --date 03112025
 ```
@@ -271,19 +272,19 @@ This dataset looks similar to the testing dataset above, but the files are bigge
 Running the AIND ephys pipeline on the full dataset looks almost exactly like running on the minimal testing dataset.
 
 ```
-cd /vol/cortex/cd4/geffenlab/nextflow
+cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
 conda activate geffen-pipelines
 
-NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
-  run aind-ephys-pipeline/pipeline/main_multi_backend.nf \
-  --data_root /vol/cortex/cd4/geffenlab/data/anjali/ \
-  --analysis_root /vol/cortex/cd4/geffenlab/analysis/anjali/ \
+python run_pipeline.py \
+  --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+  --config geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
+  --data-root /vol/cortex/cd4/geffenlab/data/anjali/ \
+  --analysis-root /vol/cortex/cd4/geffenlab/analysis/anjali/ \
   --subject AS20 \
   --date 03112025
 ```
 
-This time we specify the `--subject` as `AS20`.  We also specify the `--data_root` and `--analysis_root` explicitly since these have an extra path component for `anjali`.
+This time we specify the `--subject` as `AS20`.  We also specify the `--data-root` and `--analysis-root` explicitly since these have an extra path component for `anjali`.
 
 Processing the full dataset will take longer than before, but it should still take less than an hour.  A clean run should end with a summary like this:
 
@@ -299,14 +300,14 @@ Succeeded   : 12
 We can run the Geffen lab ephys pipeline in much the same way:
 
 ```
-cd /vol/cortex/cd4/geffenlab/nextflow
+cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
 conda activate geffen-pipelines
 
-NXF_DISABLE_PARAMS_TYPE_DETECTION=1 ./nextflow-25.04.6-dist \
-  -C geffenlab-ephys-pipeline/pipeline/cortex.config \
-  run geffenlab-ephys-pipeline/pipeline/main.nf \
-  --data_root /vol/cortex/cd4/geffenlab/data/anjali/ \
-  --analysis_root /vol/cortex/cd4/geffenlab/analysis/anjali/ \
+python run_pipeline.py \
+  --workflow geffenlab-ephys-pipeline/pipeline/main.nf \
+  --config geffenlab-ephys-pipeline/pipeline/cortex.config \
+  --data-root /vol/cortex/cd4/geffenlab/data/anjali/ \
+  --analysis-root /vol/cortex/cd4/geffenlab/analysis/anjali/ \
   --subject AS20 \
   --date 03112025
 ```

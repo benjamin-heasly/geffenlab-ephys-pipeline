@@ -12,6 +12,7 @@ from contextlib import chdir
 def set_up_logging(
     log_path: Path = None
 ):
+    """Set up to copy logs to stdout (the console) and to a log file."""
     logging.root.handlers = []
     handlers = [
         logging.StreamHandler(sys.stdout)
@@ -132,19 +133,19 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default="./nextflow-25.04.6-dist"
     )
     parser.add_argument(
-        "--nextflow-config",
+        "--config",
         type=str,
         help="Path to pipeline configuration file. (default: %(default)s)",
         default="geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config"
     )
     parser.add_argument(
-        "--nextflow-workflow",
+        "--workflow",
         type=str,
         help="Path to pipeline workflow definition file. (default: %(default)s)",
         default="aind-ephys-pipeline/pipeline/main_multi_backend.nf"
     )
     parser.add_argument(
-        "--nextflow-report-template",
+        "--report-template",
         type=str,
         help="Path to nextflow process detail report template. (default: %(default)s)",
         default="geffenlab-ephys-pipeline/process-detail-template.md"
@@ -182,9 +183,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     (cli_args, pass_through_args) = parser.parse_known_args()
     work_dir_path = Path(cli_args.work_dir)
-    workflow_path = Path(cli_args.nextflow_workflow)
-    config_path = Path(cli_args.nextflow_config)
-    report_template_path = Path(cli_args.nextflow_report_template)
+    workflow_path = Path(cli_args.workflow)
+    config_path = Path(cli_args.config)
+    report_template_path = Path(cli_args.report_template)
     analysis_root_path = Path(cli_args.analysis_root)
     data_root_path = Path(cli_args.data_root)
 
