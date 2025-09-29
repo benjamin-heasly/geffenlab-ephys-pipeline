@@ -40,7 +40,11 @@ def run_main(
             # List subdirectories in the session analysis directory.
             remote_session_path = Path(analysis_path, subject_id, date_string)
             logging.info(f"Checking for remote analysis session directory {remote_session_path}:")
-            c.run(f"ls {remote_session_path.as_posix()}")
+            result = c.run(f"ls {remote_session_path.as_posix()}")
+            session_list = result.stdout.strip().split('\n')
+            session_logs = [file for file in session_list if file.endswith(".log" or file.endswith(".md"))]
+            print(f"Found session logs: {session_logs}")
+
 
             # Download selected subdirectories.
             for analysis_subdir in analysis_subdirs:
