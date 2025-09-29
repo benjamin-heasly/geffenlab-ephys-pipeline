@@ -123,7 +123,7 @@ process geffenlab_phy_desktop {
 
 process geffenlab_synthesis {
     tag 'geffenlab_synthesis'
-    container 'ghcr.io/benjamin-heasly/geffenlab-synthesis:v0.0.4'
+    container 'ghcr.io/benjamin-heasly/geffenlab-synthesis:v0.0.5'
 
     publishDir "${params.analysis_path}/synthesis",
         mode: 'copy',
@@ -150,7 +150,9 @@ process geffenlab_synthesis {
       --analysis-path=analysis \
       --results-path=results \
       --event-times-pattern $params.synthesis_event_times_pattern \
-      --title="$params.subject-$params.date"
+      --subject=$params.subject \
+      --date=$params.date \
+      --plotting_scripts $params.synthesis_plotting_scripts
     """
 }
 
