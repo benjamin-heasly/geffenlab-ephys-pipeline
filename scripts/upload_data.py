@@ -243,7 +243,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     else:
         logging.info(f"Uploading all files.")
 
-    username = cli_args.username
+    username = cli_args.user
     if username is None:
         username = input("Remote username: ").strip()
     logging.info(f"Uploading files as remote user: {username}")

@@ -147,7 +147,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     session_date = datetime.strptime(session_dates_string, "%m%d%Y").date()
     logging.info(f"Downloading files for session date: {session_dates_string} ({session_date})")
 
-    username = cli_args.username
+    username = cli_args.user
     if username is None:
         username = input("Remote username: ").strip()
     logging.info(f"Downloading files as remote user: {username}")
