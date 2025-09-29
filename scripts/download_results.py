@@ -46,7 +46,7 @@ def run_main(
 
             # Download log files in the session analysis directory.
             session_list = result.stdout.strip().split('\n')
-            session_logs = set()
+            session_logs = []
             for log_pattern in log_patterns:
                 session_logs += fnmatch.filter(session_list, log_pattern)
             print(f"Found session logs: {session_logs}")
