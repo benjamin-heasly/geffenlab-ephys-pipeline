@@ -148,7 +148,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--report-template",
         type=str,
         help="Path to nextflow process detail report template. (default: %(default)s)",
-        default="geffenlab-ephys-pipeline/process-detail-template.md"
+        default="geffenlab-ephys-pipeline/scripts/process-detail-template.md"
     )
     parser.add_argument(
         "--work-dir",
