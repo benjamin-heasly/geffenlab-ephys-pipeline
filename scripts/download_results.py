@@ -5,6 +5,7 @@ import logging
 from pathlib import Path
 from datetime import datetime, date
 from getpass import getpass
+import fnmatch
 
 
 from fabric import Connection
@@ -22,6 +23,7 @@ def run_main(
     local_path: Path,
     remote_host: str,
     analysis_path: Path,
+    log_patterns: list[str],
     analysis_subdirs: list[str],
     subject_id: str,
     session_date: date,
@@ -37,14 +39,17 @@ def run_main(
             # Call to open() will log connection attempts, results.
             c.open()
 
-            # List subdirectories in the session analysis directory.
+            # List files and subdirectories in the session analysis directory.
             remote_session_path = Path(analysis_path, subject_id, date_string)
             logging.info(f"Checking for remote analysis session directory {remote_session_path}:")
             result = c.run(f"ls {remote_session_path.as_posix()}")
-            session_list = result.stdout.strip().split('\n')
-            session_logs = [file for file in session_list if file.endswith(".log" or file.endswith(".md"))]
-            print(f"Found session logs: {session_logs}")
 
+            # Download log files in the session analysis directory.
+            session_list = result.stdout.strip().split('\n')
+            session_logs = set()
+            for log_pattern in log_patterns:
+                session_logs += fnmatch.filter(session_list, log_pattern)
+            print(f"Found session logs: {session_logs}")
 
             # Download selected subdirectories.
             for analysis_subdir in analysis_subdirs:
@@ -113,6 +118,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default=None
     )
     parser.add_argument(
+        "--log-patterns", "-L",
+        type=str,
+        nargs="+",
+        help="File name patterns to match logs within the remote ANALYSIS_ROOT/SUBJECT_ID/SESSION_DATE/. (default: %(default)s)",
+        default=["*.log", "*.md"]
+    )
+    parser.add_argument(
         "--analysis-subdirs", "-S",
         type=str,
         nargs="+",
@@ -131,6 +143,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     analysis_path = Path(cli_args.analysis_root)
     logging.info(f"Downloading files from remote analysis root: {analysis_path}")
+
+    log_patterns = cli_args.log_patterns
+    logging.info(f"Downloading logs that match patterns: {log_patterns}")
 
     analysis_subdirs = cli_args.analysis_subdirs
     logging.info(f"Downloading analysis session subdirs: {analysis_subdirs}")
@@ -160,6 +175,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             local_path,
             remote_host,
             analysis_path,
+            log_patterns,
             analysis_subdirs,
             subject,
             session_date,
