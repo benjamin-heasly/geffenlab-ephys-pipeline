@@ -235,6 +235,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         logging.error("Error running Nextflow pipeline.", exc_info=True)
         return -1
 
+    logging.info(f"Wrote the Nextflow log to {nextflow_log_path}")
+    logging.info(f"Wrote details of each Nextflow processing step to {process_detail_path}")
+    logging.info(f"Wrote a copy of this console log to {script_log_path}")
+
 
 if __name__ == "__main__":
     exit_code = main(sys.argv[1:])
