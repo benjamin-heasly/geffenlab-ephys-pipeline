@@ -123,7 +123,7 @@ def run_main(
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    parser = ArgumentParser(description="Run a Nextflow pipeline and gather logs in one place.")
+    parser = ArgumentParser(description="Run a Nextflow pipeline and aggregate logs to one place.")
 
     parser.add_argument(
         "--nextflow",
@@ -147,7 +147,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--nextflow-report-template",
         type=str,
         help="Path to nextflow process detail report template. (default: %(default)s)",
-        default="geffenlab-ephys-pipeline/process_detail_template.md"
+        default="geffenlab-ephys-pipeline/process-detail-template.md"
     )
     parser.add_argument(
         "--work-dir",

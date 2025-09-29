@@ -6,7 +6,7 @@ First, you'll need to do some one-time [cortex user setup](./cortex-user-setup.m
 
 # Upload data to cortex
 
-This repo has a Python script [upload_data.py](./data/upload_data.py) that should help uploading data from your local lab machine to cortex.  Internally this uses `ssh` to connect to cortex, and the Python wrapper should add convenience.
+This repo has a Python script [upload_data.py](./scripts/upload_data.py) that should help uploading data from your local lab machine to cortex.  Internally this uses `ssh` to connect to cortex, and the Python wrapper should add convenience.
 
 Run this script from the WSL environment of your local lab machine:
 
@@ -14,7 +14,7 @@ Run this script from the WSL environment of your local lab machine:
 cd ~
 conda activate geffen-pipelines
 
-python geffenlab-ephys-pipeline/data/upload_data.py
+python geffenlab-ephys-pipeline/scripts/upload_data.py
 ```
 
 This will prompt you for the subject id and session date that you want to upload, plus an optional qualifier to further narrow down which files are uploaded.  It will also ask for your cortex credentials.  For example:
@@ -93,12 +93,12 @@ The example above used several default options like the cortex host address, the
 All of these can be modified from the command line as needed.  For details please see:
 
 ```
-python geffenlab-ephys-pipeline/data/upload_data.py --help
+python geffenlab-ephys-pipeline/scripts/upload_data.py --help
 ```
 
 # Download results from cortex
 
-This repo has a Python script [download_results.py](./data/download_results.py) that should help downloading pipeline results from cortex to your local machine.  Internally this uses `ssh` to connect to cortex, and the Python wrapper should add convenience.
+This repo has a Python script [download_results.py](./scripts/download_results.py) that should help downloading pipeline results from cortex to your local machine.  Internally this uses `ssh` to connect to cortex, and the Python wrapper should add convenience.
 
 You might have used this already as part of your [cortex-first-run.md](./cortex-first-run.md).
 
@@ -108,7 +108,7 @@ Run this script from the WSL environment of your local lab machine:
 cd ~
 conda activate geffen-pipelines
 
-python geffenlab-ephys-pipeline/data/download_results.py
+python geffenlab-ephys-pipeline/scripts/download_results.py
 ```
 
 This will prompt you for the subject id and session date you want to download.  It will also ask for your cortex credentials.  For example:
@@ -202,5 +202,5 @@ The example above used several default options like the cortex host address, the
 All of these can be modified from the command line as needed.  For details please see:
 
 ```
-python geffenlab-ephys-pipeline/data/download_results.py --help
+python geffenlab-ephys-pipeline/scripts/download_results.py --help
 ```
