@@ -50,6 +50,11 @@ def run_main(
             for log_pattern in log_patterns:
                 session_logs += fnmatch.filter(session_list, log_pattern)
             print(f"Found session logs: {session_logs}")
+            for session_log in session_logs:
+                relative_log_path = Path(session_log).relative_to(remote_session_path)
+                local_log_path = Path(local_path, subject_id, date_string, relative_log_path)
+                logging.info(f"Downloading to: {local_log_path}")
+                c.get(remote=session_log, local=local_log_path.as_posix())
 
             # Download selected subdirectories.
             for analysis_subdir in analysis_subdirs:
