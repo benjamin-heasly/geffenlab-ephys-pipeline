@@ -104,7 +104,7 @@ Nextflow has the ability to reuse processing results from previous runs.  If it 
 For example, run the same pipeline again:
 
 ```
-cd /vol/cortex/cd4/cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
+cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
 conda activate geffen-pipelines
 
 python run_pipeline.py \
@@ -159,7 +159,7 @@ Now we can run the [Geffen lab ephys pipeline](https://github.com/benjamin-heasl
 Again we use [run_pipeline.py](./scripts/run_pipeline.py).  This time we specify differnt `--workflow` and `--config`, but the same `--subject` and `--date`.
 
 ```
-cd /vol/cortex/cd4/cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
+cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
 conda activate geffen-pipelines
 
 python run_pipeline.py \
