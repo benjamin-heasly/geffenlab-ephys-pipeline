@@ -216,7 +216,7 @@ exit
 From WSL on your local machine use the script [download_results.py](./scripts/download_results.py) to create a folder on the Windows desktop and copy selected pipeline outputs from cortex to this folder.
 
 ```
-cd /vol/cortex/cd4/geffenlab
+cd ~
 conda activate geffen-pipelines
 python geffenlab-ephys-pipeline/scripts/download_results.py
 ```
