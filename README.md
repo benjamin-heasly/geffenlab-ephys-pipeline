@@ -17,6 +17,7 @@ To upload data to cortex and download results from cortex, plese see:
 
 To configure pipelines for different experiment setups, plese see:
  - [pipeline-configurations.md](./pipeline-configurations.md)
+ - [summary-plotting-scripts.md](./summary-plotting-scripts.md)
 
 # Overview
 
