@@ -194,7 +194,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     logging.info(f"Downloading processed data subdirs: {processed_subdirs}")
 
     experimenter = cli_args.subject
-    if subject is None:
+    if experimenter is None:
         experimenter = input("Experimenter initials: ").strip()
     logging.info(f"Downloading files for experimenter: {experimenter}")
 
