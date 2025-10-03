@@ -59,6 +59,8 @@ def run_main(
     qualifier: str,
     username: str,
     password: str,
+    group_permissions: str,
+    other_permissions: str,
 ):
     # Resolve session-specific placeholders in glob patterns.
     behavior_txt_pattern = apply_placeholders(behavior_txt_pattern, experimenter, subject, session_date)
@@ -150,6 +152,11 @@ def run_main(
                 c.run(f"mkdir -p {destination.parent.as_posix()}")
                 c.put(source.as_posix(), destination.as_posix())
 
+            session_path = Path(raw_data_path, experimenter, subject, session_mmddyyyy)
+            logging.info(f"Settign group and other permissions for session dir {session_path}:")
+            c.run(f"chmod -R g{group_permissions} {session_path.as_posix()}")
+            c.run(f"chmod -R o{other_permissions} {session_path.as_posix()}")
+
         except Exception as e:
             logging.warning(f"Upload error: {e.args}")
 
@@ -210,7 +217,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default=None
     )
     parser.add_argument(
-        "--raw-data-root", "-a",
+        "--raw-data-root", "-R",
         type=str,
         help="Remote root directory containing lab raw data. (default: %(default)s)",
         default="/vol/cortex/cd4/geffenlab/raw_data/"
@@ -238,6 +245,18 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         type=str,
         help="Additional text that must match uploaded file names, for example 'training', 'test', or 'ap.bin'. (default: None, upload all files)",
         default=None
+    )
+    parser.add_argument(
+        "--group-permissions", "-g",
+        type=str,
+        help="Permission to set on uploaded dirs and files, for users in the same group. (default: %(default)s)",
+        default="+rw"
+    )
+    parser.add_argument(
+        "--other-permissions", "-o",
+        type=str,
+        help="Permission to set on uploaded dirs and files, for other users (the universe). (default: %(default)s)",
+        default="-rw"
     )
 
     cli_args = parser.parse_args(argv)
@@ -315,6 +334,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             qualifier,
             username,
             password,
+            cli_args.group_permissions,
+            cli_args.other_permissions,
         )
     except:
         logging.error("Error uploading files.", exc_info=True)
