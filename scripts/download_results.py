@@ -22,9 +22,11 @@ def set_up_logging():
 def run_main(
     local_path: Path,
     remote_host: str,
+    processed_data_path: Path,
     analysis_path: Path,
     log_patterns: list[str],
-    analysis_subdirs: list[str],
+    processed_subdirs: list[str],
+    experimenter: str,
     subject_id: str,
     session_date: date,
     username: str,
@@ -40,38 +42,59 @@ def run_main(
             c.open()
 
             # List files and subdirectories in the session analysis directory.
-            remote_session_path = Path(analysis_path, subject_id, date_string)
-            logging.info(f"Checking for remote analysis session directory {remote_session_path}:")
-            result = c.run(f"ls {remote_session_path.as_posix()}")
+            remote_analysis_path = Path(analysis_path, experimenter, subject_id, date_string)
+            logging.info(f"Checking for remote analysis session directory {remote_analysis_path}:")
+            analysis_result = c.run(f"ls {remote_analysis_path.as_posix()}")
 
-            # Download log files in the session analysis directory.
-            session_list = result.stdout.strip().split('\n')
-            session_logs = []
+            # Download all the "analysis" files.
+            try:
+                # Recursively find regular files within the analysis subdirectory.
+                analysis_result = c.run(f"find {remote_analysis_path.as_posix()} -type f")
+
+                # Download each file, preserving session subdirectory structure.
+                analysis_files = analysis_result.stdout.strip().split('\n')
+                for analysis_file in analysis_files:
+                    relative_file_path = Path(analysis_file).relative_to(remote_analysis_path)
+                    local_file_path = Path(local_path, experimenter, subject_id, date_string, relative_file_path)
+                    logging.info(f"Downloading to: {local_file_path}")
+                    c.get(remote=analysis_file, local=local_file_path.as_posix())
+
+            except Exception:
+                logging.warning(f"Error downloading from analysis session directory.")
+
+            # List files and subdirectories in the session processed data directory.
+            remote_processed_data_path = Path(processed_data_path, experimenter, subject_id, date_string)
+            logging.info(f"Checking for remote processed data session directory {remote_processed_data_path}:")
+            processed_result = c.run(f"ls {remote_processed_data_path.as_posix()}")
+
+            # Download log files from the session processed data subdirectory.
+            processed_list = processed_result.stdout.strip().split('\n')
+            processed_logs = []
             for log_pattern in log_patterns:
-                session_logs += fnmatch.filter(session_list, log_pattern)
-            print(f"Found session logs: {session_logs}")
-            for session_log in session_logs:
-                remote_log_path = Path(remote_session_path, session_log)
-                local_log_path = Path(local_path, subject_id, date_string, session_log)
+                processed_logs += fnmatch.filter(processed_list, log_pattern)
+            print(f"Found session processing logs: {processed_logs}")
+            for processed_log in processed_logs:
+                remote_log_path = Path(remote_processed_data_path, processed_log)
+                local_log_path = Path(local_path, experimenter, subject_id, date_string, processed_log)
                 logging.info(f"Downloading to: {local_log_path}")
                 c.get(remote=remote_log_path, local=local_log_path.as_posix())
 
-            # Download selected subdirectories.
-            for analysis_subdir in analysis_subdirs:
-                logging.info(f"Checking for analysis session subdir {analysis_subdir}:")
-                remote_subdir = Path(remote_session_path, analysis_subdir)
+            # Download selected processing subdirectories.
+            for processed_subdir in processed_subdirs:
+                logging.info(f"Checking for processed data subdir {processed_subdir}:")
+                remote_subdir = Path(remote_processed_data_path, processed_subdir)
                 try:
                     # Recursively find regular files within this subdirectory, if any.
-                    result = c.run(f"find {remote_subdir.as_posix()} -type f")
+                    subdir_result = c.run(f"find {remote_subdir.as_posix()} -type f")
                 except Exception:
-                    logging.warning(f"Not downloading from subdir: {analysis_subdir}")
+                    logging.warning(f"Not downloading from subdir: {processed_subdir}")
                     continue
 
                 # Download each file, preserving session subdirectory structure.
-                remote_files = result.stdout.strip().split('\n')
+                remote_files = subdir_result.stdout.strip().split('\n')
                 for remote_file in remote_files:
-                    relative_file_path = Path(remote_file).relative_to(remote_session_path)
-                    local_file_path = Path(local_path, subject_id, date_string, relative_file_path)
+                    relative_file_path = Path(remote_file).relative_to(remote_processed_data_path)
+                    local_file_path = Path(local_path, experimenter, subject_id, date_string, relative_file_path)
                     logging.info(f"Downloading to: {local_file_path}")
                     c.get(remote=remote_file, local=local_file_path.as_posix())
 
@@ -87,7 +110,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = ArgumentParser(description="Download pipeline results from eg cortex to the local machine.")
 
     parser.add_argument(
-        "--local-root", "-l",
+        "--local-root", "-L",
         type=str,
         help="Local root directory to receive donwloads. (default: %(default)s)",
         default="/mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/"
@@ -105,10 +128,22 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default=None
     )
     parser.add_argument(
-        "--analysis-root", "-a",
+        "--processed-data-root", "-P",
+        type=str,
+        help="Remote root directory containing lab analysis results. (default: %(default)s)",
+        default="/vol/cortex/cd4/geffenlab/processed_data/"
+    )
+    parser.add_argument(
+        "--analysis-root", "-A",
         type=str,
         help="Remote root directory containing lab analysis results. (default: %(default)s)",
         default="/vol/cortex/cd4/geffenlab/analysis/"
+    )
+    parser.add_argument(
+        "--experimenter", "-e",
+        type=str,
+        help="Experimenter initials for a session that was processed. (default: prompt for input)",
+        default=None
     )
     parser.add_argument(
         "--subject", "-s",
@@ -123,18 +158,18 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default=None
     )
     parser.add_argument(
-        "--log-patterns", "-L",
+        "--log-patterns", "-l",
         type=str,
         nargs="+",
-        help="File name patterns to match logs within the remote ANALYSIS_ROOT/SUBJECT_ID/SESSION_DATE/. (default: %(default)s)",
+        help="File name patterns to match logs within the remote PROCESSED_DATA_ROOT/EXPERIMENTER/SUBJECT_ID/SESSION_DATE/. (default: %(default)s)",
         default=["*.log", "*.md"]
     )
     parser.add_argument(
-        "--analysis-subdirs", "-S",
+        "--processed-subdirs", "-S",
         type=str,
         nargs="+",
-        help="Subdirectories to download from within the remote ANALYSIS_ROOT/SUBJECT_ID/SESSION_DATE/. (default: %(default)s)",
-        default=["synthesis", "nextflow", "sorted/nextflow", "sorted/visualization"]
+        help="Subdirectories to download from within the remote PROCESSED_DATA_ROOT/EXPERIMENTER/SUBJECT_ID/SESSION_DATE/. (default: %(default)s)",
+        default=["nextflow", "sorted/nextflow", "sorted/visualization"]
     )
 
     cli_args = parser.parse_args(argv)
@@ -146,14 +181,22 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     remote_host = cli_args.remote_host
     logging.info(f"Downloading files from remote host: {remote_host}")
 
+    processed_data_path = Path(cli_args.processed_data_root)
+    logging.info(f"Downloading files from remote processed data root: {processed_data_path}")
+
     analysis_path = Path(cli_args.analysis_root)
     logging.info(f"Downloading files from remote analysis root: {analysis_path}")
 
     log_patterns = cli_args.log_patterns
-    logging.info(f"Downloading logs that match patterns: {log_patterns}")
+    logging.info(f"Downloading processing logs that match patterns: {log_patterns}")
 
-    analysis_subdirs = cli_args.analysis_subdirs
-    logging.info(f"Downloading analysis session subdirs: {analysis_subdirs}")
+    processed_subdirs = cli_args.processed_subdirs
+    logging.info(f"Downloading processed data subdirs: {processed_subdirs}")
+
+    experimenter = cli_args.subject
+    if subject is None:
+        experimenter = input("Experimenter initials: ").strip()
+    logging.info(f"Downloading files for experimenter: {experimenter}")
 
     subject = cli_args.subject
     if subject is None:
@@ -163,7 +206,6 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     session_dates_string = cli_args.date
     if session_dates_string is None:
         session_dates_string = input("Session date MMDDYYYY: ").strip()
-
     session_date = datetime.strptime(session_dates_string, "%m%d%Y").date()
     logging.info(f"Downloading files for session date: {session_dates_string} ({session_date})")
 
@@ -179,9 +221,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         run_main(
             local_path,
             remote_host,
+            processed_data_path,
             analysis_path,
             log_patterns,
-            analysis_subdirs,
+            processed_subdirs,
+            experimenter,
             subject,
             session_date,
             username,
