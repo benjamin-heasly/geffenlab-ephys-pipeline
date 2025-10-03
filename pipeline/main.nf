@@ -132,8 +132,8 @@ process geffenlab_synthesis {
         saveAs: { filename -> file(filename).name }
 
     input:
-    path raw_data_path
-    path processed_data_path
+    path raw_data_path, name: 'raw_data/'
+    path processed_data_path: 'processed_data/'
     path phy_export_results, name: 'processed/exported/*'
     path tprime_results, name: 'processed/exported/*'
     path phy_desktop_results, name: 'processed/curated/*'
@@ -147,8 +147,8 @@ process geffenlab_synthesis {
     set -e
     mkdir -p results
     conda_run python /opt/code/run.py \
-      --raw-data-path=$raw_data_path \
-      --processed-data-path=$processed_data_path \
+      --raw-data-path=raw_data/ \
+      --processed-data-path=processed_data/ \
       --results-path=results \
       --event-times-pattern $params.synthesis_event_times_pattern \
       --experimenter=$params.experimenter \
