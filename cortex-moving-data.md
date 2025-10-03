@@ -125,87 +125,113 @@ conda activate geffen-pipelines
 python geffenlab-ephys-pipeline/scripts/download_results.py
 ```
 
-This will prompt you for the subject id and session date you want to download.  It will also ask for your cortex credentials.  For example:
+This will prompt you for the experimenter initials, subject id, and session date you want to download.  It will also ask for your cortex credentials.  For example:
 
 ```
-2025-08-22 10:49:25,102 [INFO] Downloading files to local root: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs
-2025-08-22 10:49:25,102 [INFO] Downloading files from remote host: 128.91.19.199
-2025-08-22 10:49:25,102 [INFO] Downloading files from remote analysis root: /vol/cortex/cd4/geffenlab/analysis
-2025-08-22 10:49:25,102 [INFO] Downloading analysis session subdirs: ['synthesis', 'nextflow', 'sorted/nextflow', 'sorted/visualization']
-Subject ID: AS20-minimal2                                                                   <-- subject id
-2025-08-22 10:49:41,527 [INFO] Downloading files for subject id: AS20-minimal2
-Session date MMDDYYYY: 03112025                                                             <-- session date
-2025-08-22 10:49:48,486 [INFO] Downloading files for session date: 03112025 (2025-03-11)
-Remote username: ben                                                                        <-- username
-2025-08-22 10:49:50,652 [INFO] Downloading files as remote user: ben
-Password for remote user ben:                                                               <-- password
+2025-10-03 15:32:25,755 [INFO] Downloading files to local root: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs
+2025-10-03 15:32:25,755 [INFO] Downloading files from remote host: 128.91.19.199
+2025-10-03 15:32:25,755 [INFO] Downloading files from remote processed data root: /vol/cortex/cd4/geffenlab/processed_data
+2025-10-03 15:32:25,755 [INFO] Downloading files from remote analysis root: /vol/cortex/cd4/geffenlab/analysis
+2025-10-03 15:32:25,755 [INFO] Downloading processing logs that match patterns: ['*.log', '*.md']
+2025-10-03 15:32:25,755 [INFO] Downloading processed data subdirs: ['nextflow', 'sorted/nextflow', 'sorted/visualization']
+Experimenter initials: BH
+2025-10-03 15:32:29,387 [INFO] Downloading files for experimenter: BH
+
+Subject ID: AS20-minimal2
+2025-10-03 15:32:33,406 [INFO] Downloading files for subject id: AS20-minimal2
+
+Session date MMDDYYYY: 03112025
+2025-10-03 15:32:37,427 [INFO] Downloading files for session date: 03112025 (2025-03-11)
+
+Remote username: ben
+2025-10-03 15:32:38,939 [INFO] Downloading files as remote user: ben
+
+Password for remote user ben:
 ```
 
-It will summarize what it finds in session's analysis subdirectory on cortex:
+It will summarize what it finds in the session's analysis subdirectory on cortex, and download all of these files:
 
 ```
-2025-08-22 10:49:56,501 [INFO] Connecting to remote host: 128.91.19.199.
-2025-08-22 10:50:06,529 [INFO] Connected (version 2.0, client OpenSSH_8.9p1)
-2025-08-22 10:50:06,655 [INFO] Authentication (password) successful!
-2025-08-22 10:50:06,656 [INFO] Checking for remote analysis session directory /vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025:
+2025-10-03 15:32:52,850 [INFO] Checking for remote analysis session directory /vol/cortex/cd4/geffenlab/analysis/BH/AS20-minimal2/03112025:
+synthesis
+/vol/cortex/cd4/geffenlab/analysis/BH/AS20-minimal2/03112025/synthesis/figures/AS20-minimal2-03112025_demo.png
+/vol/cortex/cd4/geffenlab/analysis/BH/AS20-minimal2/03112025/synthesis/figures/AS20-minimal2-03112025_neurons_1.png
+/vol/cortex/cd4/geffenlab/analysis/BH/AS20-minimal2/03112025/synthesis/BH_AS20-minimal2_03112025_summary.pkl
+
+2025-10-03 15:32:53,120 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/synthesis/figures/AS20-minimal2-03112025_demo.png
+2025-10-03 15:32:53,158 [INFO] [chan 2] Opened sftp connection (server version 3)
+2025-10-03 15:32:53,263 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/synthesis/figures/AS20-minimal2-03112025_neurons_1.png
+2025-10-03 15:32:53,333 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/synthesis/BH_AS20-minimal2_03112025_summary.pkl
+```
+
+It will summarize what it finds in the sessions's processed data subdirectory on cortex:
+
+```
+2025-10-03 15:32:53,430 [INFO] Checking for remote processed data session directory /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025:
 curated
 exported
+main_20251003T190321UTC_nextflow.log
+main_20251003T190321UTC_process_detail.md
+main_20251003T190321UTC_run_pipeline.log
+main_multi_backend_20251003T175141UTC_nextflow.log
+main_multi_backend_20251003T175141UTC_process_detail.md
+main_multi_backend_20251003T175141UTC_run_pipeline.log
 nextflow
 sorted
-synthesis
 ```
 
-It will check several subdirectories for results to download:
+It will download log files from the session's processed data directory:
 
-`synthesis`
 ```
-2025-08-22 10:50:06,994 [INFO] Checking for analysis session subdir synthesis:
-/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/synthesis/figures/AS20-minimal2-03112025_neurons_1.png
-/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/synthesis/AS20-minimal2-03112025.pkl
-2025-08-22 10:50:07,055 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025/synthesis/figures/AS20-minimal2-03112025_neurons_1.png
-2025-08-22 10:50:07,087 [INFO] [chan 2] Opened sftp connection (server version 3)
-2025-08-22 10:50:07,181 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025/synthesis/AS20-minimal2-03112025.pkl
+Found session processing logs: ['main_20251003T190321UTC_nextflow.log', 'main_20251003T190321UTC_run_pipeline.log', 'main_20251003T190321UTC_process_detail.md', 'main_multi_backend_20251003T175141UTC_nextflow.log', 'main_multi_backend_20251003T175141UTC_run_pipeline.log', 'main_multi_backend_20251003T175141UTC_process_detail.md']
+2025-10-03 15:32:53,869 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/main_20251003T190321UTC_nextflow.log
+2025-10-03 15:32:53,890 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/main_20251003T190321UTC_run_pipeline.log
+2025-10-03 15:32:54,235 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/main_20251003T190321UTC_process_detail.md
+2025-10-03 15:32:53,999 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/main_multi_backend_20251003T175141UTC_nextflow.log
+2025-10-03 15:32:54,021 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/main_multi_backend_20251003T175141UTC_run_pipeline.log
+2025-10-03 15:32:54,276 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/main_multi_backend_20251003T175141UTC_process_detail.md
 ```
+
+It will download selected subdirectories from within the session's processed data directory.
+These should contain Nexflow reports and AIND pipeline diagnostic plots.
 
 `nextflow`
 ```
-2025-08-22 10:50:07,422 [INFO] Checking for analysis session subdir nextflow:
-/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/nextflow/dag.html
-/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/nextflow/report.html
-/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/nextflow/trace.txt
-/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/nextflow/timeline.html
-2025-08-22 10:50:07,448 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025/nextflow/dag.html
-2025-08-22 10:50:07,540 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025/nextflow/report.html
-2025-08-22 10:50:07,854 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025/nextflow/trace.txt
-2025-08-22 10:50:07,905 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025/nextflow/timeline.html
+2025-10-03 15:32:54,295 [INFO] Checking for processed data subdir nextflow:
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/nextflow/dag.html
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/nextflow/report.html
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/nextflow/trace.txt
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/nextflow/timeline.html
+2025-10-03 15:32:54,320 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/nextflow/dag.html
+2025-10-03 15:32:54,373 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/nextflow/report.html
+2025-10-03 15:32:54,457 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/nextflow/trace.txt
+2025-10-03 15:32:54,475 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/nextflow/timeline.html
 ```
 
 `sorted/nextflow`
 ```
-2025-08-22 10:50:08,029 [INFO] Checking for analysis session subdir sorted/nextflow:
-/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/sorted/nextflow/dag.html
-/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/sorted/nextflow/report.html
-/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/sorted/nextflow/trace.txt
-/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/sorted/nextflow/timeline.html
-2025-08-22 10:50:08,054 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025/sorted/nextflow/dag.html
-2025-08-22 10:50:08,138 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025/sorted/nextflow/report.html
-2025-08-22 10:50:08,454 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025/sorted/nextflow/trace.txt
-2025-08-22 10:50:08,508 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025/sorted/nextflow/timeline.html
+2025-10-03 15:32:54,542 [INFO] Checking for processed data subdir sorted/nextflow:
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/nextflow/dag.html
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/nextflow/report.html
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/nextflow/trace.txt
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/nextflow/timeline.html
+2025-10-03 15:32:54,557 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/nextflow/dag.html
+2025-10-03 15:32:54,618 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/nextflow/report.html
+2025-10-03 15:32:54,709 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/nextflow/trace.txt
+2025-10-03 15:32:54,736 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/nextflow/timeline.html
 ```
 
 `sorted/visualization`
 ```
-2025-08-22 10:50:08,673 [INFO] Checking for analysis session subdir sorted/visualization:
-/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_proc_seg0.png
-/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/motion.png
-/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_full_seg0.png
-/vol/cortex/cd4/geffenlab/analysis/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/drift_map.png
-2025-08-22 10:50:08,698 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_proc_seg0.png
-2025-08-22 10:50:08,906 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/motion.png
-2025-08-22 10:50:08,996 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_full_seg0.png
-2025-08-22 10:50:09,136 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/drift_map.png
-2025-08-22 10:50:09,219 [INFO] [chan 2] sftp session closed.
-2025-08-22 10:50:09,219 [INFO] OK.
+2025-10-03 15:32:54,820 [INFO] Checking for processed data subdir sorted/visualization:
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_proc_seg0.png
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/motion.png
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_full_seg0.png
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/drift_map.png
+2025-10-03 15:32:54,841 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_proc_seg0.png
+2025-10-03 15:32:55,022 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/motion.png
+2025-10-03 15:32:55,095 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_full_seg0.png
+2025-10-03 15:32:55,205 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/drift_map.png
 ```
 
 When finished you should be able to open `ephys-pipeline-outputs` on the Windows desktop and browse to the results.
