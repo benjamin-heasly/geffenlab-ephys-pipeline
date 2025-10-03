@@ -14,15 +14,16 @@ Before processing we need to put the data on cortex.  Geffen lab data have been 
 /vol/cortex/cd4/geffenlab/
 ```
 
-Raw, original rig data should go into a `data/` subdirectory of this storage directory.
+Raw, original rig data should go into a `raw_data/` subdirectory of this storage directory.
 
 ```
-/vol/cortex/cd4/geffenlab/data/
+/vol/cortex/cd4/geffenlab/raw_data/
 ```
 
-Within this `data/` subdirectory we can orgaize files by subject, date, and data modality.
+Within this `raw_data/` subdirectory we can orgaize files by experimenter initials, subject, date, and data modality.
 
 For example we have a minimal testing dataset that uses the following:
+ - experimenter: `BH`
  - subject: `AS20-minimal2`
  - date: `03112025`
  - modalities: `behavior` and `ecephys`
@@ -31,19 +32,20 @@ Here's the minimal testing dataset at a glance:
 
 ```
 /vol/cortex/cd4/geffenlab/
-└── data/
-    └── AS20-minimal2/
-        └── 03112025/
-            ├── behavior/
-            │   ├── AS20_031125_trainingSingle6Tone2024_0_39.mat
-            │   └── AS20_031125_trainingSingle6Tone2024_0_39.txt
-            └── ecephys/
-                └── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/
-                    ├── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
-                    ├── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
-                    └── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/
-                        ├── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin    
-                        └── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
+└── raw_data/
+    └── BH/
+        └── AS20-minimal2/
+            └── 03112025/
+                ├── behavior/
+                │   ├── AS20_031125_trainingSingle6Tone2024_0_39.mat
+                │   └── AS20_031125_trainingSingle6Tone2024_0_39.txt
+                └── ecephys/
+                    └── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/
+                        ├── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
+                        ├── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
+                        └── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/
+                            ├── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin    
+                            └── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
 ```
 
 The subject id `AS20-minimal2` is unusual.  It means the original data are from subject `AS20`, but for testing we created a smaller version of the dataset (just a few trials) using tools in [geffenlab-minimal-data](https://github.com/benjamin-heasly/geffenlab-minimal-data).
@@ -75,7 +77,7 @@ We use our own [cortex.config](./aind-ephys-pipeline/cortex.config) file to conf
  - Use up to 64GB of memory at a time, instead of unbounded memory.
 
 To run the pipeline use our Python script [run_pipeline.py](./scripts/run_pipeline.py).  This script calls `nextflow run` to run the pipeline and also saves detailed logs along with other pipeline outputs.
-We tell it which pipeline to run with the `--workflow` argument.  We specifiy the configuration with `--config`.  We also pass the `--subject` and `--date` for the session we want to process.
+We tell it which pipeline to run with the `--workflow` argument.  We specifiy the configuration with `--config`.  We also pass the `experimenter`, `--subject`, and `--date` for the session we want to process.
 
 ```
 cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
@@ -84,6 +86,7 @@ conda activate geffen-pipelines
 python run_pipeline.py \
   --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
   --config geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
+  --experimenter BH \
   --subject AS20-minimal2 \
   --date 03112025
 ```
@@ -110,6 +113,7 @@ conda activate geffen-pipelines
 python run_pipeline.py \
   --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
   --config geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
+  --experimenter BH \
   --subject AS20-minimal2 \
   --date 03112025 \
   -resume
@@ -121,35 +125,37 @@ This should take only a few seconds and end with a similar summary as before.  N
 
 ## AIND ephys pipeline results
 
-The pipeline will write results into an `analysis/` subdirectory of the Geffen lab storage directory.
+The pipeline will write results into a `processed_data/` subdirectory of the Geffen lab storage directory.
 
 ```
-/vol/cortex/cd4/geffenlab/analysis/
+/vol/cortex/cd4/geffenlab/processed_data/
 ```
 
-As with the `data/` subdirectory, we organize `analysis/` by subject, date, and data type.
+As with the `raw_data/` subdirectory, we organize `processed_data/` by experimenter initials, subject, date, and data type.
 
-Here's a summary of the `data/` and `analysis/` subdirectories, after running the AIND ephys pipeline.
+Here's a summary of the `raw_data/` and `processed_data/` subdirectories, after running the AIND ephys pipeline.
 
 ```
 /vol/cortex/cd4/geffenlab/
-├── data/
-│   └── AS20-minimal2/
-│       └── 03112025/
-│           ├── behavior/   # unchanged
-│           └── ecephys/    # unchanged
-└── analysis/
-    └── AS20-minimal2/
-        └── 03112025/
-            └── sorted/     # new
-                ├── nextflow/
-                ├── quality_control/
-                ├── nwb/
-                ├── preprocessed/
-                ├── spikesorted/
-                ├── curated/
-                ├── postprocessed/
-                └── visualization/
+├── raw_data/
+│   └── BH/
+│       └── AS20-minimal2/
+│           └── 03112025/
+│               ├── behavior/               # unchanged
+│               └── ecephys/                # unchanged
+└── processed_data/
+    └── BH/
+        └── AS20-minimal2/
+            └── 03112025/
+                └── sorted/                 # new
+                    ├── nextflow/
+                    ├── quality_control/
+                    ├── nwb/
+                    ├── preprocessed/
+                    ├── spikesorted/
+                    ├── curated/
+                    ├── postprocessed/
+                    └── visualization/
 ```
 
 ## Geffen lab ephys pipeline
