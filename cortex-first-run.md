@@ -162,7 +162,7 @@ Here's a summary of the `raw_data/` and `processed_data/` subdirectories, after 
 
 Now we can run the [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline) for combining data modalities and producing summary figures.
 
-Again we use [run_pipeline.py](./scripts/run_pipeline.py).  This time we specify differnt `--workflow` and `--config`, but the same `--subject` and `--date`.
+Again we use [run_pipeline.py](./scripts/run_pipeline.py).  This time we specify differnt `--workflow` and `--config`, but the same `--experimenter`, `--subject`, and `--date`.
 
 ```
 cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
@@ -171,6 +171,7 @@ conda activate geffen-pipelines
 python run_pipeline.py \
   --workflow geffenlab-ephys-pipeline/pipeline/main.nf \
   --config geffenlab-ephys-pipeline/pipeline/cortex.config \
+  --experimenter BH \
   --subject AS20-minimal2 \
   --date 03112025
 ```
@@ -189,24 +190,30 @@ Here's a summary of the data and analysis subdirectories, after running the Geff
 
 ```
 /vol/cortex/cd4/geffenlab/
-├── data/
-│   └── AS20-minimal2/
-│       └── 03112025/
-│           ├── behavior/   # unchanged
-│           └── ecephys/    # unchanged
-└── analysis/
-    └── AS20-minimal2/
-        └── 03112025/
-            ├── sorted/     # unchanged
-            ├── curated/    # new
-            ├── exported/   # new
-            └── synthesis/  # new
-                ├── AS20-minimal2-03112025.pkl
-                └── figures/
-                    └── AS20-minimal2-03112025_neurons_1.png
+├── raw_data/
+│   └── BH/
+│       └── AS20-minimal2/
+│           └── 03112025/
+│               ├── behavior/               # unchanged
+│               └── ecephys/                # unchanged
+└── processed_data/
+│   └── BH/
+│       └── AS20-minimal2/
+│           └── 03112025/
+│               └── sorted/                 # unchanged
+│               ├── curated/                # new
+│               └── exported/               # new
+└── analysis/                               # new
+    └── BH/
+        └── AS20-minimal2/
+            └── 03112025/
+                └── synthesis/
+                    ├── AS20-minimal2-03112025.pkl
+                    └── figures/
+                        └── AS20-minimal2-03112025_neurons_1.png
 ```
 
-The `synthesis/` subdirectory contains the results of the lab's [population-analysis](https://github.com/jcollina/population-analysis) code, including a Python `.pkl` with dataframes from different modalities aligned in time, and summary figure(s).
+The new `synthesis/` subdirectory contains a Python `.pkl` with dataframes from different modalities aligned in time, and summary figure(s) from the lab's [summary-plotting-scripts](./summary-plotting-scripts.md).
 
 ## Getting pipeline results
 

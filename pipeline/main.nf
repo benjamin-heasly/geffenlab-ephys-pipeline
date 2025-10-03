@@ -2,14 +2,14 @@ process geffenlab_ecephys_catgt {
     tag 'geffenlab_ecephys_catgt'
     container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.0'
 
-    publishDir "${params.analysis_path}/exported",
+    publishDir "${params.processed_data_path}/exported",
         mode: 'copy',
         overwrite: true,
         pattern: 'results/*',
         saveAs: { filename -> file(filename).name }
 
     input:
-    path data_path
+    path raw_data_path
 
     output:
     path 'results/*', emit: catgt_results
@@ -24,7 +24,7 @@ process geffenlab_ecephys_catgt {
       --probe-id $params.probe_id \
       --gate $params.catgt_gate \
       --trigger $params.catgt_trigger \
-      $data_path/ecephys \
+      $raw_data_path/ecephys \
       results/catgt \
       $params.catgt_args
     """
@@ -34,14 +34,14 @@ process geffenlab_ecephys_phy_export {
     tag 'geffenlab_ecephys_phy_export'
     container 'ghcr.io/benjamin-heasly/geffenlab-ecephys-phy-export:v0.0.4'
 
-    publishDir "${params.analysis_path}/exported",
+    publishDir "${params.processed_data_path}/exported",
         mode: 'copy',
         overwrite: true,
         pattern: 'results/*',
         saveAs: { filename -> file(filename).name }
 
     input:
-    path analysis_path
+    path processed_data_path
 
     output:
     path 'results/*', emit: phy_export_results
@@ -52,7 +52,7 @@ process geffenlab_ecephys_phy_export {
     set -e
 
     mkdir -p results
-    conda_run python /opt/code/run.py --data-root $analysis_path --results-root results
+    conda_run python /opt/code/run.py --data-root $processed_data_path --results-root results
     """
 }
 
@@ -60,7 +60,7 @@ process geffenlab_ecephys_tprime {
     tag 'geffenlab_ecephys_tprime'
     container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.0'
 
-    publishDir "${params.analysis_path}/exported",
+    publishDir "${params.processed_data_path}/exported",
         mode: 'copy',
         overwrite: true,
         pattern: 'results/*',
@@ -97,7 +97,7 @@ process geffenlab_phy_desktop {
     tag 'geffenlab_phy_desktop'
     container 'ghcr.io/benjamin-heasly/geffenlab-phy-desktop:v0.0.2'
 
-    publishDir "${params.analysis_path}/curated",
+    publishDir "${params.processed_data_path}/curated",
         mode: 'copy',
         overwrite: true,
         pattern: 'results/*',
@@ -132,10 +132,10 @@ process geffenlab_synthesis {
         saveAs: { filename -> file(filename).name }
 
     input:
-    path data_path
-    path phy_export_results, name: 'analysis/exported/*'
-    path tprime_results, name: 'analysis/exported/*'
-    path phy_desktop_results, name: 'analysis/curated/*'
+    path processed_data_path
+    path phy_export_results, name: 'processed/exported/*'
+    path tprime_results, name: 'processed/exported/*'
+    path phy_desktop_results, name: 'processed/curated/*'
 
     output:
     path 'results/*', emit: synthesis_results
@@ -146,8 +146,8 @@ process geffenlab_synthesis {
     set -e
     mkdir -p results
     conda_run python /opt/code/run.py \
-      --data-path=$data_path \
-      --analysis-path=analysis \
+      --data-path=$processed_data_path \
+      --analysis-path=processed \
       --results-path=results \
       --event-times-pattern $params.synthesis_event_times_pattern \
       --subject=$params.subject \
@@ -159,15 +159,12 @@ process geffenlab_synthesis {
 workflow {
     println "params: ${params}"
 
-    def data_channel = channel.fromPath(params.data_path)
-    catgt_results = geffenlab_ecephys_catgt(data_channel)
+    def raw_data_channel = channel.fromPath(params.raw_data_path)
+    catgt_results = geffenlab_ecephys_catgt(raw_data_channel)
 
-    def analysis_channel = channel.fromPath(params.analysis_path)
-    phy_export_results = geffenlab_ecephys_phy_export(analysis_channel)
-
+    def processed_data_channel = channel.fromPath(params.processed_data_path)
+    phy_export_results = geffenlab_ecephys_phy_export(processed_data_channel)
     tprime_results = geffenlab_ecephys_tprime(catgt_results, phy_export_results)
-
     phy_desktop_results = geffenlab_phy_desktop(phy_export_results)
-
-    synthesis_results = geffenlab_synthesis(data_channel, phy_export_results, tprime_results, phy_desktop_results)
+    geffenlab_synthesis(processed_data_channel, phy_export_results, tprime_results, phy_desktop_results)
 }

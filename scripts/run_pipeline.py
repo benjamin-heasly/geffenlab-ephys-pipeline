@@ -32,8 +32,10 @@ def run_main(
     nextflow: str,
     workflow_path: Path,
     config_path: Path,
+    raw_data_root_path: Path,
+    processed_data_root_path: Path,
     analysis_root_path: Path,
-    data_root_path: Path,
+    experimenter: str,
     subject: str,
     date: str,
     run_name: str,
@@ -50,8 +52,10 @@ def run_main(
         "-log", nextflow_log_path.as_posix(),
         "run", workflow_path.as_posix(),
         "-name", run_name,
-        "--data_root", data_root_path.as_posix(),
+        "--raw_data_root", raw_data_root_path.as_posix(),
+        "--processed_data_root", processed_data_root_path.as_posix(),
         "--analysis_root", analysis_root_path.as_posix(),
+        "--experimenter", experimenter,
         "--subject", subject,
         "--date", date,
     ] + pass_through_args
@@ -157,16 +161,28 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default="/vol/cortex/cd4/geffenlab/nextflow"
     )
     parser.add_argument(
-        "--data-root",
+        "--raw-data-root",
         type=str,
         help="Root folder with the lab's raw data. (default: %(default)s)",
-        default="/vol/cortex/cd4/geffenlab/data"
+        default="/vol/cortex/cd4/geffenlab/raw_data"
+    )
+    parser.add_argument(
+        "--processed-data-root",
+        type=str,
+        help="Root folder with the lab's processed data. (default: %(default)s)",
+        default="/vol/cortex/cd4/geffenlab/processed_data"
     )
     parser.add_argument(
         "--analysis-root",
         type=str,
-        help="Root folder with the lab's analysis products. (default: %(default)s)",
+        help="Root folder with the lab's take-home analysis products. (default: %(default)s)",
         default="/vol/cortex/cd4/geffenlab/analysis"
+    )
+    parser.add_argument(
+        "--experimenter",
+        type=str,
+        help="Experimenter initials for the session to be processed. (default: %(default)s)",
+        default="BH"
     )
     parser.add_argument(
         "--subject",
@@ -186,8 +202,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     workflow_path = Path(cli_args.workflow)
     config_path = Path(cli_args.config)
     report_template_path = Path(cli_args.report_template)
+    raw_data_root_path = Path(cli_args.raw_data_root)
+    processed_data_root_path = Path(cli_args.processed_data_root)
     analysis_root_path = Path(cli_args.analysis_root)
-    data_root_path = Path(cli_args.data_root)
 
     # Choose a reasonably unique "run name" for this Nextflow run.
     # This allows us to aggregate process logs after the run completes.
@@ -195,7 +212,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     run_name = f"{workflow_path.stem}_{execution_time}"
 
     # Write logs to the sessions processed output subdirectory.
-    logs_path = Path(analysis_root_path, cli_args.subject, cli_args.date)
+    logs_path = Path(processed_data_root_path, cli_args.experimenter, cli_args.subject, cli_args.date)
     logs_path.mkdir(exist_ok=True, parents=True)
     script_log_path = Path(logs_path, f"{run_name}_run_pipeline.log")
     nextflow_log_path = Path(logs_path, f"{run_name}_nextflow.log")
@@ -207,8 +224,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     logging.info(f"With config {config_path}")
     logging.info(f"With pipeline params and Nextflow options {pass_through_args}")
     logging.info(f"Using Nextflow {cli_args.nextflow}")
-    logging.info(f"Using data root {data_root_path}")
+    logging.info(f"Using raw data root {raw_data_root_path}")
+    logging.info(f"Using processed data root {processed_data_root_path}")
     logging.info(f"Using analysis root {analysis_root_path}")
+    logging.info(f"For experimenter {cli_args.experimenter}")
     logging.info(f"For session subject {cli_args.subject}")
     logging.info(f"For session date {cli_args.date}")
     logging.info(f"Writing Nextflow log to {nextflow_log_path}")
@@ -221,8 +240,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             cli_args.nextflow,
             workflow_path,
             config_path,
+            raw_data_root_path,
+            processed_data_root_path,
             analysis_root_path,
-            data_root_path,
+            cli_args.experimenter,
             cli_args.subject,
             cli_args.date,
             run_name,
