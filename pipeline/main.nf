@@ -123,7 +123,7 @@ process geffenlab_phy_desktop {
 
 process geffenlab_synthesis {
     tag 'geffenlab_synthesis'
-    container 'ghcr.io/benjamin-heasly/geffenlab-synthesis:v0.0.14'
+    container 'ghcr.io/benjamin-heasly/geffenlab-synthesis:v0.0.15'
 
     publishDir "${params.analysis_path}/synthesis",
         mode: 'copy',
@@ -132,6 +132,7 @@ process geffenlab_synthesis {
         saveAs: { filename -> file(filename).name }
 
     input:
+    path raw_data_path
     path processed_data_path
     path phy_export_results, name: 'processed/exported/*'
     path tprime_results, name: 'processed/exported/*'
@@ -146,10 +147,11 @@ process geffenlab_synthesis {
     set -e
     mkdir -p results
     conda_run python /opt/code/run.py \
-      --data-path=$processed_data_path \
-      --analysis-path=processed \
+      --raw-data-path=$raw_data_path \
+      --processed-data-path=$processed_data_path \
       --results-path=results \
       --event-times-pattern $params.synthesis_event_times_pattern \
+      --experimenter=$params.experimenter \
       --subject=$params.subject \
       --date=$params.date \
       --plotting_scripts $params.synthesis_plotting_scripts
@@ -166,5 +168,5 @@ workflow {
     phy_export_results = geffenlab_ecephys_phy_export(processed_data_channel)
     tprime_results = geffenlab_ecephys_tprime(catgt_results, phy_export_results)
     phy_desktop_results = geffenlab_phy_desktop(phy_export_results)
-    geffenlab_synthesis(processed_data_channel, phy_export_results, tprime_results, phy_desktop_results)
+    geffenlab_synthesis(raw_data_channel, processed_data_channel, phy_export_results, tprime_results, phy_desktop_results)
 }
