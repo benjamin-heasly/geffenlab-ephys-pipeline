@@ -195,7 +195,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--openephys-oebin-pattern", "-O",
         type=str,
         help="Glob pattern to match OpenEphys structure.oebin files within EPHYS_ROOT. May include placeholders <EXPERIMENTER>, <SUBJECT>, <YYYY>, <YY>, <MM>, <DD> (default: %(default)s)",
-        default="<SUBJECT>/<YYYY>-<MM>-<DD>_*/**/structure.oebin"
+        default="<SUBJECT>/**/<YYYY>-<MM>-<DD>_*/*/*/*/structure.oebin"
     )
     parser.add_argument(
         "--remote-host", "-r",
