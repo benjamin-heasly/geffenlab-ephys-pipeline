@@ -256,7 +256,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--other-permissions", "-o",
         type=str,
         help="Permission to set on uploaded dirs and files, for other users (the universe). (default: %(default)s)",
-        default="-rw"
+        default="-rwx"
     )
 
     cli_args = parser.parse_args(argv)
