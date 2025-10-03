@@ -277,7 +277,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         subject = input("Subject ID: ").strip()
     logging.info(f"Uploading files for subject id: {subject}")
 
-    session_dates_string = cli_args.session_date
+    session_dates_string = cli_args.date
     if session_dates_string is None:
         session_dates_string = input("Session date MMDDYYYY: ").strip()
     session_date = datetime.strptime(session_dates_string, "%m%d%Y").date()
