@@ -123,7 +123,7 @@ process geffenlab_phy_desktop {
 
 process geffenlab_synthesis {
     tag 'geffenlab_synthesis'
-    container 'ghcr.io/benjamin-heasly/geffenlab-synthesis:v0.0.11'
+    container 'ghcr.io/benjamin-heasly/geffenlab-synthesis:v0.0.14'
 
     publishDir "${params.analysis_path}/synthesis",
         mode: 'copy',
