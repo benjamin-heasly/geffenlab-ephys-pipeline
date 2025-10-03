@@ -153,7 +153,7 @@ def run_main(
                 c.put(source.as_posix(), destination.as_posix())
 
             session_path = Path(raw_data_path, experimenter, subject, session_mmddyyyy)
-            logging.info(f"Settign group and other permissions for session dir {session_path}:")
+            logging.info(f"Setting group and other permissions for session dir {session_path}:")
             c.run(f"chmod -R g{group_permissions} {session_path.as_posix()}")
             c.run(f"chmod -R o{other_permissions} {session_path.as_posix()}")
 

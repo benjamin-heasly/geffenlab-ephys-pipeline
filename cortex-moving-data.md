@@ -17,39 +17,52 @@ conda activate geffen-pipelines
 python geffenlab-ephys-pipeline/scripts/upload_data.py
 ```
 
-This will prompt you for the subject id and session date that you want to upload, plus an optional qualifier to further narrow down which files are uploaded.  It will also ask for your cortex credentials.  For example:
+This will prompt you for the experimenter initials, subject id, and session date that you want to upload, plus an optional qualifier to further narrow down which files are uploaded.  It will also ask for your cortex credentials.  For example:
 
 ```
-2025-08-22 10:32:41,188 [INFO] Uploading behavior files from : /mnt/c/Users/labuser/Desktop/Data
-2025-08-22 10:32:41,188 [INFO] Using behavior .txt pattern: <SUBJECT>/**/*_<MMDDYY>_*.txt
-2025-08-22 10:32:41,188 [INFO] Using behavior .mat pattern: <SUBJECT>/**/*_<MMDDYY>_*.mat
-2025-08-22 10:32:41,189 [INFO] Uploading SpikeGLX files from : /mnt/c/Users/labuser/Desktop/Data
-2025-08-22 10:32:41,189 [INFO] Using SpikeGLX nidq pattern: <SUBJECT>/**/*_<MMDDYYYY>_*.nidq.meta
-2025-08-22 10:32:41,189 [INFO] Uploading files to remote host: 128.91.19.199
-2025-08-22 10:32:41,189 [INFO] Uploading files to remote data root: /vol/cortex/cd4/geffenlab/data
-Subject ID: AS20-minimal2                                                                           <-- subject id
-2025-08-22 10:32:49,411 [INFO] Uploading files for subject id: AS20-minimal2
-Session date MMDDYYYY: 03112025                                                                     <-- session date
-2025-08-22 10:32:53,693 [INFO] Uploading files for session date: 03112025 (2025-03-11)
-Qualifier like 'training', or 'ap.bin'.  Leave blank to upload all:                                 <-- qualifier
-2025-08-22 10:32:58,292 [INFO] Uploading all files.
-Remote username: ben                                                                                <-- username
-2025-08-22 10:33:02,564 [INFO] Uploading files as remote user: ben
-Password for remote user ben:                                                                       <-- password
+2025-10-03 12:53:51,379 [INFO] Uploading behavior files from : /mnt/c/Users/labuser/Desktop/Data
+2025-10-03 12:53:51,379 [INFO] Using behavior .txt pattern: <SUBJECT>/**/*_<MM><DD><YY>_*.txt
+2025-10-03 12:53:51,379 [INFO] Using behavior .mat pattern: <SUBJECT>/**/*_<MM><DD><YY>_*.mat
+2025-10-03 12:53:51,379 [INFO] Uploading ephys files from : /mnt/c/Users/labuser/Desktop/Data
+2025-10-03 12:53:51,379 [INFO] Using SpikeGLX .meta pattern: <SUBJECT>/**/*_<MM><DD><YYYY>_*.meta
+2025-10-03 12:53:51,379 [INFO] Using Open Ephys .oebin pattern: <SUBJECT>/**/<YYYY>-<MM>-<DD>_*/*/*/*/structure.oebin
+2025-10-03 12:53:51,379 [INFO] Uploading files to remote host: 128.91.19.199
+2025-10-03 12:53:51,379 [INFO] Uploading files to remote raw data root: /vol/cortex/cd4/geffenlab/raw_data
+
+Experimenter initials: BH
+2025-10-03 12:53:54,300 [INFO] Uploading files for experimenter: BH
+
+Subject ID: AS20-minimal2
+2025-10-03 12:53:58,995 [INFO] Uploading files for subject id: AS20-minimal2
+
+Session date MMDDYYYY: 03112025
+2025-10-03 12:54:01,984 [INFO] Uploading files for session date: 03112025 (2025-03-11)
+
+Qualifier like 'training','ap.bin', 'recording1', etc.  Leave blank to upload all:
+2025-10-03 12:54:03,273 [INFO] Uploading all files.
+
+Remote username: ben
+2025-10-03 12:54:04,608 [INFO] Uploading files as remote user: ben
+
+Password for remote user ben:
 ```
 
-Based on the subject id, session date, and optional qualifier, the script will search local directories for behavior and spikeglx files.  It will use [glob](https://docs.python.org/3/library/glob.html) patterns to select specific files of interest.
+Based on the subject id, session date, and optional qualifier, the script will search local directories for behavior and ecephys files.  It will use [glob](https://docs.python.org/3/library/glob.html) patterns to select specific files of interest.
 
 ```
-2025-08-22 10:33:09,747 [INFO] Searching local behavior_root for .txt like: AS20-minimal2/**/*_031125_*.txt
-2025-08-22 10:33:09,811 [INFO]   AS20-minimal2/AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.txt
-2025-08-22 10:33:09,836 [INFO] Searching local behavior_root for .mat like: AS20-minimal2/**/*_031125_*.mat
-2025-08-22 10:33:09,854 [INFO]   AS20-minimal2/AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.mat
-2025-08-22 10:33:09,878 [INFO] Searching local spikeglx_root for nidq.meta like: AS20-minimal2/**/*_03112025_*.nidq.meta
-2025-08-22 10:33:09,913 [INFO]   AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
-2025-08-22 10:33:09,913 [INFO]   AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
-2025-08-22 10:33:09,913 [INFO]   AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin
-2025-08-22 10:33:09,913 [INFO]   AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
+2025-10-03 12:54:11,149 [INFO] Searching local behavior_root for .txt like: AS20-minimal2/**/*_031125_*.txt
+2025-10-03 12:54:11,201 [INFO]   AS20-minimal2/AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.txt
+2025-10-03 12:54:11,225 [INFO] Searching local behavior_root for .mat like: AS20-minimal2/**/*_031125_*.mat
+2025-10-03 12:54:11,240 [INFO]   AS20-minimal2/AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.mat
+2025-10-03 12:54:11,262 [INFO] Searching local ephys_root for .meta like: AS20-minimal2/**/*_03112025_*.meta
+2025-10-03 12:54:11,299 [INFO] Found .meta matches: [PosixPath('/mnt/c/Users/labuser/Desktop/Data/AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta'), PosixPath('/mnt/c/Users/labuser/Desktop/Data/AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta')]
+2025-10-03 12:54:11,299 [INFO] Found spikeglx run dir: /mnt/c/Users/labuser/Desktop/Data/AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0
+2025-10-03 12:54:11,306 [INFO]   AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
+2025-10-03 12:54:11,307 [INFO]   AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
+2025-10-03 12:54:11,307 [INFO]   AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin
+2025-10-03 12:54:11,307 [INFO]   AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
+2025-10-03 12:54:11,307 [INFO] Searching local ephys_root for .oebin like: AS20-minimal2/**/2025-03-11_*/*/*/*/structure.oebin
+2025-10-03 12:54:11,343 [INFO] Found .oebin matches: []
 ```
 
 From all the files found, the script can use the optional qualifier to further restrict which files will be uploaded.  When the qualifier is provided, only files that contain the qualifier in their name will be uploaded.  For example, the qualifier "training" could be used to select "training" files but ignore "testing" files.
@@ -57,13 +70,13 @@ From all the files found, the script can use the optional qualifier to further r
 Before uploading, the script will show which files it plans to create on cortex and prompt for your confirmation.
 
 ```
-2025-08-22 10:33:09,928 [INFO] Planning to create 6 files in remote data_root:
-2025-08-22 10:33:09,928 [INFO]   AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.txt
-2025-08-22 10:33:09,928 [INFO]   AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.mat
-2025-08-22 10:33:09,928 [INFO]   AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
-2025-08-22 10:33:09,928 [INFO]   AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
-2025-08-22 10:33:09,928 [INFO]   AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin
-2025-08-22 10:33:09,928 [INFO]   AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
+2025-10-03 12:54:11,344 [INFO] Planning to create 6 files in remote data_root:
+2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.txt
+2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.mat
+2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
+2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
+2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin
+2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
 Do you want to upload these files?  Type 'yes' to proceed: yes
 ```
 
@@ -71,20 +84,21 @@ You must type `yes` to proceed.  Otherwise the script will exit before uploading
 If you do type `yes` the script will upload each file to cortex:
 
 ```
-2025-08-22 10:33:13,617 [WARNING] Proceeding to upload files.
-2025-08-22 10:33:13,618 [INFO] Connecting to remote host: 128.91.19.199.
-2025-08-22 10:33:22,817 [INFO] Connected (version 2.0, client OpenSSH_8.9p1)
-2025-08-22 10:33:22,936 [INFO] Authentication (password) successful!
-2025-08-22 10:33:22,936 [INFO] Uploading to /vol/cortex/cd4/geffenlab/data:
-2025-08-22 10:33:22,936 [INFO]   AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.txt
-2025-08-22 10:33:23,376 [INFO] [chan 1] Opened sftp connection (server version 3)
-2025-08-22 10:33:23,438 [INFO]   AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.mat
-2025-08-22 10:33:23,517 [INFO]   AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
-2025-08-22 10:33:33,024 [INFO]   AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
-2025-08-22 10:33:33,177 [INFO]   AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin
-2025-08-22 10:33:49,277 [INFO]   AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
-2025-08-22 10:33:49,390 [INFO] [chan 1] sftp session closed.
-2025-08-22 10:33:49,390 [INFO] OK.
+2025-10-03 12:54:14,411 [WARNING] Proceeding to upload files.
+2025-10-03 12:54:14,411 [INFO] Connecting to remote host: 128.91.19.199.
+2025-10-03 12:54:24,295 [INFO] Connected (version 2.0, client OpenSSH_8.9p1)
+2025-10-03 12:54:24,416 [INFO] Authentication (password) successful!
+2025-10-03 12:54:24,416 [INFO] Uploading to /vol/cortex/cd4/geffenlab/raw_data:
+2025-10-03 12:54:24,416 [INFO]   BH/AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.txt
+2025-10-03 12:54:24,764 [INFO] [chan 1] Opened sftp connection (server version 3)
+2025-10-03 12:54:24,821 [INFO]   BH/AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.mat
+2025-10-03 12:54:25,790 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
+2025-10-03 12:54:36,322 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
+2025-10-03 12:54:36,402 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin
+2025-10-03 12:54:49,357 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
+2025-10-03 12:54:49,444 [INFO] Setting group and other permissions for session dir /vol/cortex/cd4/geffenlab/raw_data/BH/AS20-minimal2/03112025:
+2025-10-03 12:54:49,521 [INFO] [chan 1] sftp session closed.
+2025-10-03 12:54:49,522 [INFO] OK.
 ```
 
 ## Options
