@@ -133,7 +133,7 @@ process geffenlab_synthesis {
 
     input:
     path raw_data_path, name: 'raw_data/'
-    path processed_data_path: 'processed_data/'
+    path processed_data_path, name: 'processed_data/'
     path phy_export_results, name: 'processed/exported/*'
     path tprime_results, name: 'processed/exported/*'
     path phy_desktop_results, name: 'processed/curated/*'
