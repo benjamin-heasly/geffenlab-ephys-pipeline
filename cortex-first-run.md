@@ -44,7 +44,7 @@ Here's the minimal testing dataset at a glance:
                         ├── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
                         ├── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
                         └── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/
-                            ├── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin    
+                            ├── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin
                             └── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
 ```
 
@@ -237,16 +237,18 @@ python geffenlab-ephys-pipeline/scripts/download_results.py
 This script includes several default values for cortex, like the cortex server address.  It will prompt you for the subject and session date, and your cortex user credentials (same as you used for `ssh`).  When prompted, enter the following:
 
 ```
+Experimenter initials: BH
 Subject ID: AS20-minimal2
 Session date MMDDYYYY: 03112025
 ```
 
-This should find pipeline analysis results on cortex and download them to the windows Desktop in a folder named `ephys-pipeline-outputs`.  You should be able to open this folder and browse to the results, including:
- - Session summary figures and dataframe `.pkl`: `AS20-minimal2/03112025/synthesis/`
- - Nextflow visualizations for the Geffen lab ephys pipeline: `AS20-minimal2/03112025/nextflow`
- - Nextflow visualizations for the AIND ephys pipeline: `AS20-minimal2/03112025/sorted/nextflow`
- - Quality control visualizations from the AIND ephys pipeline: `AS20-minimal2/03112025/sorted/visualization`
+This should find pipeline processing and analysis results on cortex and download them to the windows Desktop in a folder named `ephys-pipeline-outputs`.  You should be able to open this folder and browse to the results, including:
 
+ - Processing logs in `BH/AS20-minimal2/03112025/`
+ - Session summary pickel and figures in `BH/AS20-minimal2/03112025/synthesis`
+ - Nextflow visualizations for the Geffen lab ephys pipeline: `BH/AS20-minimal2/03112025/nextflow`
+ - Nextflow visualizations for the AIND ephys pipeline: `BH/AS20-minimal2/03112025/sorted/nextflow`
+ - Quality control visualizations from the AIND ephys pipeline: `BH/AS20-minimal2/03112025/sorted/visualization/`
 
 # Process a full `AS20` dataset
 
@@ -259,13 +261,13 @@ ssh -Y ben@128.91.19.199
 screen -x
 ```
 
-Anjali uploaded a full dataset for subject `AS20` to the Geffenlab `data/` subdirectory on cortex.
+Anjali uploaded a full dataset for subject `AS20` to the Geffenlab `raw_data/` subdirectory on cortex.
 This dataset looks similar to the testing dataset above, but the files are bigger.
 
 ```
 /vol/cortex/cd4/geffenlab/
-└── data/
-    └── anjali/
+└── raw_data/
+    └── AS/
         └── AS20/
             └── 03112025/
                 ├── behavior/
@@ -276,7 +278,7 @@ This dataset looks similar to the testing dataset above, but the files are bigge
                         ├── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
                         ├── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
                         └── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/
-                            ├── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin
+                            ├── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin    
                             └── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
 ```
 
@@ -291,13 +293,12 @@ conda activate geffen-pipelines
 python run_pipeline.py \
   --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
   --config geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
-  --data-root /vol/cortex/cd4/geffenlab/data/anjali/ \
-  --analysis-root /vol/cortex/cd4/geffenlab/analysis/anjali/ \
+  --experimenter AS \
   --subject AS20 \
   --date 03112025
 ```
 
-This time we specify the `--subject` as `AS20`.  We also specify the `--data-root` and `--analysis-root` explicitly since these have an extra path component for `anjali`.
+This time we specify the `--experimenter` as `AS` and the `--subject` as `AS20`.
 
 Processing the full dataset will take longer than before, but it should still take less than an hour.  A clean run should end with a summary like this:
 
@@ -319,8 +320,7 @@ conda activate geffen-pipelines
 python run_pipeline.py \
   --workflow geffenlab-ephys-pipeline/pipeline/main.nf \
   --config geffenlab-ephys-pipeline/pipeline/cortex.config \
-  --data-root /vol/cortex/cd4/geffenlab/data/anjali/ \
-  --analysis-root /vol/cortex/cd4/geffenlab/analysis/anjali/ \
+  --experimenter AS \
   --subject AS20 \
   --date 03112025
 ```
@@ -343,23 +343,25 @@ screen -d
 exit
 ```
 
-As above, use the script [download_results.py](./scripts/download_results.py) to copy selected pipeline outputs to a folder on the Windows desktop.  This time, we'll specify the `--analysis-root` explicitly:
+As above, use the script [download_results.py](./scripts/download_results.py) to copy selected pipeline outputs to a folder on the Windows desktop:
 
 ```
 cd ~
 conda activate geffen-pipelines
-python geffenlab-ephys-pipeline/scripts/download_results.py --analysis-root /vol/cortex/cd4/geffenlab/analysis/anjali/
+python geffenlab-ephys-pipeline/scripts/download_results.py
 ```
 
 When prompted use:
 
 ```
+Experimenter initials: AS
 Subject ID: AS20
 Session date MMDDYYYY: 03112025
 ```
 
 As above, this should copy pipeline results to the Windows desktop in a folder named `ephys-pipeline-outputs`.  It should contain:
- - Session summary figures and dataframe `.pkl`: `AS20/03112025/synthesis/`
- - Nextflow visualizations for the Geffen lab ephys pipeline: `AS20/03112025/nextflow`
- - Nextflow visualizations for the AIND ephys pipeline: `AS20/03112025/sorted/nextflow`
- - Quality control visualizations from the AIND ephys pipeline: `AS20/03112025/sorted/visualization`
+ - Processing logs in `AS/AS20/03112025/`
+ - Session summary pickel and figures in `AS/AS20/03112025/synthesis`
+ - Nextflow visualizations for the Geffen lab ephys pipeline: `AS/AS20/03112025/nextflow`
+ - Nextflow visualizations for the AIND ephys pipeline: `AS/AS20/03112025/sorted/nextflow`
+ - Quality control visualizations from the AIND ephys pipeline: `AS/AS20/03112025/sorted/visualization/`
