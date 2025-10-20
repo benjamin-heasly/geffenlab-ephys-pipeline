@@ -59,7 +59,7 @@ jobs:
     - name: Nextflow AIND ephys pipeline
       shell: bash -el {0}
       run: |
-        cd $GITHUB_WORKSPACE/geffenlab-ephys-pipeline/scripts
+        cd $GITHUB_WORKSPACE/scripts
         conda activate geffen-pipelines
 
         python run_pipeline.py \
@@ -79,7 +79,7 @@ jobs:
     - name: Geffen lab ephys pipeline
       shell: bash -el {0}
       run: |
-        cd $GITHUB_WORKSPACE/geffenlab-ephys-pipeline/scripts
+        cd $GITHUB_WORKSPACE/scripts
         conda activate geffen-pipelines
 
         python run_pipeline.py \
