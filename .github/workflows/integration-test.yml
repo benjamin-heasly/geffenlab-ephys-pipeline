@@ -25,6 +25,8 @@ jobs:
     - name: Install Nextflow
       shell: bash -el {0}
       run: |
+        mkdir $GITHUB_WORKSPACE/nextflow
+        cd $GITHUB_WORKSPACE/nextflow
         wget https://github.com/nextflow-io/nextflow/releases/download/v25.04.6/nextflow-25.04.6-dist
         chmod +x nextflow-25.04.6-dist
         ./nextflow-25.04.6-dist -version
@@ -32,17 +34,18 @@ jobs:
     - name: Clone AIND sorting pipeline
       shell: bash -el {0}
       run: |
+        cd $GITHUB_WORKSPACE/nextflow
         git clone https://github.com/AllenNeuralDynamics/aind-ephys-pipeline.git
 
     - name: Fetch Input Data
       shell: bash -el {0}
       run: |
-        mkdir raw_data/
-        mkdir processed_data/
-        mkdir analysis/
+        mkdir $GITHUB_WORKSPACE/raw_data/
+        mkdir $GITHUB_WORKSPACE/processed_data/
+        mkdir $GITHUB_WORKSPACE/analysis/
 
-        mkdir raw_data/BH/
-        cd raw_data/BH/
+        mkdir $GITHUB_WORKSPACE/raw_data/BH/
+        cd $GITHUB_WORKSPACE/raw_data/BH/
         wget https://storage.googleapis.com/tripledip-geffenlab/AS20-minimal2.zip
         unzip AS20-minimal2.zip
         pwd
@@ -56,39 +59,39 @@ jobs:
     - name: Nextflow AIND ephys pipeline
       shell: bash -el {0}
       run: |
-        cd geffenlab-ephys-pipeline/scripts
+        cd $GITHUB_WORKSPACE/geffenlab-ephys-pipeline/scripts
         conda activate geffen-pipelines
 
         python run_pipeline.py \
-        --work-dir ~ \
+        --work-dir $GITHUB_WORKSPACE/nextflow \
         --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
-        --config aind-ephys-pipeline/cortex.config \
+        --config $GITHUB_WORKSPACE/aind-ephys-pipeline/cortex.config \
         --experimenter BH \
         --subject AS20-minimal2 \
         --date 03112025 \
-        --raw_data_root raw_data/ \
-        --processed_data_root processed_data/ \
+        --raw_data_root $GITHUB_WORKSPACE/raw_data/ \
+        --processed_data_root $GITHUB_WORKSPACE/processed_data/ \
         --n_jobs 4 \
         --memory '10 GB' \
         --gpu_device none \
-        --params_file = aind-ephys-pipeline/spikeglx-ks4-default.json
+        --params_file = $GITHUB_WORKSPACE/aind-ephys-pipeline/spikeglx-ks4-default.json
 
     - name: Geffen lab ephys pipeline
       shell: bash -el {0}
       run: |
-        cd geffenlab-ephys-pipeline/scripts
+        cd $GITHUB_WORKSPACE/geffenlab-ephys-pipeline/scripts
         conda activate geffen-pipelines
 
         python run_pipeline.py \
-        --work-dir ~ \
-        --workflow pipeline/main.nf \
-        --config pipeline/cortex.config \
+        --work-dir $GITHUB_WORKSPACE/nextflow \
+        --workflow $GITHUB_WORKSPACE/pipeline/main.nf \
+        --config $GITHUB_WORKSPACE/pipeline/cortex.config \
         --experimenter BH \
         --subject AS20-minimal2 \
         --date 03112025 \
-        --raw_data_root raw_data/ \
-        --processed_data_root processed_data/ \
-        --analysis_root analysis/ \
+        --raw_data_root $GITHUB_WORKSPACE/raw_data/ \
+        --processed_data_root $GITHUB_WORKSPACE/processed_data/ \
+        --analysis_root $GITHUB_WORKSPACE/analysis/ \
         --n_jobs 4 \
         --memory '10 GB' \
         --interactive '--no-interactive'
@@ -99,13 +102,13 @@ jobs:
         name: pipeline-logs-and-figures
         retention-days: 7
         path: |
-          "~/processed_data/**/*.log"
-          "~/processed_data/**/*.md"
-          "~/processed_data/**/*.png"
-          "~/processed_data/**/*.html"
-          "~/processed_data/**/*.txt"
-          "~/analysis/**/*.log"
-          "~/analysis/**/*.md"
-          "~/analysis/**/*.png"
-          "~/analysis/**/*.html"
-          "~/analysis/**/*.txt"
+          "$GITHUB_WORKSPACE/processed_data/**/*.log"
+          "$GITHUB_WORKSPACE/processed_data/**/*.md"
+          "$GITHUB_WORKSPACE/processed_data/**/*.png"
+          "$GITHUB_WORKSPACE/processed_data/**/*.html"
+          "$GITHUB_WORKSPACE/processed_data/**/*.txt"
+          "$GITHUB_WORKSPACE/analysis/**/*.log"
+          "$GITHUB_WORKSPACE/analysis/**/*.md"
+          "$GITHUB_WORKSPACE/analysis/**/*.png"
+          "$GITHUB_WORKSPACE/analysis/**/*.html"
+          "$GITHUB_WORKSPACE/analysis/**/*.txt"
