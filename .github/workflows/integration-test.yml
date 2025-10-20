@@ -62,10 +62,14 @@ jobs:
         pwd
         ls -althR
 
-    - name: Pull Sorter Image
+    - name: Pull Docker Images
       shell: bash -el {0}
-      # Pull Docker image first, so we can see timing and errors (eg disk space) separate from sorting step itself.
-      run: docker pull spikeinterface/kilosort4-base:4.0.30_cuda-12.0.0
+      # Pull Docker images first, so we can see timing and errors (eg disk space) separate from pipelines themselves.
+      run: |
+        df -h
+        docker pull spikeinterface/kilosort4-base:4.0.30_cuda-12.0.0
+        docker pull ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.103.0
+        df -h
 
     - name: Nextflow AIND ephys pipeline
       shell: bash -el {0}
