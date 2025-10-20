@@ -240,7 +240,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     logging.info(f"Writing process detail report to {process_detail_path}")
 
     try:
-        run_main(
+        main_exit_code = run_main(
             work_dir_path,
             cli_args.nextflow,
             workflow_path,
@@ -264,6 +264,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     logging.info(f"Wrote the Nextflow log to {nextflow_log_path}")
     logging.info(f"Wrote details of each Nextflow processing step to {process_detail_path}")
     logging.info(f"Wrote a copy of this console log to {script_log_path}")
+
+    return main_exit_code
 
 
 if __name__ == "__main__":
