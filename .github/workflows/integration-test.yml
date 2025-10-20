@@ -75,7 +75,7 @@ jobs:
         --n_jobs 4 \
         --memory '10 GB' \
         --gpu_device none \
-        --params_file = $GITHUB_WORKSPACE/aind-ephys-pipeline/spikeglx-ks4-default.json
+        --params_file $GITHUB_WORKSPACE/aind-ephys-pipeline/spikeglx-ks4-default.json
 
     - name: Geffen lab ephys pipeline
       shell: bash -el {0}
