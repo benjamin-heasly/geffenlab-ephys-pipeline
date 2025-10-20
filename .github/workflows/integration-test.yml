@@ -22,17 +22,6 @@ jobs:
         environment-file: geffen-pipelines.yml
         activate-environment: geffen-pipelines
 
-    - name: Free Disk Space (Ubuntu)
-      uses: jlumbroso/free-disk-space@main
-      with:
-        tool-cache: false
-        android: true
-        dotnet: true
-        haskell: true
-        large-packages: true
-        docker-images: true
-        swap-storage: true
-
     - name: Install Nextflow
       shell: bash -el {0}
       run: |
@@ -66,6 +55,17 @@ jobs:
         cd $GITHUB_WORKSPACE/raw_data
         pwd
         ls -althR
+
+    - name: Free Disk Space (Ubuntu)
+      uses: jlumbroso/free-disk-space@main
+      with:
+        tool-cache: true
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: true
+        docker-images: true
+        swap-storage: true
 
     - name: Nextflow AIND ephys pipeline
       shell: bash -el {0}
