@@ -43,8 +43,10 @@ def run_main(
     pass_through_args: list[str],
     report_template_path: Path,
     process_detail_path: Path
-):
+) -> int:
     logging.info("Starting pipeline run.\n")
+
+    pipeline_exit_code = 0
 
     run_command = [
         nextflow,
@@ -86,6 +88,7 @@ def run_main(
                 logging.info(f"Completed OK, exit code {exit_code}")
             else:
                 logging.error(f"Completed with error, exit code {exit_code}")
+                pipeline_exit_code = exit_code
 
     except Exception:
         logging.error(f"Error running Nextflow", exc_info=True)
@@ -124,7 +127,9 @@ def run_main(
     except Exception:
         logging.error(f"Error gathering Nextflow logs", exc_info=True)
 
-    logging.info("OK\n")
+    if pipeline_exit_code == 0:
+        logging.info("OK\n")
+    return pipeline_exit_code
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
