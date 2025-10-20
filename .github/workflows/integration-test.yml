@@ -47,6 +47,9 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE/nextflow
         git clone https://github.com/AllenNeuralDynamics/aind-ephys-pipeline.git
+        cd aind-ephys-pipeline
+        git checkout 6e805354e428ff8e935750bb5bbe604847a5f0f9
+        git status
 
     - name: Fetch Input Data
       shell: bash -el {0}
@@ -59,6 +62,8 @@ jobs:
         cd $GITHUB_WORKSPACE/raw_data/BH/
         wget https://storage.googleapis.com/tripledip-geffenlab/AS20-minimal2.zip
         unzip AS20-minimal2.zip
+
+        cd $GITHUB_WORKSPACE/raw_data
         pwd
         ls -althR
 
