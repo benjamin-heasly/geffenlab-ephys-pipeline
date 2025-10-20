@@ -69,8 +69,9 @@ jobs:
         --experimenter BH \
         --subject AS20-minimal2 \
         --date 03112025 \
-        --raw_data_root $GITHUB_WORKSPACE/raw_data/ \
-        --processed_data_root $GITHUB_WORKSPACE/processed_data/ \
+        --raw-data-root $GITHUB_WORKSPACE/raw_data/ \
+        --processed-data-root $GITHUB_WORKSPACE/processed_data/ \
+        --analysis-root $GITHUB_WORKSPACE/analysis/ \
         --n_jobs 4 \
         --memory '10 GB' \
         --gpu_device none \
@@ -89,9 +90,9 @@ jobs:
         --experimenter BH \
         --subject AS20-minimal2 \
         --date 03112025 \
-        --raw_data_root $GITHUB_WORKSPACE/raw_data/ \
-        --processed_data_root $GITHUB_WORKSPACE/processed_data/ \
-        --analysis_root $GITHUB_WORKSPACE/analysis/ \
+        --raw-data-root $GITHUB_WORKSPACE/raw_data/ \
+        --processed-data-root $GITHUB_WORKSPACE/processed_data/ \
+        --analysis-root $GITHUB_WORKSPACE/analysis/ \
         --n_jobs 4 \
         --memory '10 GB' \
         --interactive '--no-interactive'
