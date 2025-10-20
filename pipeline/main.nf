@@ -121,9 +121,28 @@ process geffenlab_phy_desktop {
     """
 }
 
+process geffenlab_copy_behavior {
+    tag 'geffenlab_copy_behavior'
+    container 'ubuntu:22.04'
+
+    input:
+    path raw_data_path
+    path processed_data_path
+
+    output:
+    path "$processed_data_path/behavior/*", emit: behavior_path
+
+    script:
+    """
+        #!/usr/bin/env bash
+        set -e
+        cp -r $raw_data_path/behavior $processed_data_path
+    """
+}
+
 process geffenlab_synthesis {
     tag 'geffenlab_synthesis'
-    container 'ghcr.io/benjamin-heasly/geffenlab-synthesis:v0.0.17'
+    container 'ghcr.io/benjamin-heasly/geffenlab-synthesis:v0.0.18'
 
     publishDir "${params.analysis_path}/synthesis",
         mode: 'copy',
@@ -132,7 +151,7 @@ process geffenlab_synthesis {
         saveAs: { filename -> file(filename).name }
 
     input:
-    path raw_data_path
+    path behavior_path, name: 'processed/behavior/*'
     path phy_export_results, name: 'processed/exported/*'
     path tprime_results, name: 'processed/exported/*'
     path phy_desktop_results, name: 'processed/curated/*'
@@ -146,7 +165,6 @@ process geffenlab_synthesis {
     set -e
     mkdir -p results
     conda_run python /opt/code/run.py \
-      --raw-data-path=$raw_data_path \
       --processed-data-path=processed \
       --results-path=results \
       --event-times-pattern $params.synthesis_event_times_pattern \
@@ -160,12 +178,14 @@ process geffenlab_synthesis {
 workflow {
     println "params: ${params}"
 
-    def raw_data_channel = channel.fromPath(params.raw_data_path)
+    raw_data_channel = channel.fromPath(params.raw_data_path)
     catgt_results = geffenlab_ecephys_catgt(raw_data_channel)
 
-    def processed_data_channel = channel.fromPath(params.processed_data_path)
+    processed_data_channel = channel.fromPath(params.processed_data_path)
+    behavior_path = geffenlab_copy_behavior(raw_data_channel, processed_data_channel)
+
     phy_export_results = geffenlab_ecephys_phy_export(processed_data_channel)
     tprime_results = geffenlab_ecephys_tprime(catgt_results, phy_export_results)
     phy_desktop_results = geffenlab_phy_desktop(phy_export_results)
-    geffenlab_synthesis(raw_data_channel, phy_export_results, tprime_results, phy_desktop_results)
+    geffenlab_synthesis(behavior_path, phy_export_results, tprime_results, phy_desktop_results)
 }
