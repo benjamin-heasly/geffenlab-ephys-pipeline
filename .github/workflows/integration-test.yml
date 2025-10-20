@@ -1,0 +1,111 @@
+name: Pipeline Integration Test
+
+on: push
+    # push:
+    # tags:
+    #   - '*'
+
+jobs:
+  run-pipelines:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure environment for geffen-pipelines
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        environment-file: geffen-pipelines.yml
+        activate-environment: geffen-pipelines
+
+    - name: Install Nextflow
+      shell: bash -el {0}
+      run: |
+        wget https://github.com/nextflow-io/nextflow/releases/download/v25.04.6/nextflow-25.04.6-dist
+        chmod +x nextflow-25.04.6-dist
+        ./nextflow-25.04.6-dist -version
+
+    - name: Clone AIND sorting pipeline
+      shell: bash -el {0}
+      run: |
+        git clone https://github.com/AllenNeuralDynamics/aind-ephys-pipeline.git
+
+    - name: Fetch Input Data
+      shell: bash -el {0}
+      run: |
+        mkdir raw_data/
+        mkdir processed_data/
+        mkdir analysis/
+
+        mkdir raw_data/BH/
+        cd raw_data/BH/
+        wget https://storage.googleapis.com/tripledip-geffenlab/AS20-minimal2.zip
+        unzip AS20-minimal2.zip
+        pwd
+        ls -althR
+
+    - name: Pull Sorter Image
+      shell: bash -el {0}
+      # Pull Docker image first, so we can see timing and errors (eg disk space) separate from sorting step itself.
+      run: docker pull spikeinterface/kilosort4-base:4.0.30_cuda-12.0.0
+
+    - name: Nextflow AIND ephys pipeline
+      shell: bash -el {0}
+      run: |
+        cd geffenlab-ephys-pipeline/scripts
+        conda activate geffen-pipelines
+
+        python run_pipeline.py \
+        --work-dir ~ \
+        --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+        --config aind-ephys-pipeline/cortex.config \
+        --experimenter BH \
+        --subject AS20-minimal2 \
+        --date 03112025 \
+        --raw_data_root raw_data/ \
+        --processed_data_root processed_data/ \
+        --n_jobs 4 \
+        --memory '10 GB' \
+        --gpu_device none \
+        --params_file = aind-ephys-pipeline/spikeglx-ks4-default.json
+
+    - name: Geffen lab ephys pipeline
+      shell: bash -el {0}
+      run: |
+        cd geffenlab-ephys-pipeline/scripts
+        conda activate geffen-pipelines
+
+        python run_pipeline.py \
+        --work-dir ~ \
+        --workflow pipeline/main.nf \
+        --config pipeline/cortex.config \
+        --experimenter BH \
+        --subject AS20-minimal2 \
+        --date 03112025 \
+        --raw_data_root raw_data/ \
+        --processed_data_root processed_data/ \
+        --analysis_root analysis/ \
+        --n_jobs 4 \
+        --memory '10 GB' \
+        --interactive '--no-interactive'
+
+    - name: Upload Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: pipeline-logs-and-figures
+        retention-days: 7
+        path: |
+          "~/processed_data/**/*.log"
+          "~/processed_data/**/*.md"
+          "~/processed_data/**/*.png"
+          "~/processed_data/**/*.html"
+          "~/processed_data/**/*.txt"
+          "~/analysis/**/*.log"
+          "~/analysis/**/*.md"
+          "~/analysis/**/*.png"
+          "~/analysis/**/*.html"
+          "~/analysis/**/*.txt"
