@@ -106,7 +106,7 @@ jobs:
         --analysis-root $GITHUB_WORKSPACE/analysis/ \
         --n_jobs 4 \
         --memory '7 GB' \
-        --interactive '--no-interactive'
+        --interactive='--no-interactive'
 
     - name: Upload Results
       uses: actions/upload-artifact@v4

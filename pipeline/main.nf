@@ -32,7 +32,7 @@ process geffenlab_ecephys_catgt {
 
 process geffenlab_ecephys_phy_export {
     tag 'geffenlab_ecephys_phy_export'
-    container 'ghcr.io/benjamin-heasly/geffenlab-ecephys-phy-export:v0.0.4'
+    container 'ghcr.io/benjamin-heasly/geffenlab-ecephys-phy-export:v0.0.6'
 
     publishDir "${params.processed_data_path}/exported",
         mode: 'copy',
@@ -95,7 +95,7 @@ process geffenlab_ecephys_tprime {
 
 process geffenlab_phy_desktop {
     tag 'geffenlab_phy_desktop'
-    container 'ghcr.io/benjamin-heasly/geffenlab-phy-desktop:v0.0.2'
+    container 'ghcr.io/benjamin-heasly/geffenlab-phy-desktop:v0.0.3'
 
     publishDir "${params.processed_data_path}/curated",
         mode: 'copy',
@@ -116,8 +116,9 @@ process geffenlab_phy_desktop {
     mkdir -p results
     conda_run python /opt/code/run_phy.py \
       --data-root $phy_export_results \
-      --results-root results $params.interactive \
-      --params-py-pattern **/params.py
+      --results-root results \
+      --params-py-pattern **/params.py \
+      ${params.interactive}
     """
 }
 
@@ -142,7 +143,7 @@ process geffenlab_copy_behavior {
 
 process geffenlab_synthesis {
     tag 'geffenlab_synthesis'
-    container 'ghcr.io/benjamin-heasly/geffenlab-synthesis:v0.0.18'
+    container 'ghcr.io/benjamin-heasly/geffenlab-synthesis:v0.0.12'
 
     publishDir "${params.analysis_path}/synthesis",
         mode: 'copy',
