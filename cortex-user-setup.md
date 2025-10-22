@@ -196,11 +196,27 @@ Check that nextflow is working:
 
 ## Docker
 
-Doker is already installed on cortex.  Check that your user is allowed to run Docker commands.
+Doker is already installed on cortex, but you must do some setup to allow your user account to use it.
+
+## Enable rootless Docker
+
+On the brainsadmin Slack channel find the canvas with instructions for [Rootles Docker](https://pesaranlab.slack.com/docs/T0481N8KH0A/F09JMHTJKA6).  Follow the instructions in this document.
+
+The process will go somethign like this:
+ - Ask ask Bijan or Jarl for admin help setting up rootless docker.
+ - Tell them your cortex user name.
+ - As admins they will to the first part, adding your user to the system config files `/etc/subuid` `/etc/subgid`.
+ - When they are done, you can run `dockerd-rootless-setuptool.sh install --force` yourself.
+
+## Try running Docker
+
+With rootless docker enabled, confirm that you are allowed to run Docker commands:
 
 ```
 docker run hello-world
-# expect
+
+# expect output like this:
+
 # Hello from Docker!
 # This message shows that your installation appears to be working correctly.
 ```
