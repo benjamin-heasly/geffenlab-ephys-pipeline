@@ -83,12 +83,12 @@
             "max_spikes_per_unit": 500,
             "method": "uniform",
             "margin_size": null,
-            "seed": null
+            "seed": 42
         },
         "noise_levels": {
             "num_chunks_per_segment": 20,
             "chunk_size": 10000,
-            "seed": null
+            "seed": 42
         },
         "waveforms": {
             "ms_before": 3.0,
