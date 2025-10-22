@@ -84,7 +84,7 @@ jobs:
         --processed-data-root $GITHUB_WORKSPACE/processed_data/ \
         --analysis-root $GITHUB_WORKSPACE/analysis/ \
         --n_jobs 4 \
-        --memory '10 GB' \
+        --memory '7 GB' \
         --gpu_device none \
         --params_file $GITHUB_WORKSPACE/aind-ephys-pipeline/spikeglx-ks4-default.json
 
@@ -105,7 +105,7 @@ jobs:
         --processed-data-root $GITHUB_WORKSPACE/processed_data/ \
         --analysis-root $GITHUB_WORKSPACE/analysis/ \
         --n_jobs 4 \
-        --memory '10 GB' \
+        --memory '7 GB' \
         --interactive '--no-interactive'
 
     - name: Upload Results
