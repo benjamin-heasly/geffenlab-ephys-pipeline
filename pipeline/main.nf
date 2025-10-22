@@ -126,17 +126,17 @@ process geffenlab_copy_behavior {
     container 'ubuntu:22.04'
 
     input:
-    path raw_data_path
-    path processed_data_path
+    path raw_data_path, name: 'raw'
+    path processed_data_path, name: 'processed'
 
     output:
-    path "$processed_data_path/behavior/*", emit: behavior_path
+    path "processed/behavior/*", emit: behavior_path
 
     script:
     """
         #!/usr/bin/env bash
         set -e
-        cp -r $raw_data_path/behavior $processed_data_path
+        cp -r raw/behavior/ processed/
     """
 }
 
