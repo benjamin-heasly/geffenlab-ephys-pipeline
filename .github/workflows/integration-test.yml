@@ -49,8 +49,8 @@ jobs:
 
         mkdir $GITHUB_WORKSPACE/raw_data/BH/
         cd $GITHUB_WORKSPACE/raw_data/BH/
-        wget https://storage.googleapis.com/tripledip-geffenlab/AS20-minimal2.zip
-        unzip AS20-minimal2.zip
+        wget https://storage.googleapis.com/tripledip-geffenlab/AS20-minimal3.zip
+        unzip AS20-minimal3.zip
 
         cd $GITHUB_WORKSPACE/raw_data
         pwd
@@ -78,7 +78,7 @@ jobs:
         --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
         --config $GITHUB_WORKSPACE/aind-ephys-pipeline/cortex.config \
         --experimenter BH \
-        --subject AS20-minimal2 \
+        --subject AS20-minimal3 \
         --date 03112025 \
         --raw-data-root $GITHUB_WORKSPACE/raw_data/ \
         --processed-data-root $GITHUB_WORKSPACE/processed_data/ \
@@ -99,7 +99,7 @@ jobs:
         --workflow $GITHUB_WORKSPACE/pipeline/main.nf \
         --config $GITHUB_WORKSPACE/pipeline/cortex.config \
         --experimenter BH \
-        --subject AS20-minimal2 \
+        --subject AS20-minimal3 \
         --date 03112025 \
         --raw-data-root $GITHUB_WORKSPACE/raw_data/ \
         --processed-data-root $GITHUB_WORKSPACE/processed_data/ \
