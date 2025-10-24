@@ -124,6 +124,14 @@ git clone https://github.com/AllenNeuralDynamics/aind-ephys-pipeline.git
 git clone https://github.com/benjamin-heasly/geffenlab-ephys-pipeline.git
 ```
 
+Note: we have been using version [6e80535](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/tree/6e805354e428ff8e935750bb5bbe604847a5f0f9) of the [aind-ephys-pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline), from 6 June 2025.
+
+```
+# Check the aind-ephys-pipeline version:
+cd /vol/cortex/cd4/geffenlab/nextflow/aind-ephys-pipeline
+git status
+```
+
 ## Conda (cortex)
 
 We can use [Conda](https://anaconda.org/anaconda/conda) to manage dependencies on cortex as well as local lab machines.  To install conda for your cortex user run the following:
