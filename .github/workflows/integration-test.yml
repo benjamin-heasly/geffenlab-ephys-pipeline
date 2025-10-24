@@ -108,19 +108,27 @@ jobs:
         --memory '7 GB' \
         --interactive='--no-interactive'
 
+    - name: Sanity check list disk space and outputs
+      shell: bash -el {0}
+      run: |
+        df -h
+        cd $GITHUB_WORKSPACE
+        pwd
+        ls -althR
+
     - name: Upload Results
       uses: actions/upload-artifact@v4
       with:
         name: pipeline-logs-and-figures
         retention-days: 7
         path: |
-          "processed_data/**/*.log"
-          "processed_data/**/*.md"
-          "processed_data/**/*.png"
-          "processed_data/**/*.html"
-          "processed_data/**/*.txt"
-          "analysis/**/*.log"
-          "analysis/**/*.md"
-          "analysis/**/*.png"
-          "analysis/**/*.html"
-          "analysis/**/*.txt"
+          $GITHUB_WORKSPACE/processed_data/**/*.log
+          $GITHUB_WORKSPACE/processed_data/**/*.md
+          $GITHUB_WORKSPACE/processed_data/**/*.png
+          $GITHUB_WORKSPACE/processed_data/**/*.html
+          $GITHUB_WORKSPACE/processed_data/**/*.txt
+          $GITHUB_WORKSPACE/analysis/**/*.log
+          $GITHUB_WORKSPACE/analysis/**/*.md
+          $GITHUB_WORKSPACE/analysis/**/*.png
+          $GITHUB_WORKSPACE/analysis/**/*.html
+          $GITHUB_WORKSPACE/analysis/**/*.txt
