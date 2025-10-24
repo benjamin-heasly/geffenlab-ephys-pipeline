@@ -37,31 +37,39 @@ def run_main(
 
     logging.info(f"Connecting to remote host: {remote_host}.")
     with Connection(host=remote_host, user=username, connect_kwargs={"password": password}) as c:
-        try:
-            # Call to open() will log connection attempts, results.
-            c.open()
 
+        # Connect to the remote host, eg cortex.
+        try:
+            # The call to open() will log connection attempts, results.
+            c.open()
+        except Exception as e:
+            logging.error(f"Connection error: {e.args}")
+            return
+
+        # Download all the session "analysis" files.
+        try:
             # List files and subdirectories in the session analysis directory.
             remote_analysis_path = Path(analysis_path, experimenter, subject_id, date_string)
             logging.info(f"Checking for remote analysis session directory {remote_analysis_path}:")
             analysis_result = c.run(f"ls {remote_analysis_path.as_posix()}")
 
-            # Download all the "analysis" files.
-            try:
-                # Recursively find regular files within the analysis subdirectory.
-                analysis_result = c.run(f"find {remote_analysis_path.as_posix()} -type f")
+            # Recursively find regular files within the analysis subdirectory.
+            analysis_result = c.run(f"find {remote_analysis_path.as_posix()} -type f")
 
-                # Download each file, preserving session subdirectory structure.
-                analysis_files = analysis_result.stdout.strip().split('\n')
-                for analysis_file in analysis_files:
-                    relative_file_path = Path(analysis_file).relative_to(remote_analysis_path)
-                    local_file_path = Path(local_path, experimenter, subject_id, date_string, relative_file_path)
-                    logging.info(f"Downloading to: {local_file_path}")
-                    c.get(remote=analysis_file, local=local_file_path.as_posix())
+            # Download each file, preserving session subdirectory structure.
+            analysis_files = analysis_result.stdout.strip().split('\n')
+            for analysis_file in analysis_files:
+                relative_file_path = Path(analysis_file).relative_to(remote_analysis_path)
+                local_file_path = Path(local_path, experimenter, subject_id, date_string, relative_file_path)
+                logging.info(f"Downloading to: {local_file_path}")
+                c.get(remote=analysis_file, local=local_file_path.as_posix())
 
-            except Exception:
-                logging.warning(f"Error downloading from analysis session directory.")
+        except Exception:
+            logging.warning(f"Error downloading from analysis session directory.")
+            # Don't return, keep trying below.
 
+        # Download logs and selected subdirs files from the session "processed_data" dir.
+        try:
             # List files and subdirectories in the session processed data directory.
             remote_processed_data_path = Path(processed_data_path, experimenter, subject_id, date_string)
             logging.info(f"Checking for remote processed data session directory {remote_processed_data_path}:")
@@ -72,6 +80,7 @@ def run_main(
             processed_logs = []
             for log_pattern in log_patterns:
                 processed_logs += fnmatch.filter(processed_list, log_pattern)
+
             print(f"Found session processing logs: {processed_logs}")
             for processed_log in processed_logs:
                 remote_log_path = Path(remote_processed_data_path, processed_log)
@@ -98,8 +107,9 @@ def run_main(
                     logging.info(f"Downloading to: {local_file_path}")
                     c.get(remote=remote_file, local=local_file_path.as_posix())
 
-        except Exception as e:
-            logging.warning(f"Download error: {e.args}")
+        except Exception:
+            logging.warning(f"Error downloading from processed_data session directory.")
+            return
 
     logging.info("OK.\n")
 
