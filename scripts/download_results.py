@@ -113,7 +113,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--local-root", "-L",
         type=str,
         help="Local root directory to receive donwloads. (default: %(default)s)",
-        default="/mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/"
+        default="./ephys-pipeline-outputs/"
     )
     parser.add_argument(
         "--remote-host", "-r",
@@ -175,7 +175,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     cli_args = parser.parse_args(argv)
 
     # Prompt for missing input args as needed.
-    local_path = Path(cli_args.local_root)
+    local_path = Path(cli_args.local_root).expanduser().resolve()
     logging.info(f"Downloading files to local root: {local_path}")
 
     remote_host = cli_args.remote_host
