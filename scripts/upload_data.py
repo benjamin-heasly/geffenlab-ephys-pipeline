@@ -172,7 +172,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--behavior-root", "-b",
         type=str,
         help="Local root directory to search for behavior files. (default: %(default)s)",
-        default="/mnt/c/Users/labuser/Desktop/Data"
+        default="."
     )
     parser.add_argument(
         "--behavior-txt-pattern", "-T",
@@ -190,7 +190,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--ephys-root", "-E",
         type=str,
         help="Local root directory to search for a SpikeGLX run directory. (default: %(default)s)",
-        default="/mnt/c/Users/labuser/Desktop/Data"
+        default="."
     )
     parser.add_argument(
         "--spikeglx-meta-pattern", "-S",
@@ -262,8 +262,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     cli_args = parser.parse_args(argv)
 
     # Prompt for missing input args as needed.
-    behavior_path = Path(cli_args.behavior_root)
-    logging.info(f"Uploading behavior files from : {behavior_path}")
+    behavior_path = Path(cli_args.behavior_root).expanduser().resolve()
+    logging.info(f"Uploading behavior files from: {behavior_path}")
 
     behavior_txt_pattern = cli_args.behavior_txt_pattern
     logging.info(f"Using behavior .txt pattern: {behavior_txt_pattern}")
@@ -271,8 +271,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     behavior_mat_pattern = cli_args.behavior_mat_pattern
     logging.info(f"Using behavior .mat pattern: {behavior_mat_pattern}")
 
-    ephys_path = Path(cli_args.ephys_root)
-    logging.info(f"Uploading ephys files from : {ephys_path}")
+    ephys_path = Path(cli_args.ephys_root).expanduser().resolve()
+    logging.info(f"Uploading ephys files from: {ephys_path}")
 
     spikeglx_meta_pattern = cli_args.spikeglx_meta_pattern
     logging.info(f"Using SpikeGLX .meta pattern: {spikeglx_meta_pattern}")
