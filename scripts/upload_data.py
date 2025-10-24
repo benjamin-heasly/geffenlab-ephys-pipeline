@@ -250,7 +250,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--group-permissions", "-g",
         type=str,
         help="Permission to set on uploaded dirs and files, for users in the same group. (default: %(default)s)",
-        default="+rw"
+        default="+rwx"
     )
     parser.add_argument(
         "--other-permissions", "-o",
