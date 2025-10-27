@@ -126,18 +126,24 @@ process geffenlab_copy_behavior {
     tag 'geffenlab_copy_behavior'
     container 'ubuntu:22.04'
 
+    publishDir "${params.processed_data_path}/behavior",
+        mode: 'copy',
+        overwrite: true,
+        pattern: "$raw_data_path/behavior/*",
+        saveAs: { filename -> file(filename).name }
+
     input:
-    path raw_data_path, name: 'raw'
-    path processed_data_path, name: 'processed'
+    path raw_data_path
 
     output:
-    path "processed/behavior/*", emit: behavior_path
+    path "$raw_data_path/behavior/*", emit: behavior_path
 
     script:
     """
         #!/usr/bin/env bash
         set -e
-        cp -r raw/behavior/ processed/
+        echo "Copy behavior data: $raw_data_path/behavior/"
+        ls -alth $raw_data_path/behavior/
     """
 }
 
@@ -182,9 +188,9 @@ workflow {
     raw_data_channel = channel.fromPath(params.raw_data_path)
     catgt_results = geffenlab_ecephys_catgt(raw_data_channel)
 
-    processed_data_channel = channel.fromPath(params.processed_data_path)
-    behavior_path = geffenlab_copy_behavior(raw_data_channel, processed_data_channel)
+    behavior_path = geffenlab_copy_behavior(raw_data_channel)
 
+    processed_data_channel = channel.fromPath(params.processed_data_path)
     phy_export_results = geffenlab_ecephys_phy_export(processed_data_channel)
     tprime_results = geffenlab_ecephys_tprime(catgt_results, phy_export_results)
     phy_desktop_results = geffenlab_phy_desktop(phy_export_results)
