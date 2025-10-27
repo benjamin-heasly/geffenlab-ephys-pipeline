@@ -261,7 +261,6 @@
         "ecephys": {
             "stub": false,
             "stub_seconds": 10,
-            "skip_lfp": true,
             "write_lfp": false,
             "write_raw": false,
             "lfp_temporal_factor": 2,
