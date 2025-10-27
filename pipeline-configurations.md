@@ -69,13 +69,13 @@ The AIND pipeline parameters JSON file contains many parameters for preprocessin
 
 ### Documentation
 
-The AIND ephys pipeline repo [README](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/blob/6e805354e428ff8e935750bb5bbe604847a5f0f9/README.md) links to documentation for each step, including what parameters are available.  These should correspond with the parameters JSON file.
+The AIND ephys pipeline repo [README](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/blob/5c875288a2e485b4bdf1b61f4ad48c648691246d/README.md) links to documentation for each step, including what parameters are available.  These should correspond with the parameters JSON file.
 
 For SpikeInterface steps, the [SpikeInterface docs](https://spikeinterface.readthedocs.io/en/stable/) should describe what the different parameters do.  The [Kilosort4 docs](https://kilosort.readthedocs.io/en/latest/parameters.html) describe several of its parameters and also link to the code for further comments.
 
 ### Original
 
-The original, default JSON parameters file comes from the AIND ephys pipeline repo, specifically at revision `6e805354e428ff8e935750bb5bbe604847a5f0f9` from 4 June 2025: [default_params.json](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/blob/6e805354e428ff8e935750bb5bbe604847a5f0f9/pipeline/default_params.json).
+The original, default JSON parameters file comes from the AIND ephys pipeline repo: [default_params.json](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/blob/5c875288a2e485b4bdf1b61f4ad48c648691246d/pipeline/default_params.json).
 
 Our copy, [aind-ephys-pipeline/spikeglx-ks4-default.json](./aind-ephys-pipeline/spikeglx-ks4-default.json), modifies this in two ways:
  - In the `job_dispatch` section, `input` format defaults to `spikeglx`. 

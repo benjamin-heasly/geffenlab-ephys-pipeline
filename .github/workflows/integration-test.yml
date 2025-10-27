@@ -37,7 +37,7 @@ jobs:
         cd $GITHUB_WORKSPACE/nextflow
         git clone https://github.com/AllenNeuralDynamics/aind-ephys-pipeline.git
         cd aind-ephys-pipeline
-        git checkout 6e805354e428ff8e935750bb5bbe604847a5f0f9
+        git checkout 5c875288a2e485b4bdf1b61f4ad48c648691246d
         git status
 
     - name: Fetch Input Data

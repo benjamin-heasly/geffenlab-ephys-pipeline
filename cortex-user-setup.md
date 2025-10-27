@@ -124,7 +124,7 @@ git clone https://github.com/AllenNeuralDynamics/aind-ephys-pipeline.git
 git clone https://github.com/benjamin-heasly/geffenlab-ephys-pipeline.git
 ```
 
-Note: we have been using version [6e80535](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/tree/6e805354e428ff8e935750bb5bbe604847a5f0f9) of the [aind-ephys-pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline), from 6 June 2025.
+Note: we have been using version [5c87528](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/commit/5c875288a2e485b4bdf1b61f4ad48c648691246d) of the [aind-ephys-pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline), from 21 October 2025.
 
 ```
 # Check the aind-ephys-pipeline version:
