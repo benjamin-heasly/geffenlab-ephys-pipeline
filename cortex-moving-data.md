@@ -32,8 +32,8 @@ This will prompt you for the experimenter initials, subject id, and session date
 Experimenter initials: BH
 2025-10-03 12:53:54,300 [INFO] Uploading files for experimenter: BH
 
-Subject ID: AS20-minimal2
-2025-10-03 12:53:58,995 [INFO] Uploading files for subject id: AS20-minimal2
+Subject ID: AS20-minimal3
+2025-10-03 12:53:58,995 [INFO] Uploading files for subject id: AS20-minimal3
 
 Session date MMDDYYYY: 03112025
 2025-10-03 12:54:01,984 [INFO] Uploading files for session date: 03112025 (2025-03-11)
@@ -50,18 +50,18 @@ Password for remote user ben:
 Based on the subject id, session date, and optional qualifier, the script will search local directories for behavior and ecephys files.  It will use [glob](https://docs.python.org/3/library/glob.html) patterns to select specific files of interest.
 
 ```
-2025-10-03 12:54:11,149 [INFO] Searching local behavior_root for .txt like: AS20-minimal2/**/*_031125_*.txt
-2025-10-03 12:54:11,201 [INFO]   AS20-minimal2/AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.txt
-2025-10-03 12:54:11,225 [INFO] Searching local behavior_root for .mat like: AS20-minimal2/**/*_031125_*.mat
-2025-10-03 12:54:11,240 [INFO]   AS20-minimal2/AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.mat
-2025-10-03 12:54:11,262 [INFO] Searching local ephys_root for .meta like: AS20-minimal2/**/*_03112025_*.meta
-2025-10-03 12:54:11,299 [INFO] Found .meta matches: [PosixPath('/mnt/c/Users/labuser/Desktop/Data/AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta'), PosixPath('/mnt/c/Users/labuser/Desktop/Data/AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta')]
-2025-10-03 12:54:11,299 [INFO] Found spikeglx run dir: /mnt/c/Users/labuser/Desktop/Data/AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0
-2025-10-03 12:54:11,306 [INFO]   AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
-2025-10-03 12:54:11,307 [INFO]   AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
-2025-10-03 12:54:11,307 [INFO]   AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin
-2025-10-03 12:54:11,307 [INFO]   AS20-minimal2/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
-2025-10-03 12:54:11,307 [INFO] Searching local ephys_root for .oebin like: AS20-minimal2/**/2025-03-11_*/*/*/*/structure.oebin
+2025-10-03 12:54:11,149 [INFO] Searching local behavior_root for .txt like: AS20-minimal3/**/*_031125_*.txt
+2025-10-03 12:54:11,201 [INFO]   AS20-minimal3/AS20-minimal3/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.txt
+2025-10-03 12:54:11,225 [INFO] Searching local behavior_root for .mat like: AS20-minimal3/**/*_031125_*.mat
+2025-10-03 12:54:11,240 [INFO]   AS20-minimal3/AS20-minimal3/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.mat
+2025-10-03 12:54:11,262 [INFO] Searching local ephys_root for .meta like: AS20-minimal3/**/*_03112025_*.meta
+2025-10-03 12:54:11,299 [INFO] Found .meta matches: [PosixPath('/mnt/c/Users/labuser/Desktop/Data/AS20-minimal3/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta'), PosixPath('/mnt/c/Users/labuser/Desktop/Data/AS20-minimal3/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta')]
+2025-10-03 12:54:11,299 [INFO] Found spikeglx run dir: /mnt/c/Users/labuser/Desktop/Data/AS20-minimal3/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0
+2025-10-03 12:54:11,306 [INFO]   AS20-minimal3/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
+2025-10-03 12:54:11,307 [INFO]   AS20-minimal3/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
+2025-10-03 12:54:11,307 [INFO]   AS20-minimal3/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin
+2025-10-03 12:54:11,307 [INFO]   AS20-minimal3/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
+2025-10-03 12:54:11,307 [INFO] Searching local ephys_root for .oebin like: AS20-minimal3/**/2025-03-11_*/*/*/*/structure.oebin
 2025-10-03 12:54:11,343 [INFO] Found .oebin matches: []
 ```
 
@@ -71,12 +71,12 @@ Before uploading, the script will show which files it plans to create on cortex 
 
 ```
 2025-10-03 12:54:11,344 [INFO] Planning to create 6 files in remote data_root:
-2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.txt
-2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.mat
-2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
-2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
-2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin
-2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
+2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal3/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.txt
+2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal3/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.mat
+2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
+2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
+2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin
+2025-10-03 12:54:11,344 [INFO]   BH/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
 Do you want to upload these files?  Type 'yes' to proceed: yes
 ```
 
@@ -89,14 +89,14 @@ If you do type `yes` the script will upload each file to cortex:
 2025-10-03 12:54:24,295 [INFO] Connected (version 2.0, client OpenSSH_8.9p1)
 2025-10-03 12:54:24,416 [INFO] Authentication (password) successful!
 2025-10-03 12:54:24,416 [INFO] Uploading to /vol/cortex/cd4/geffenlab/raw_data:
-2025-10-03 12:54:24,416 [INFO]   BH/AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.txt
+2025-10-03 12:54:24,416 [INFO]   BH/AS20-minimal3/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.txt
 2025-10-03 12:54:24,764 [INFO] [chan 1] Opened sftp connection (server version 3)
-2025-10-03 12:54:24,821 [INFO]   BH/AS20-minimal2/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.mat
-2025-10-03 12:54:25,790 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
-2025-10-03 12:54:36,322 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
-2025-10-03 12:54:36,402 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin
-2025-10-03 12:54:49,357 [INFO]   BH/AS20-minimal2/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
-2025-10-03 12:54:49,444 [INFO] Setting group and other permissions for session dir /vol/cortex/cd4/geffenlab/raw_data/BH/AS20-minimal2/03112025:
+2025-10-03 12:54:24,821 [INFO]   BH/AS20-minimal3/03112025/behavior/AS20_031125_trainingSingle6Tone2024_0_39.mat
+2025-10-03 12:54:25,790 [INFO]   BH/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
+2025-10-03 12:54:36,322 [INFO]   BH/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
+2025-10-03 12:54:36,402 [INFO]   BH/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.bin
+2025-10-03 12:54:49,357 [INFO]   BH/AS20-minimal3/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
+2025-10-03 12:54:49,444 [INFO] Setting group and other permissions for session dir /vol/cortex/cd4/geffenlab/raw_data/BH/AS20-minimal3/03112025:
 2025-10-03 12:54:49,521 [INFO] [chan 1] sftp session closed.
 2025-10-03 12:54:49,522 [INFO] OK.
 ```
@@ -137,8 +137,8 @@ This will prompt you for the experimenter initials, subject id, and session date
 Experimenter initials: BH
 2025-10-03 15:32:29,387 [INFO] Downloading files for experimenter: BH
 
-Subject ID: AS20-minimal2
-2025-10-03 15:32:33,406 [INFO] Downloading files for subject id: AS20-minimal2
+Subject ID: AS20-minimal3
+2025-10-03 15:32:33,406 [INFO] Downloading files for subject id: AS20-minimal3
 
 Session date MMDDYYYY: 03112025
 2025-10-03 15:32:37,427 [INFO] Downloading files for session date: 03112025 (2025-03-11)
@@ -152,22 +152,22 @@ Password for remote user ben:
 It will summarize what it finds in the session's analysis subdirectory on cortex, and download all of these files:
 
 ```
-2025-10-03 15:32:52,850 [INFO] Checking for remote analysis session directory /vol/cortex/cd4/geffenlab/analysis/BH/AS20-minimal2/03112025:
+2025-10-03 15:32:52,850 [INFO] Checking for remote analysis session directory /vol/cortex/cd4/geffenlab/analysis/BH/AS20-minimal3/03112025:
 synthesis
-/vol/cortex/cd4/geffenlab/analysis/BH/AS20-minimal2/03112025/synthesis/figures/AS20-minimal2-03112025_demo.png
-/vol/cortex/cd4/geffenlab/analysis/BH/AS20-minimal2/03112025/synthesis/figures/AS20-minimal2-03112025_neurons_1.png
-/vol/cortex/cd4/geffenlab/analysis/BH/AS20-minimal2/03112025/synthesis/BH_AS20-minimal2_03112025_summary.pkl
+/vol/cortex/cd4/geffenlab/analysis/BH/AS20-minimal3/03112025/synthesis/figures/AS20-minimal3-03112025_demo.png
+/vol/cortex/cd4/geffenlab/analysis/BH/AS20-minimal3/03112025/synthesis/figures/AS20-minimal3-03112025_neurons_1.png
+/vol/cortex/cd4/geffenlab/analysis/BH/AS20-minimal3/03112025/synthesis/BH_AS20-minimal3_03112025_summary.pkl
 
-2025-10-03 15:32:53,120 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/synthesis/figures/AS20-minimal2-03112025_demo.png
+2025-10-03 15:32:53,120 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/synthesis/figures/AS20-minimal3-03112025_demo.png
 2025-10-03 15:32:53,158 [INFO] [chan 2] Opened sftp connection (server version 3)
-2025-10-03 15:32:53,263 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/synthesis/figures/AS20-minimal2-03112025_neurons_1.png
-2025-10-03 15:32:53,333 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/synthesis/BH_AS20-minimal2_03112025_summary.pkl
+2025-10-03 15:32:53,263 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/synthesis/figures/AS20-minimal3-03112025_neurons_1.png
+2025-10-03 15:32:53,333 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/synthesis/BH_AS20-minimal3_03112025_summary.pkl
 ```
 
 It will summarize what it finds in the sessions's processed data subdirectory on cortex:
 
 ```
-2025-10-03 15:32:53,430 [INFO] Checking for remote processed data session directory /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025:
+2025-10-03 15:32:53,430 [INFO] Checking for remote processed data session directory /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025:
 curated
 exported
 main_20251003T190321UTC_nextflow.log
@@ -184,12 +184,12 @@ It will download log files from the session's processed data directory:
 
 ```
 Found session processing logs: ['main_20251003T190321UTC_nextflow.log', 'main_20251003T190321UTC_run_pipeline.log', 'main_20251003T190321UTC_process_detail.md', 'main_multi_backend_20251003T175141UTC_nextflow.log', 'main_multi_backend_20251003T175141UTC_run_pipeline.log', 'main_multi_backend_20251003T175141UTC_process_detail.md']
-2025-10-03 15:32:53,869 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/main_20251003T190321UTC_nextflow.log
-2025-10-03 15:32:53,890 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/main_20251003T190321UTC_run_pipeline.log
-2025-10-03 15:32:54,235 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/main_20251003T190321UTC_process_detail.md
-2025-10-03 15:32:53,999 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/main_multi_backend_20251003T175141UTC_nextflow.log
-2025-10-03 15:32:54,021 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/main_multi_backend_20251003T175141UTC_run_pipeline.log
-2025-10-03 15:32:54,276 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/main_multi_backend_20251003T175141UTC_process_detail.md
+2025-10-03 15:32:53,869 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/main_20251003T190321UTC_nextflow.log
+2025-10-03 15:32:53,890 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/main_20251003T190321UTC_run_pipeline.log
+2025-10-03 15:32:54,235 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/main_20251003T190321UTC_process_detail.md
+2025-10-03 15:32:53,999 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/main_multi_backend_20251003T175141UTC_nextflow.log
+2025-10-03 15:32:54,021 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/main_multi_backend_20251003T175141UTC_run_pipeline.log
+2025-10-03 15:32:54,276 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/main_multi_backend_20251003T175141UTC_process_detail.md
 ```
 
 It will download selected subdirectories from within the session's processed data directory.
@@ -198,40 +198,40 @@ These should contain Nexflow reports and AIND pipeline diagnostic plots.
 `nextflow`
 ```
 2025-10-03 15:32:54,295 [INFO] Checking for processed data subdir nextflow:
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/nextflow/dag.html
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/nextflow/report.html
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/nextflow/trace.txt
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/nextflow/timeline.html
-2025-10-03 15:32:54,320 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/nextflow/dag.html
-2025-10-03 15:32:54,373 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/nextflow/report.html
-2025-10-03 15:32:54,457 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/nextflow/trace.txt
-2025-10-03 15:32:54,475 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/nextflow/timeline.html
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/nextflow/dag.html
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/nextflow/report.html
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/nextflow/trace.txt
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/nextflow/timeline.html
+2025-10-03 15:32:54,320 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/nextflow/dag.html
+2025-10-03 15:32:54,373 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/nextflow/report.html
+2025-10-03 15:32:54,457 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/nextflow/trace.txt
+2025-10-03 15:32:54,475 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/nextflow/timeline.html
 ```
 
 `sorted/nextflow`
 ```
 2025-10-03 15:32:54,542 [INFO] Checking for processed data subdir sorted/nextflow:
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/nextflow/dag.html
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/nextflow/report.html
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/nextflow/trace.txt
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/nextflow/timeline.html
-2025-10-03 15:32:54,557 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/nextflow/dag.html
-2025-10-03 15:32:54,618 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/nextflow/report.html
-2025-10-03 15:32:54,709 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/nextflow/trace.txt
-2025-10-03 15:32:54,736 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/nextflow/timeline.html
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/nextflow/dag.html
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/nextflow/report.html
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/nextflow/trace.txt
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/nextflow/timeline.html
+2025-10-03 15:32:54,557 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/nextflow/dag.html
+2025-10-03 15:32:54,618 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/nextflow/report.html
+2025-10-03 15:32:54,709 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/nextflow/trace.txt
+2025-10-03 15:32:54,736 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/nextflow/timeline.html
 ```
 
 `sorted/visualization`
 ```
 2025-10-03 15:32:54,820 [INFO] Checking for processed data subdir sorted/visualization:
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_proc_seg0.png
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/motion.png
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_full_seg0.png
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/drift_map.png
-2025-10-03 15:32:54,841 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_proc_seg0.png
-2025-10-03 15:32:55,022 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/motion.png
-2025-10-03 15:32:55,095 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_full_seg0.png
-2025-10-03 15:32:55,205 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal2/03112025/sorted/visualization/block0_imec0.ap_recording1/drift_map.png
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_proc_seg0.png
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/motion.png
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_full_seg0.png
+/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/drift_map.png
+2025-10-03 15:32:54,841 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_proc_seg0.png
+2025-10-03 15:32:55,022 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/motion.png
+2025-10-03 15:32:55,095 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_full_seg0.png
+2025-10-03 15:32:55,205 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/drift_map.png
 ```
 
 When finished you should be able to open `ephys-pipeline-outputs` on the Windows desktop and browse to the results.

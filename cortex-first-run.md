@@ -24,7 +24,7 @@ Within this `raw_data/` subdirectory we can orgaize files by experimenter initia
 
 For example we have a minimal testing dataset that uses the following:
  - experimenter: `BH`
- - subject: `AS20-minimal2`
+ - subject: `AS20-minimal3`
  - date: `03112025`
  - modalities: `behavior` and `ecephys`
 
@@ -34,7 +34,7 @@ Here's the minimal testing dataset at a glance:
 /vol/cortex/cd4/geffenlab/
 └── raw_data/
     └── BH/
-        └── AS20-minimal2/
+        └── AS20-minimal3/
             └── 03112025/
                 ├── behavior/
                 │   ├── AS20_031125_trainingSingle6Tone2024_0_39.mat
@@ -48,11 +48,11 @@ Here's the minimal testing dataset at a glance:
                             └── AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
 ```
 
-The subject id `AS20-minimal2` is unusual.  It means the original data are from subject `AS20`, but for testing we created a smaller version of the dataset (just a few trials) using tools in [geffenlab-minimal-data](https://github.com/benjamin-heasly/geffenlab-minimal-data).
+The subject id `AS20-minimal3` is unusual.  It means the original data are from subject `AS20`, but for testing we created a smaller version of the dataset (just a few trials) using tools in [geffenlab-minimal-data](https://github.com/benjamin-heasly/geffenlab-minimal-data).
 
-# Process the `AS20-minimal2` dataset
+# Process the `AS20-minimal3` dataset
 
-Let's start by processing a small testing dataset for subject `AS20-minimal2`.  This processing run should only take a few minutes.
+Let's start by processing a small testing dataset for subject `AS20-minimal3`.  This processing run should only take a few minutes.
 
 Log in to cortex and connect to a screen session.
 
@@ -87,7 +87,7 @@ python run_pipeline.py \
   --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
   --config geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
   --experimenter BH \
-  --subject AS20-minimal2 \
+  --subject AS20-minimal3 \
   --date 03112025
 ```
 
@@ -114,7 +114,7 @@ python run_pipeline.py \
   --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
   --config geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
   --experimenter BH \
-  --subject AS20-minimal2 \
+  --subject AS20-minimal3 \
   --date 03112025 \
   -resume
 ```
@@ -139,13 +139,13 @@ Here's a summary of the `raw_data/` and `processed_data/` subdirectories, after 
 /vol/cortex/cd4/geffenlab/
 ├── raw_data/
 │   └── BH/
-│       └── AS20-minimal2/
+│       └── AS20-minimal3/
 │           └── 03112025/
 │               ├── behavior/               # unchanged
 │               └── ecephys/                # unchanged
 └── processed_data/
     └── BH/
-        └── AS20-minimal2/
+        └── AS20-minimal3/
             └── 03112025/
                 └── sorted/                 # new
                     ├── nextflow/
@@ -172,7 +172,7 @@ python run_pipeline.py \
   --workflow geffenlab-ephys-pipeline/pipeline/main.nf \
   --config geffenlab-ephys-pipeline/pipeline/cortex.config \
   --experimenter BH \
-  --subject AS20-minimal2 \
+  --subject AS20-minimal3 \
   --date 03112025
 ```
 
@@ -192,25 +192,25 @@ Here's a summary of the data and analysis subdirectories, after running the Geff
 /vol/cortex/cd4/geffenlab/
 ├── raw_data/
 │   └── BH/
-│       └── AS20-minimal2/
+│       └── AS20-minimal3/
 │           └── 03112025/
 │               ├── behavior/               # unchanged
 │               └── ecephys/                # unchanged
 └── processed_data/
 │   └── BH/
-│       └── AS20-minimal2/
+│       └── AS20-minimal3/
 │           └── 03112025/
 │               └── sorted/                 # unchanged
 │               ├── curated/                # new
 │               └── exported/               # new
 └── analysis/                               # new
     └── BH/
-        └── AS20-minimal2/
+        └── AS20-minimal3/
             └── 03112025/
                 └── synthesis/
-                    ├── AS20-minimal2-03112025.pkl
+                    ├── AS20-minimal3-03112025.pkl
                     └── figures/
-                        └── AS20-minimal2-03112025_neurons_1.png
+                        └── AS20-minimal3-03112025_neurons_1.png
 ```
 
 The new `synthesis/` subdirectory contains a Python `.pkl` with dataframes from different modalities aligned in time, and summary figure(s) from the lab's [summary-plotting-scripts](./summary-plotting-scripts.md).
@@ -238,17 +238,17 @@ This script includes several default values for cortex, like the cortex server a
 
 ```
 Experimenter initials: BH
-Subject ID: AS20-minimal2
+Subject ID: AS20-minimal3
 Session date MMDDYYYY: 03112025
 ```
 
 This should find pipeline processing and analysis results on cortex and download them to the windows Desktop in a folder named `ephys-pipeline-outputs`.  You should be able to open this folder and browse to the results, including:
 
- - Processing logs in `BH/AS20-minimal2/03112025/`
- - Session summary pickel and figures in `BH/AS20-minimal2/03112025/synthesis`
- - Nextflow visualizations for the Geffen lab ephys pipeline: `BH/AS20-minimal2/03112025/nextflow`
- - Nextflow visualizations for the AIND ephys pipeline: `BH/AS20-minimal2/03112025/sorted/nextflow`
- - Quality control visualizations from the AIND ephys pipeline: `BH/AS20-minimal2/03112025/sorted/visualization/`
+ - Processing logs in `BH/AS20-minimal3/03112025/`
+ - Session summary pickel and figures in `BH/AS20-minimal3/03112025/synthesis`
+ - Nextflow visualizations for the Geffen lab ephys pipeline: `BH/AS20-minimal3/03112025/nextflow`
+ - Nextflow visualizations for the AIND ephys pipeline: `BH/AS20-minimal3/03112025/sorted/nextflow`
+ - Quality control visualizations from the AIND ephys pipeline: `BH/AS20-minimal3/03112025/sorted/visualization/`
 
 # Process a full `AS20` dataset
 
