@@ -1,9 +1,9 @@
 name: Pipeline Integration Test
 
-on: push
-    # push:
-    # tags:
-    #   - '*'
+on:
+  push:
+    tags:
+      - '*'
 
 jobs:
   run-pipelines:
