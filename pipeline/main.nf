@@ -1,32 +1,24 @@
-process geffenlab_ecephys_catgt {
-    tag 'geffenlab_ecephys_catgt'
-    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.0'
+process geffenlab_copy_behavior {
+    tag 'geffenlab_copy_behavior'
+    container 'ubuntu:22.04'
 
-    publishDir "${params.processed_data_path}/exported",
+    publishDir "${params.processed_data_path}/behavior",
         mode: 'copy',
         overwrite: true,
-        pattern: 'results/*',
+        pattern: "$raw_data_path/behavior/*",
         saveAs: { filename -> file(filename).name }
 
     input:
     path raw_data_path
 
     output:
-    path 'results/*', emit: catgt_results
+    path "$raw_data_path/behavior/*", emit: behavior_path
 
     script:
     """
     #!/usr/bin/env bash
     set -e
-
-    mkdir -p results/catgt
-    conda_run python /opt/code/catgt.py \
-      --probe-id $params.probe_id \
-      --gate $params.catgt_gate \
-      --trigger $params.catgt_trigger \
-      $raw_data_path/ecephys \
-      results/catgt \
-      $params.catgt_args
+    echo "Copy behavior data: $raw_data_path/behavior/"
     """
 }
 
@@ -57,6 +49,38 @@ process geffenlab_ecephys_phy_export {
       --results-root results \
       --postprocessed-pattern $params.postprocessed_pattern \
       --curated-pattern $params.curated_pattern
+    """
+}
+
+process geffenlab_ecephys_catgt {
+    tag 'geffenlab_ecephys_catgt'
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.0'
+
+    publishDir "${params.processed_data_path}/exported",
+        mode: 'copy',
+        overwrite: true,
+        pattern: 'results/*',
+        saveAs: { filename -> file(filename).name }
+
+    input:
+    path raw_data_path
+
+    output:
+    path 'results/*', emit: catgt_results
+
+    script:
+    """
+    #!/usr/bin/env bash
+    set -e
+
+    mkdir -p results/catgt
+    conda_run python /opt/code/catgt.py \
+      --probe-id $params.probe_id \
+      --gate $params.catgt_gate \
+      --trigger $params.catgt_trigger \
+      $raw_data_path/ecephys \
+      results/catgt \
+      $params.catgt_args
     """
 }
 
@@ -151,30 +175,6 @@ process geffenlab_phy_desktop {
       --results-root results \
       --params-py-pattern **/params.py \
       ${params.interactive}
-    """
-}
-
-process geffenlab_copy_behavior {
-    tag 'geffenlab_copy_behavior'
-    container 'ubuntu:22.04'
-
-    publishDir "${params.processed_data_path}/behavior",
-        mode: 'copy',
-        overwrite: true,
-        pattern: "$raw_data_path/behavior/*",
-        saveAs: { filename -> file(filename).name }
-
-    input:
-    path raw_data_path
-
-    output:
-    path "$raw_data_path/behavior/*", emit: behavior_path
-
-    script:
-    """
-    #!/usr/bin/env bash
-    set -e
-    echo "Copy behavior data: $raw_data_path/behavior/"
     """
 }
 
