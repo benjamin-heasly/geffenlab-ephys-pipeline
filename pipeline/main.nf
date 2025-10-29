@@ -218,7 +218,7 @@ workflow {
         catgt_results = geffenlab_ecephys_catgt(raw_data_channel)
         events_results = geffenlab_ecephys_tprime(catgt_results, phy_export_results)
     } else {
-        events_results = geffenlab_openephys_events(raw_data_channel, phy_export_results)
+        events_results = geffenlab_openephys_events(raw_data_channel)
     }
 
     phy_desktop_results = geffenlab_phy_desktop(phy_export_results)
