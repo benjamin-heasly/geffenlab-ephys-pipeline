@@ -52,7 +52,11 @@ process geffenlab_ecephys_phy_export {
     set -e
 
     mkdir -p results
-    conda_run python /opt/code/run.py --data-root $processed_data_path --results-root results
+    conda_run python /opt/code/run.py \
+      --data-root $processed_data_path \
+      --results-root results \
+      --postprocessed-pattern $params.postprocessed_pattern \
+      --curated-pattern $params.curated_pattern
     """
 }
 
