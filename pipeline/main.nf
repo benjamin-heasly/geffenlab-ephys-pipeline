@@ -32,7 +32,7 @@ process geffenlab_ecephys_catgt {
 
 process geffenlab_ecephys_phy_export {
     tag 'geffenlab_ecephys_phy_export'
-    container 'ghcr.io/benjamin-heasly/geffenlab-ecephys-phy-export:v0.0.6'
+    container 'ghcr.io/benjamin-heasly/geffenlab-ecephys-phy-export:v0.0.7'
 
     publishDir "${params.processed_data_path}/exported",
         mode: 'copy',
