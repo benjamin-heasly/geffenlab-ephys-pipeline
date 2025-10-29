@@ -71,7 +71,7 @@ process geffenlab_ecephys_tprime {
     path phy_export_results
 
     output:
-    path 'results/*', emit: tprime_results
+    path 'results/*', emit: events_results
 
     script:
     """
@@ -90,6 +90,30 @@ process geffenlab_ecephys_tprime {
       --phy-from-stream $params.tprime_phy_from_stream \
       --probe-id $params.probe_id \
       --phy-pattern $phy_export_results/**/params.py
+    """
+}
+
+process geffenlab_openephys_events {
+    tag 'geffenlab_openephys_events'
+    container 'ubuntu:22.04'
+
+    publishDir "${params.processed_data_path}/exported",
+        mode: 'copy',
+        overwrite: true,
+        pattern: 'results/*',
+        saveAs: { filename -> file(filename).name }
+
+    input:
+    path raw_data_path
+
+    output:
+    path 'results/*', emit: events_results
+
+    script:
+    """
+    #!/usr/bin/env bash
+    set -e
+    echo "TESTING PLACEHOLDER for geffenlab_openephys_events"
     """
 }
 
@@ -149,7 +173,7 @@ process geffenlab_copy_behavior {
 
 process geffenlab_synthesis {
     tag 'geffenlab_synthesis'
-    container 'ghcr.io/benjamin-heasly/geffenlab-synthesis:v0.0.20'
+    container 'ghcr.io/benjamin-heasly/geffenlab-synthesis:v0.0.21'
 
     publishDir "${params.analysis_path}/synthesis",
         mode: 'copy',
@@ -160,7 +184,7 @@ process geffenlab_synthesis {
     input:
     path behavior_path, name: 'processed/behavior/*'
     path phy_export_results, name: 'processed/exported/*'
-    path tprime_results, name: 'processed/exported/*'
+    path events_results, name: 'processed/exported/*'
     path phy_desktop_results, name: 'processed/curated/*'
 
     output:
@@ -178,7 +202,7 @@ process geffenlab_synthesis {
       --experimenter=$params.experimenter \
       --subject=$params.subject \
       --date=$params.date \
-      --plotting_scripts $params.synthesis_plotting_scripts
+      --plotting-scripts $params.synthesis_plotting_scripts
     """
 }
 
@@ -186,13 +210,17 @@ workflow {
     println "params: ${params}"
 
     raw_data_channel = channel.fromPath(params.raw_data_path)
-    catgt_results = geffenlab_ecephys_catgt(raw_data_channel)
-
     behavior_path = geffenlab_copy_behavior(raw_data_channel)
-
     processed_data_channel = channel.fromPath(params.processed_data_path)
     phy_export_results = geffenlab_ecephys_phy_export(processed_data_channel)
-    tprime_results = geffenlab_ecephys_tprime(catgt_results, phy_export_results)
+
+    if (params.input == "spikeglx") {
+        catgt_results = geffenlab_ecephys_catgt(raw_data_channel)
+        events_results = geffenlab_ecephys_tprime(catgt_results, phy_export_results)
+    } else {
+        events_results = geffenlab_openephys_events(raw_data_channel, phy_export_results)
+    }
+
     phy_desktop_results = geffenlab_phy_desktop(phy_export_results)
-    geffenlab_synthesis(behavior_path, phy_export_results, tprime_results, phy_desktop_results)
+    geffenlab_synthesis(behavior_path, phy_export_results, events_results, phy_desktop_results)
 }
