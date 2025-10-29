@@ -114,6 +114,10 @@ process geffenlab_openephys_events {
     #!/usr/bin/env bash
     set -e
     echo "TESTING PLACEHOLDER for geffenlab_openephys_events"
+    mkdir -p results/exported/events/testing
+    echo "0.0" > results/exported/events/testing/test-events.txt
+    echo "1.0" >> results/exported/events/testing/test-events.txt
+    echo "2.0" >> results/exported/events/testing/test-events.txt
     """
 }
 
