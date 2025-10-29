@@ -140,10 +140,10 @@ process geffenlab_copy_behavior {
 
     script:
     """
-        #!/usr/bin/env bash
-        set -e
-        echo "Copy behavior data: $raw_data_path/behavior/"
-        ls -alth $raw_data_path/behavior/
+    #!/usr/bin/env bash
+    set -e
+    echo "Copy behavior data: $raw_data_path/behavior/"
+    ls -alth $raw_data_path/behavior/
     """
 }
 
