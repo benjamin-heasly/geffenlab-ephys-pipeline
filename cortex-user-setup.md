@@ -1,18 +1,34 @@
 # Cortex User Setup
 
-This doc should help you configure your cortex user account and local lab machine for running Geffen lab pipelines with Nextflow.
+This doc should help you configure your local lab machine and your cortex user account for running Geffen lab pipelines with Nextflow.
 
-When you're done here please see [cortex-first-run.md](./cortex-first-run.md) to try processing some known data.
+When you're done here please see [cortex-first-run.md](./cortex-first-run.md) to try a pipeline run with known data.
+This should validate your setup and indicate how to run other data as well.
 
-# WSL (on lab Windows machine)
+# Overview
 
-If you're working from a Windows machine in the lab, it will be useful to set up [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) first.  "WSL" stands for "Windows Subsystem for Linux".  It's a Windows feature that provides a full Linux environment running within and alongside Windows.
+Our workflow has a few steps to it which will run from local lab machines or cortex:
+ - Uploading data to cortex runs from a local lab machine, using a Python script, from the local terminal.
+ - Processing pipelines run on cortex, using a Python script, from a remote desktop session.
+ - Manual cluser curation with Phy runs on cortex, using the interactive Phy GUI, from a remote desktop session.
+ - Downloading logs and results runs on a local lab machine, using a Python script, from the local terminal.
 
-Working from a Linux environment will have some advantages:
- - The local and cortex environments and command languages will be the same.
- - You'll be able run interactive programs like Phy with the processing and data on cortex, but the windows appearing on your local machine.
+The steps below should help you set up both your local lab machine and your Cortex user account.
 
-To install WSL find Windows Powershell in the task bar, open a Powershell window, and type:
+# Your local lab machine
+
+Let's set up your local lab machine for uploading data and downloading logs and pipeline results.
+These instructions assume you're using Windows and WSL (Linux that runs within Windows).
+Regular Linux and macOS should work too, but would require some adjustments to these steps.
+
+## local WSL
+
+It will be useful to set up [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) on your local Windows machine.
+"WSL" stands for "Windows Subsystem for Linux".
+It's a Windows feature that provides a full Linux environment running within and alongside Windows.
+Working from a Linux environment means the local and cortex environments and command languages will be the same.
+
+To install WSL find Windows Powershell in the Start menu, open a Powershell window, and type:
 
 ```
 wsl --install
@@ -31,7 +47,7 @@ user: labuser
 password: *******
 ```
 
-Finally whenever you need to start WSL open a Powershell window and type:
+Going forward, whenever you need to start WSL, open a Powershell window and type:
 
 ```
 wsl
@@ -39,9 +55,10 @@ wsl
 
 From there you'll be working in Linux environment and you're ready to run all the commands below.
 
-## Conda (WSL)
+## local Conda
 
-We can use [Conda](https://anaconda.org/anaconda/conda) to manage dependencies on the lab machine and on cortex.  To install conda on the local lab machine run the following:
+We can use [Conda](https://anaconda.org/anaconda/conda) to manage dependencies on the lab machine and on cortex.
+To install Conda in your local WSL environment:
 
 ```
 cd ~
@@ -57,21 +74,25 @@ To finish installing conda you'll need to log out from WSL and log in again.
 ```
 # from WSL
 exit
+```
 
+```
 # from Powershell
 wsl
 ```
 
-Check that conda is installed in your WSL environment.
+Verify that conda is installed in your WSL environment.
 
 ```
 conda --version
 # expect conda 24.5.0
 ```
 
-## Conda environment (WSL)
+## local Conda environment
 
-With conda installed we can create our own conda environment for running lab Python scripts.  The environment is defined here in this repo in [geffen-pipelines.yml](./geffen-pipelines.yml).  To create and activate the environment in WSL:
+With conda installed we can create our own conda environment for running lab Python scripts.
+The environment is defined here in this repo in [geffen-pipelines.yml](./geffen-pipelines.yml).
+To create and activate the environment in WSL:
 
 ```
 cd ~
@@ -87,54 +108,138 @@ python --version
 # expect Python 3.13.5
 ```
 
-# Connect to cortex
+With this environment in place, you'll be set up to upload to and dowload from cortex, as in [cortex-moving-data.md](./cortex-moving-data.md).
 
-To connect to cortex from the WSL environment use `ssh -Y` like this:
+# Your cortex user account
+
+Let's set up your cortex user account for running pipelines and curating with Phy.
+
+## cortex remote desktop connection
+
+You'll need to already have a cortex user account and be able to log in.
+You might find the [Getting started canvas](https://pesaranlab.slack.com/docs/T0481N8KH0A/F09E97B31J7) helpful, on the brainsadmin Slack channel.
+
+In Windows you can find Remote Desktop Connection in the Start menu.
+Open this, use `Computer:` `128.91.19.199` for cortex, and press `Connect`.
+
+You should get a window that says `Login to cortex`.
+Fill in your cortex user name and password, and press `OK`.
+
+You should get an Ubuntu Desktop!
+You might be prompted to do first-time Ubuntu user setup.
+You can chose "skip" or "proceed" to get passed this.
+
+## cortex terminal
+
+We have a full desktop, but we'll still need to run commands from a terminal.
+You can get a terminal in your desktop session by choosing:
+ - Click `Activities` in the upper left.
+ - Click `Show Applications` in the bottom right (menu should appear).
+ - Choose `Terminal`.
+
+To make this slightly quicker next time, you can:
+ - Click `Activities` again.
+ - Right-click on the `Terminal` icon.
+ - Choose `Pin to dash`.
+
+NOTE: you should be able to cut-and-paste commands into your remote terminal on cortex by right-clicking in the terminal window.
+
+## cortex enable rootless Docker
+
+Our pipelines use Docker to run steps in version-controlled, isolated environments with all their own code and dependencies.
+Docker is already installed on Cortex, but you may need to do some one-time steup.
+
+See the brainsadmin Slack channel and find the canvas with instructions for [Rootles Docker](https://pesaranlab.slack.com/docs/T0481N8KH0A/F09JMHTJKA6).
+Follow the instructions in this document.
+
+The process will go somethign like this:
+ - Ask ask Bijan or Jarl for admin help setting up rootless docker.
+ - Tell them your cortex user name.
+ - As admins they will do the first part, adding your user to the system config files `/etc/subuid` and `/etc/subgid`.
+ - When they are done, you can run `dockerd-rootless-setuptool.sh install --force` yourself.
+
+## cortex test Docker
+
+With rootless Docker all set up, verify you can run Docker containers.
+
+Run this command:
 
 ```
-ssh -Y ben@128.91.19.199
+docker run --rm hello-world
 ```
 
-You would use your own username, rather than `ben`.
-
-The `-Y` option enable interactive, graphical applications like Phy to run on cortex, but with the windows appearing on your local machine.
-
-Once you've logged in to cortex you can test that graphics are working with a simple program like `xeyes`.  In your cortex terminal type:
+Expect output like this:
 
 ```
-xeyes
+# Hello from Docker!
+# This message shows that your installation appears to be working correctly.
+# etc...
 ```
 
-You should see a little window on your local machine, with two cartoon eyeballs that follow the mouse cursor.
+## cortex test Docker GPU support
 
-# One-time cortex geffenlab and user setup
+Verify that your docker containers will have access to the GPUs on cortex.
 
-Before running your first pipeline you'll need to do some setup for your cortex user account.  This is to obtain pipeline code and install dependencies.
-
-## Pipeline code
-
-We're using two Nexftlow pipelines: the [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) for spike sorting and quality metrics, and the [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline) for combining data modalities and producing summary figures.
-
-Clone these two Git repos the geffenlab data directory.  They might already be present if someone has already run this step, in which case you're all set!
+Run this command:
 
 ```
-mkdir /vol/cortex/cd4/geffenlab/nextflow
-cd /vol/cortex/cd4/geffenlab/nextflow
-git clone https://github.com/AllenNeuralDynamics/aind-ephys-pipeline.git
-git clone https://github.com/benjamin-heasly/geffenlab-ephys-pipeline.git
+docker run --rm --gpus all ubuntu nvidia-smi
 ```
 
-Note: we have been using version [5c87528](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/commit/5c875288a2e485b4bdf1b61f4ad48c648691246d) of the [aind-ephys-pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline), from 21 October 2025.
+Expect output like this, indicating the existence of several NVIDIA GPUs:
 
 ```
-# Check the aind-ephys-pipeline version:
-cd /vol/cortex/cd4/geffenlab/nextflow/aind-ephys-pipeline
-git status
+Thu Oct 30 20:41:36 2025       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.274.02             Driver Version: 535.274.02   CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA RTX A4500               Off | 00000000:27:00.0 Off |                  Off |
+| 30%   27C    P8              21W / 200W |    123MiB / 20470MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+|   1  NVIDIA RTX A4500               Off | 00000000:38:00.0 Off |                  Off |
+| 30%   25C    P8              13W / 200W |      9MiB / 20470MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+|   2  NVIDIA RTX A4500               Off | 00000000:A8:00.0 Off |                  Off |
+| 30%   22C    P8              17W / 200W |      9MiB / 20470MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+|   3  NVIDIA RTX A4500               Off | 00000000:B8:00.0 Off |                  Off |
+| 30%   21C    P8              13W / 200W |      9MiB / 20470MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
++---------------------------------------------------------------------------------------+
 ```
 
-## Conda (cortex)
+## cortex test Docker graphics support
 
-We can use [Conda](https://anaconda.org/anaconda/conda) to manage dependencies on cortex as well as local lab machines.  To install conda for your cortex user run the following:
+Verify that your Docker containers will be able to run interactive graphical applications (like Phy).
+
+Run this command:
+
+```
+docker run --rm --env DISPLAY --volume /tmp/.X11-unix:/tmp/.X11-unix ferri/xeyes:alpine
+```
+
+Expect a graphical window to appear with a title like "xeyes".
+The window should contain two silly eyeballs that look at the mouse cursor and follow it as it moves.
+You can close the window by clicking the `x` any time.
+
+## cortex Conda
+
+We can use [Conda](https://anaconda.org/anaconda/conda) to manage dependencies on cortex, just like we did on your local lab machine.
+To install conda for your cortex user run the following in a terminal on your cortex remote desktop:
 
 ```
 cd ~
@@ -145,43 +250,61 @@ chmod +x ./miniconda.sh
 # Choose "yes" to automatically initialize conda for shell.
 ```
 
-To finish installing conda you'll need to log out from cortex and log in again.
+To finish installing conda you'll need to log out from your terminal, then open a new one.
 
 ```
-# from cortex
+# from cortex terminal
 exit
-
-# from local
-ssh -Y ben@128.91.19.199
 ```
 
-Check that conda is installed for your cortex user.
+Open a new terminal on your cortex remote desktop, via `Activities` in the upper left.
 
 ```
+# from new cortex terminal
 conda --version
 # expect conda 24.5.0
 ```
 
-## Conda environment (cortex)
+## cortex Conda environment
 
-With conda installed we can create our own conda environment for running Nextflow pipelines.  The environment is defined here in this repo in [geffen-pipelines.yml](./geffen-pipelines.yml).  It's the same one we used locally, above, for WSL.  To create and activate the environment on cortex:
+With conda installed we can create our own conda environment for running Nextflow pipelines.
+The environment is defined here in this repo in [geffen-pipelines.yml](./geffen-pipelines.yml).
+It's the same environment we used above, for your local lab machine.
+To create and activate the environment on cortex:
 
 ```
-cd ~/nextflow
-conda env create -f geffenlab-ephys-pipeline/geffen-pipelines.yml
+cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline
+conda env create -f geffen-pipelines.yml
 conda activate geffen-pipelines
 ```
 
-Check that the environment is active and has the expected version of Java
+Verify that the environment is active and has the expected version of Java installed:
 
 ```
 java -version
 # expect openjdk version "17.0.14" 2025-01-21 LTS
 ```
 
+After all of this, you should be able to go on to [cortex-first-run.md](./cortex-first-run.md) to try a pipeline run with known data.
+
+# Other cortex setup for Geffen lab
+
+In addition to your own user setup above, we had some setup on cortex for the whole lab.
+You don't need to run the steps below yourself, but we do want the lab to have this documentation.
+
+## data directories
+
+The Geffen lab is assigned the following storage directory on cortex: `/vol/cortex/cd4/geffenlab/`.
+
+We created several subdirectories to organized things:
+ - `/vol/cortex/cd4/geffenlab/nextflow`: pipelines code, Nextflow executable, and Nextflow logs and working directories (shared by all lab members)
+ - `/vol/cortex/cd4/geffenlab/raw_data`: raw nerual and behavioral data uploaded from lab machines (subdirectories per experimenter, subject, and session date)
+ - `/vol/cortex/cd4/geffenlab/processed_data`: intermediate pipeline outputs and logs (subdirectories per experimenter, subject, and session date)
+ - `/vol/cortex/cd4/geffenlab/analysis`: pipeline results, downloadable figures and data pickles (subdirectories per experimenter, subject, and session date)
+
 ## Nextflow
 
-Install the [Nextflow](https://www.nextflow.io/) pipeline tool into the geffenlab data directory.  Someone might have done this already, in which case you're all set.
+We installed the [Nextflow](https://www.nextflow.io/) pipeline tool into the geffenlab `nextflow/` subdirectory.
 
 ```
 cd /vol/cortex/cd4/geffenlab/nextflow
@@ -189,12 +312,17 @@ wget https://github.com/nextflow-io/nextflow/releases/download/v25.04.6/nextflow
 chmod +x nextflow-25.04.6-dist
 ```
 
-Check that nextflow is working:
+Verify that nextflow is working:
 
 ```
+cd /vol/cortex/cd4/geffenlab/nextflow
+conda activate geffen-pipelines
 ./nextflow-25.04.6-dist -version
+```
 
-# expect
+Expect output like this:
+
+```
 #      N E X T F L O W
 #      version 24.10.6 build 5937
 #      created 23-04-2025 16:53 UTC (12:53 EDT)
@@ -202,100 +330,103 @@ Check that nextflow is working:
 #      http://nextflow.io
 ```
 
-## Docker
+## pipeline code
 
-Doker is already installed on cortex, but you must do some setup to allow your user account to use it.
+We're using two Nexftlow pipelines:
+ - the [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) for spike sorting and quality metrics
+ - our [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline) for combining data modalities and producing summary figures and pickles
 
-## Enable rootless Docker
-
-On the brainsadmin Slack channel find the canvas with instructions for [Rootles Docker](https://pesaranlab.slack.com/docs/T0481N8KH0A/F09JMHTJKA6).  Follow the instructions in this document.
-
-The process will go somethign like this:
- - Ask ask Bijan or Jarl for admin help setting up rootless docker.
- - Tell them your cortex user name.
- - As admins they will to the first part, adding your user to the system config files `/etc/subuid` `/etc/subgid`.
- - When they are done, you can run `dockerd-rootless-setuptool.sh install --force` yourself.
-
-## Try running Docker
-
-With rootless docker enabled, confirm that you are allowed to run Docker commands:
+We cloned these two Git repos into the geffenlab `nextflow/` subdirectory.
 
 ```
-docker run hello-world
-
-# expect output like this:
-
-# Hello from Docker!
-# This message shows that your installation appears to be working correctly.
+cd /vol/cortex/cd4/geffenlab/nextflow
+git clone https://github.com/AllenNeuralDynamics/aind-ephys-pipeline.git
+git clone https://github.com/benjamin-heasly/geffenlab-ephys-pipeline.git
 ```
 
-# Screen
+### AIND pipeline version
 
-For long-running processes like our pipelines, you should use [screen](https://www.gnu.org/software/screen/) after connecting via `ssh`.  Screen allows your processing sessions to continue, even if you disconnect from `ssh` or if your network connection is interrupted.  This can save a lot of hassle if become disconnected during a long processing run.
+The [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) is actively developed and has different versions over time.
+We've been working with version [5c87528](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/tree/5c875288a2e485b4bdf1b61f4ad48c648691246d), from 21 October 2025.
+We should stick with this version until we need to change it, and we're able to spend time working out any issues that arise from the change.
 
-Screen is already installed on cortex, here are some commands you can use.
-
-## connect 
-
-After connecting via `ssh`, start a screen session:
+Verify the version of the AIND pipeline:
 
 ```
-# start a screen session
-screen
+cd /vol/cortex/cd4/geffenlab/nextflow/aind-ephys-pipeline
+git log
 ```
 
-Then you can continue typing commands as normal.
-
-## detach
-
-When you want to detach:
+Expect the log to start with `commit 5c87528`:
 
 ```
-screen -d   # detach from screen
+commit 5c875288a2e485b4bdf1b61f4ad48c648691246d (HEAD -> main, origin/main, origin/HEAD)
+Merge: 6d8216d 893eb25
+Author: Alessio Buccino <alessio.buccino@alleninstitute.org>
+Date:   Tue Oct 21 15:15:29 2025 +0200
+
+    Merge pull request #66 from AllenNeuralDynamics/fix-nwb-ecephys-electrodes
+    
+    Update NWB ecephys version
 ```
 
-If you need to detach while a long command is still running you can enable hot keys with `ctrl-a` then immediately press `d` (no need to press enter).
+#### AIND QUALITY_CONTROL version change
 
-First press:
+We have one local change to call out, within the AIND pipeline code repo.
+This is a change to the [capsule_versions](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/blob/main/pipeline/capsule_versions.env#L10C17-L10C57) file, which declares versions of code used in individual processing steps.
 
-```
-crtl-a      # enable hot keys
-```
+The default code and version for the "quality control" step is [aind-ephys-processing-qc version c18647a](https://github.com/AllenNeuralDynamics/aind-ephys-processing-qc/tree/c18647a0246ab6f3d59b4aacf52b3462e56fa20c).
+This version contains a bug for recordings with multiple segments.
+The "quality control" code itself has been updated to fix this bug, but the fixed version is not yet the default version used by the overall AIND pipeline.
+We made a code change locally, to declare [aind-ephys-processing-qc version 99784c2](https://github.com/AllenNeuralDynamics/aind-ephys-processing-qc/tree/99784c262c1d6a9af7a8a28ec380278db403fc17), instead.
 
-Then press:
-
-```
-d           # hotkey to detach from screen
-```
-
-This should bring you back to the terminal you saw right after you logged in with `ssh`.
-
-## reattach
-
-Later, when you want to reattach to your screen session, you can `ssh` to cortex and type:
+Verify the "quality control" code version used by the AIND pipeline:
 
 ```
-screen -x   # reattach to existing screen session
+cd /vol/cortex/cd4/geffenlab/nextflow/aind-ephys-pipeline
+git diff
 ```
 
-This should bring you back to your running process, just as you left it.
-
-## summary
-
-Here's a summary of the command flow above.
+Expect only one file modified: `pipeline/capsule_versions.env`.
+Expect the diff to show one line changed:
 
 ```
-                              screen              
-                              or                  
-┌────────┐  ssh   ┌────────┐  screen -x  ┌────────┐
-│        ├───────►│        ├────────────►│        │
-│ local  │        │ cortex │             │ screen │
-│        │◄───────│        │◄────────────┤        │
-└────────┘  exit  └────────┘  screen -d  └────────┘
-                              or hotkeys          
-                              ctrl-a, d           
+-QUALITY_CONTROL=c18647a0246ab6f3d59b4aacf52b3462e56fa20c
++QUALITY_CONTROL=99784c262c1d6a9af7a8a28ec380278db403fc17
 ```
 
-## more
+We'd prefer not to make changes like this or to keep track of them!
+Hopefully the main pipeline will be updated, and we can update to a version that we can use whole, as-is.
 
-The commands above should get you started with screen.  Screen has many more capabilities, as in this [screen cheatsheet](https://gist.github.com/jctosta/af918e1618682638aa82).
+### Geffen lab pipeline version
+
+We've been actively developing and debugging our own [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline).
+When things are settled, we should choose a release tag to check out on cortex, and use for all processing.
+Meanwhile, we should try to keep this repo up to date with the latest on GitHub.
+
+Check what version is currently on cortex:
+
+```
+cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline
+git log
+```
+
+GitHub should be the source of truth for this pipeline.
+We should not have local changes on cortex that are not captured in version control on GitHub.
+Otherwise, we won't know how our data was processed and we won't be sure the processing can be reproduced.
+
+Verify no local changes on cortex:
+
+```
+cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline
+git status
+```
+
+Expect output like this:
+
+```
+On branch master
+Your branch is up to date with 'origin/master'.
+
+nothing to commit, working tree clean
+```
