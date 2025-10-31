@@ -80,14 +80,14 @@ def run_main(
             txt_relative = txt_match.relative_to(behavior_path)
             logging.info(f"  {txt_relative}")
             destination_relative = Path(experimenter, subject, session_mmddyyyy, "behavior", txt_match.name)
-            to_upload.append((behavior_path, txt_relative, destination_relative))
+            to_upload.append((behavior_path, txt_relative, destination_relative, session_mmddyyyy))
 
         logging.info(f"Searching local behavior_root for .mat like: {behavior_mat_pattern}")
         for mat_match in behavior_path.glob(behavior_mat_pattern):
             mat_relative = mat_match.relative_to(behavior_path)
             logging.info(f"  {mat_relative}")
             destination_relative = Path(experimenter, subject, session_mmddyyyy, "behavior", mat_match.name)
-            to_upload.append((behavior_path, mat_relative, destination_relative))
+            to_upload.append((behavior_path, mat_relative, destination_relative, session_mmddyyyy))
 
         # Locate spikeglx meta files as representatives spikeglx run dirs.
         logging.info(f"Searching local ephys_root for .meta like: {spikeglx_meta_pattern}")
@@ -102,7 +102,7 @@ def run_main(
                 spikglx_relative = spikglx_file.relative_to(ephys_path)
                 logging.info(f"  {spikglx_relative}")
                 destination_relative = Path(experimenter, subject, session_mmddyyyy, "ecephys", spikglx_file.relative_to(run_dir.parent))
-                to_upload.append((ephys_path, spikglx_relative, destination_relative))
+                to_upload.append((ephys_path, spikglx_relative, destination_relative, session_mmddyyyy))
 
         # Locate openephys oebin files as representatives recording dirs.
         logging.info(f"Searching local ephys_root for .oebin like: {openephys_oebin_pattern}")
@@ -118,7 +118,7 @@ def run_main(
                 openephys_relative = openephys_file.relative_to(ephys_path)
                 logging.info(f"  {openephys_relative}")
                 destination_relative = Path(experimenter, subject, session_mmddyyyy, "ecephys", openephys_file.relative_to(run_dir.parent))
-                to_upload.append((ephys_path, openephys_relative, destination_relative))
+                to_upload.append((ephys_path, openephys_relative, destination_relative, session_mmddyyyy))
 
     if qualifier:
         logging.info(f"Keeping only files that match qualifier: {qualifier}")
@@ -128,8 +128,8 @@ def run_main(
         logging.warning("No files to upload.")
         return
 
-    logging.info(f"Planning to create {len(to_upload)} files in remote data_root:")
-    for source_root, source_relative, destination_relative in to_upload:
+    logging.info(f"Planning to create {len(to_upload)} files in remote dir {raw_data_path}:")
+    for source_root, source_relative, destination_relative, session_mmddyyyy in to_upload:
         logging.info(f"  {destination_relative}")
 
     # Confirm before uploading
@@ -149,18 +149,24 @@ def run_main(
             # Call to open() will log connection attempts, results.
             c.open()
 
+            # Upload each individual file.
             logging.info(f"Uploading to {raw_data_path}:")
-            for source_root, source_relative, destination_relative in to_upload:
+            for source_root, source_relative, destination_relative, session_mmddyyyy in to_upload:
                 source = Path(source_root, source_relative)
                 destination = Path(raw_data_path, destination_relative)
                 logging.info(f"  {destination_relative}")
                 c.run(f"mkdir -p {destination.parent.as_posix()}")
                 c.put(source.as_posix(), destination.as_posix())
 
-            session_path = Path(raw_data_path, experimenter, subject, session_mmddyyyy)
-            logging.info(f"Setting group and other permissions for session dir {session_path}:")
-            c.run(f"chmod -R g{group_permissions} {session_path.as_posix()}")
-            c.run(f"chmod -R o{other_permissions} {session_path.as_posix()}")
+            # Set directory and file permissions for each unique session date.
+            session_paths = {
+                Path(raw_data_path, experimenter, subject, session_mmddyyyy)
+                for _, _, _, session_mmddyyyy in to_upload
+            }
+            for session_path in session_paths:
+                logging.info(f"Setting 'group' and 'other' permissions for session dir {session_path}:")
+                c.run(f"chmod -R g{group_permissions} {session_path.as_posix()}")
+                c.run(f"chmod -R o{other_permissions} {session_path.as_posix()}")
 
         except Exception as e:
             logging.warning(f"Upload error: {e.args}")
