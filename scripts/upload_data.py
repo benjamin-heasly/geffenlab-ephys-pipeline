@@ -58,7 +58,6 @@ def run_main(
     session_date: str,
     qualifier: str,
     username: str,
-    password: str,
     group_permissions: str,
     other_permissions: str,
 ):
@@ -115,7 +114,7 @@ def run_main(
         for openephys_file in walk_flat(run_dir):
             openephys_relative = openephys_file.relative_to(ephys_path)
             logging.info(f"  {openephys_relative}")
-            destination_relative = Path(experimenter, subject, session_mmddyyyy, "ecephys", openephys_relative.relative_to(run_dir.parent))
+            destination_relative = Path(experimenter, subject, session_mmddyyyy, "ecephys", openephys_file.relative_to(run_dir.parent))
             to_upload.append((ephys_path, openephys_relative, destination_relative))
 
     if qualifier:
@@ -137,6 +136,9 @@ def run_main(
         return
 
     logging.warning("Proceeding to upload files.")
+
+    # Password will not be printed.
+    password = getpass(f"Password for remote user {username}: ")
 
     logging.info(f"Connecting to remote host: {remote_host}.")
     with Connection(host=remote_host, user=username, connect_kwargs={"password": password}) as c:
@@ -315,9 +317,6 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         username = input("Remote username: ").strip()
     logging.info(f"Uploading files as remote user: {username}")
 
-    # Password will not be printed.
-    password = getpass(f"Password for remote user {username}: ")
-
     try:
         run_main(
             behavior_path,
@@ -333,7 +332,6 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             session_date,
             qualifier,
             username,
-            password,
             cli_args.group_permissions,
             cli_args.other_permissions,
         )
