@@ -46,11 +46,11 @@ def apply_placeholders(
 
 def run_main(
     behavior_path: Path,
-    behavior_txt_pattern: str,
-    behavior_mat_pattern: str,
+    behavior_txt_pattern_original: str,
+    behavior_mat_pattern_original: str,
     ephys_path: Path,
-    spikeglx_meta_pattern: str,
-    openephys_oebin_pattern: str,
+    spikeglx_meta_pattern_original: str,
+    openephys_oebin_pattern_original: str,
     remote_host: str,
     raw_data_path: Path,
     experimenter: str,
@@ -69,10 +69,10 @@ def run_main(
         logging.info(f"Looking for session date: {session_date} AKA {session_mmddyyyy}")
 
         # Resolve session-specific placeholders in glob patterns.
-        behavior_txt_pattern = apply_placeholders(behavior_txt_pattern, experimenter, subject, session_date)
-        behavior_mat_pattern = apply_placeholders(behavior_mat_pattern, experimenter, subject, session_date)
-        spikeglx_meta_pattern = apply_placeholders(spikeglx_meta_pattern, experimenter, subject, session_date)
-        openephys_oebin_pattern = apply_placeholders(openephys_oebin_pattern, experimenter, subject, session_date)
+        behavior_txt_pattern = apply_placeholders(behavior_txt_pattern_original, experimenter, subject, session_date)
+        behavior_mat_pattern = apply_placeholders(behavior_mat_pattern_original, experimenter, subject, session_date)
+        spikeglx_meta_pattern = apply_placeholders(spikeglx_meta_pattern_original, experimenter, subject, session_date)
+        openephys_oebin_pattern = apply_placeholders(openephys_oebin_pattern_original, experimenter, subject, session_date)
 
         # Locate behavior .mat and .txt within behavior_path.
         logging.info(f"Searching local behavior_root for .txt like: {behavior_txt_pattern}")
@@ -92,7 +92,7 @@ def run_main(
         # Locate spikeglx meta files as representatives spikeglx run dirs.
         logging.info(f"Searching local ephys_root for .meta like: {spikeglx_meta_pattern}")
         spikeglx_metas = list(ephys_path.glob(spikeglx_meta_pattern))
-        logging.info(f"Found .meta matches: {spikeglx_metas}")
+        logging.info(f"Found {len(spikeglx_metas)} .meta matches: {spikeglx_metas}")
         if spikeglx_metas:
             # Take the shortest match -- eg the nidq.meta, not a probe/ap.meta.
             spikeglx_meta = min(spikeglx_metas, key=lambda meta: len(meta.parts))
@@ -107,7 +107,7 @@ def run_main(
         # Locate openephys oebin files as representatives recording dirs.
         logging.info(f"Searching local ephys_root for .oebin like: {openephys_oebin_pattern}")
         oebins = list(ephys_path.glob(openephys_oebin_pattern))
-        logging.info(f"Found .oebin matches: {oebins}")
+        logging.info(f"Found {len(oebins)} .oebin matches: {oebins}")
         if oebins:
             # Walk up several parents from an .oebin to find the recording dir.
             #   date/record_node/experiment/recording/structure.oebin
