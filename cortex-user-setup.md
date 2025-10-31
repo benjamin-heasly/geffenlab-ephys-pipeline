@@ -129,6 +129,15 @@ You should get an Ubuntu Desktop!
 You might be prompted to do first-time Ubuntu user setup.
 You can chose "skip" or "proceed" to get passed this.
 
+## cortex remote desktop settings
+
+By default Ubuntu will turn off the remote screen after 5 minutes of inactivity.
+This is unhelpful and distracting for remote desktop!
+You might be able to disable this:
+ - Choose `Settings` from the system meny in the upper right.
+ - Choose `Power` on the left side of the settings window.
+ - Click on `Screen Blank` and choose `Never`.
+
 ## cortex terminal
 
 We have a full desktop, but we'll still need to run commands from a terminal.

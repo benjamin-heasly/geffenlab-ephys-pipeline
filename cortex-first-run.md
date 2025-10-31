@@ -54,17 +54,7 @@ The subject id `AS20-minimal3` is unusual.  It means the original data are from 
 
 Let's start by processing a small testing dataset for subject `AS20-minimal3`.  This processing run should only take a few minutes.
 
-Log in to cortex and connect to a screen session.
-
-```
-ssh -Y ben@128.91.19.199
-
-screen
-# or
-screen -x
-```
-
-Use your own cortex username rather than `ben`.
+Start a new remote desktop session on cortex and open the Terminal app.
 
 ## AIND ephys pipeline
 
@@ -102,7 +92,7 @@ Succeeded   : 12
 
 ## AIND ephys pipeline (repeat)
 
-Nextflow has the ability to reuse processing results from previous runs.  If it determines that the pipeline code and input data for a given step have not changed, it can skip execution of that step and reuse existing results.  To see this in action, use the `-resume` option when calling Nextflow.
+Nextflow has the ability to reuse processing results from previous runs.  If it determines that the pipeline code and input data for a given step have not changed, it can skip execution of that step and reuse existing results.  To see this in action, use the `-resume` option.
 
 For example, run the same pipeline again:
 
@@ -176,7 +166,8 @@ python run_pipeline.py \
   --date 03112025
 ```
 
-Assuming you logged in to cortex using `ssh -Y` one of the pipeline steps will bring up a [Phy](https://phy.readthedocs.io/en/latest/) window on your local machine, where you can do manual sorting curation.  Close the Phy window to allow the pipeline to continue.
+One of the pipeline steps will bring up a [Phy](https://phy.readthedocs.io/en/latest/) window within your remote desktop session, where you can do manual sorting curation.
+Close the Phy window to allow the pipeline to continue.
 
 In Phy you should mark several clusters as "good" so that downstream analysis will have clusters to work with.
 
@@ -215,51 +206,25 @@ Here's a summary of the data and analysis subdirectories, after running the Geff
 
 The new `synthesis/` subdirectory contains a Python `.pkl` with dataframes from different modalities aligned in time, and summary figure(s) from the lab's [summary-plotting-scripts](./summary-plotting-scripts.md).
 
-## Getting pipeline results
+## Seeing pipeline results
 
-When the pipelines are finished you can log out from cortex and copy pipeline results to your local machine.
+You can see pipeline outputs from your remote desktop session.
 
-Detach from screen and exit from cortex:
+ - Click `Activities` in the upper left.
+ - Choose `Files` in the bottom meny that appears.
+ - Click in the address bar at the top of the Files window and type or paste: `/vol/cortex/cd4/geffenlab`
 
-```
-screen -d
-exit
-```
+You should see our subdirectories like `nextflow/`, `raw_data/`, `processed_data/`, and `analysis/`.  You can navigate within these to find pipeline results, for example navigate to `analysis/BH/AS20-minimal3/03112025/synthesis`.
 
-From WSL on your local machine use the script [download_results.py](./scripts/download_results.py) to create a folder on the Windows desktop and copy selected pipeline outputs from cortex to this folder.
+## Downloading pipeline results
 
-```
-cd ~
-conda activate geffen-pipelines
-python geffenlab-ephys-pipeline/scripts/download_results.py
-```
-
-This script includes several default values for cortex, like the cortex server address.  It will prompt you for the subject and session date, and your cortex user credentials (same as you used for `ssh`).  When prompted, enter the following:
-
-```
-Experimenter initials: BH
-Subject ID: AS20-minimal3
-Session date MMDDYYYY: 03112025
-```
-
-This should find pipeline processing and analysis results on cortex and download them to the windows Desktop in a folder named `ephys-pipeline-outputs`.  You should be able to open this folder and browse to the results, including:
-
- - Processing logs in `BH/AS20-minimal3/03112025/`
- - Session summary pickel and figures in `BH/AS20-minimal3/03112025/synthesis`
- - Nextflow visualizations for the Geffen lab ephys pipeline: `BH/AS20-minimal3/03112025/nextflow`
- - Nextflow visualizations for the AIND ephys pipeline: `BH/AS20-minimal3/03112025/sorted/nextflow`
- - Quality control visualizations from the AIND ephys pipeline: `BH/AS20-minimal3/03112025/sorted/visualization/`
+Please use the instructions in [cortex-moving-data.md](./cortex-moving-data.md) to download pipeline results from cortex to your local lab machine.
 
 # Process a full `AS20` dataset
 
 If all of the above worked then you should be ready to run the same pipelines again, this time on a full dataset.
 
-Log in to cortex and reconnect to your screen session.
-
-```
-ssh -Y ben@128.91.19.199
-screen -x
-```
+Again, open a Terminal in a cortex remote desktop session.
 
 Anjali uploaded a full dataset for subject `AS20` to the Geffenlab `raw_data/` subdirectory on cortex.
 This dataset looks similar to the testing dataset above, but the files are bigger.
@@ -334,34 +299,3 @@ CPU hours   : 1.3
 Succeeded   : 5
 ```
 
-## Getting pipeline results
-
-Copying results for the full dataset is similar to copying results from the minimal test dataset.  Detach from screen and exit from cortex:
-
-```
-screen -d
-exit
-```
-
-As above, use the script [download_results.py](./scripts/download_results.py) to copy selected pipeline outputs to a folder on the Windows desktop:
-
-```
-cd ~
-conda activate geffen-pipelines
-python geffenlab-ephys-pipeline/scripts/download_results.py
-```
-
-When prompted use:
-
-```
-Experimenter initials: AS
-Subject ID: AS20
-Session date MMDDYYYY: 03112025
-```
-
-As above, this should copy pipeline results to the Windows desktop in a folder named `ephys-pipeline-outputs`.  It should contain:
- - Processing logs in `AS/AS20/03112025/`
- - Session summary pickel and figures in `AS/AS20/03112025/synthesis`
- - Nextflow visualizations for the Geffen lab ephys pipeline: `AS/AS20/03112025/nextflow`
- - Nextflow visualizations for the AIND ephys pipeline: `AS/AS20/03112025/sorted/nextflow`
- - Quality control visualizations from the AIND ephys pipeline: `AS/AS20/03112025/sorted/visualization/`
