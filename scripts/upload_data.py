@@ -55,67 +55,70 @@ def run_main(
     raw_data_path: Path,
     experimenter: str,
     subject: str,
-    session_date: str,
+    session_dates: list[str],
     qualifier: str,
     username: str,
     group_permissions: str,
     other_permissions: str,
 ):
-    # Resolve session-specific placeholders in glob patterns.
-    behavior_txt_pattern = apply_placeholders(behavior_txt_pattern, experimenter, subject, session_date)
-    behavior_mat_pattern = apply_placeholders(behavior_mat_pattern, experimenter, subject, session_date)
-    spikeglx_meta_pattern = apply_placeholders(spikeglx_meta_pattern, experimenter, subject, session_date)
-    openephys_oebin_pattern = apply_placeholders(openephys_oebin_pattern, experimenter, subject, session_date)
-
     # Collect files to upload as a list of (source_root, source_relative, destination_relative)
     to_upload = []
 
-    # Locate behavior .mat and .txt within behavior_path.
-    logging.info(f"Searching local behavior_root for .txt like: {behavior_txt_pattern}")
-    session_mmddyyyy = session_date.strftime("%m%d%Y")
-    for txt_match in behavior_path.glob(behavior_txt_pattern):
-        txt_relative = txt_match.relative_to(behavior_path)
-        logging.info(f"  {txt_relative}")
-        destination_relative = Path(experimenter, subject, session_mmddyyyy, "behavior", txt_match.name)
-        to_upload.append((behavior_path, txt_relative, destination_relative))
+    for session_date in session_dates:
+        session_mmddyyyy = session_date.strftime("%m%d%Y")
+        logging.info(f"Looking for session date: {session_date} AKA {session_mmddyyyy}")
 
-    logging.info(f"Searching local behavior_root for .mat like: {behavior_mat_pattern}")
-    for mat_match in behavior_path.glob(behavior_mat_pattern):
-        mat_relative = mat_match.relative_to(behavior_path)
-        logging.info(f"  {mat_relative}")
-        destination_relative = Path(experimenter, subject, session_mmddyyyy, "behavior", mat_match.name)
-        to_upload.append((behavior_path, mat_relative, destination_relative))
+        # Resolve session-specific placeholders in glob patterns.
+        behavior_txt_pattern = apply_placeholders(behavior_txt_pattern, experimenter, subject, session_date)
+        behavior_mat_pattern = apply_placeholders(behavior_mat_pattern, experimenter, subject, session_date)
+        spikeglx_meta_pattern = apply_placeholders(spikeglx_meta_pattern, experimenter, subject, session_date)
+        openephys_oebin_pattern = apply_placeholders(openephys_oebin_pattern, experimenter, subject, session_date)
 
-    # Locate spikeglx meta files as representatives spikeglx run dirs.
-    logging.info(f"Searching local ephys_root for .meta like: {spikeglx_meta_pattern}")
-    spikeglx_metas = list(ephys_path.glob(spikeglx_meta_pattern))
-    logging.info(f"Found .meta matches: {spikeglx_metas}")
-    if spikeglx_metas:
-        # Take the shortest match -- eg the nidq.meta, not a probe/ap.meta.
-        spikeglx_meta = min(spikeglx_metas, key=lambda meta: len(meta.parts))
-        run_dir = spikeglx_meta.parent
-        logging.info(f"Found spikeglx run dir: {run_dir}")
-        for spikglx_file in walk_flat(run_dir):
-            spikglx_relative = spikglx_file.relative_to(ephys_path)
-            logging.info(f"  {spikglx_relative}")
-            destination_relative = Path(experimenter, subject, session_mmddyyyy, "ecephys", spikglx_file.relative_to(run_dir.parent))
-            to_upload.append((ephys_path, spikglx_relative, destination_relative))
+        # Locate behavior .mat and .txt within behavior_path.
+        logging.info(f"Searching local behavior_root for .txt like: {behavior_txt_pattern}")
+        for txt_match in behavior_path.glob(behavior_txt_pattern):
+            txt_relative = txt_match.relative_to(behavior_path)
+            logging.info(f"  {txt_relative}")
+            destination_relative = Path(experimenter, subject, session_mmddyyyy, "behavior", txt_match.name)
+            to_upload.append((behavior_path, txt_relative, destination_relative))
 
-    # Locate openephys meta files as representatives recording dirs.
-    logging.info(f"Searching local ephys_root for .oebin like: {openephys_oebin_pattern}")
-    oebins = list(ephys_path.glob(openephys_oebin_pattern))
-    logging.info(f"Found .oebin matches: {oebins}")
-    if oebins:
-        # Walk up several parents from an .oebin to find the recording dir.
-        #   date/record_node/experiment/recording/structure.oebin
-        oebin = oebins[0]
-        run_dir = oebin.parent.parent.parent.parent
-        logging.info(f"Found openephys run dir: {run_dir}")
-        for openephys_file in walk_flat(run_dir):
-            openephys_relative = openephys_file.relative_to(ephys_path)
-            logging.info(f"  {openephys_relative}")
-            destination_relative = Path(experimenter, subject, session_mmddyyyy, "ecephys", openephys_file.relative_to(run_dir.parent))
-            to_upload.append((ephys_path, openephys_relative, destination_relative))
+        logging.info(f"Searching local behavior_root for .mat like: {behavior_mat_pattern}")
+        for mat_match in behavior_path.glob(behavior_mat_pattern):
+            mat_relative = mat_match.relative_to(behavior_path)
+            logging.info(f"  {mat_relative}")
+            destination_relative = Path(experimenter, subject, session_mmddyyyy, "behavior", mat_match.name)
+            to_upload.append((behavior_path, mat_relative, destination_relative))
+
+        # Locate spikeglx meta files as representatives spikeglx run dirs.
+        logging.info(f"Searching local ephys_root for .meta like: {spikeglx_meta_pattern}")
+        spikeglx_metas = list(ephys_path.glob(spikeglx_meta_pattern))
+        logging.info(f"Found .meta matches: {spikeglx_metas}")
+        if spikeglx_metas:
+            # Take the shortest match -- eg the nidq.meta, not a probe/ap.meta.
+            spikeglx_meta = min(spikeglx_metas, key=lambda meta: len(meta.parts))
+            run_dir = spikeglx_meta.parent
+            logging.info(f"Found spikeglx run dir: {run_dir}")
+            for spikglx_file in walk_flat(run_dir):
+                spikglx_relative = spikglx_file.relative_to(ephys_path)
+                logging.info(f"  {spikglx_relative}")
+                destination_relative = Path(experimenter, subject, session_mmddyyyy, "ecephys", spikglx_file.relative_to(run_dir.parent))
+                to_upload.append((ephys_path, spikglx_relative, destination_relative))
+
+        # Locate openephys oebin files as representatives recording dirs.
+        logging.info(f"Searching local ephys_root for .oebin like: {openephys_oebin_pattern}")
+        oebins = list(ephys_path.glob(openephys_oebin_pattern))
+        logging.info(f"Found .oebin matches: {oebins}")
+        if oebins:
+            # Walk up several parents from an .oebin to find the recording dir.
+            #   date/record_node/experiment/recording/structure.oebin
+            oebin = oebins[0]
+            run_dir = oebin.parent.parent.parent.parent
+            logging.info(f"Found openephys run dir: {run_dir}")
+            for openephys_file in walk_flat(run_dir):
+                openephys_relative = openephys_file.relative_to(ephys_path)
+                logging.info(f"  {openephys_relative}")
+                destination_relative = Path(experimenter, subject, session_mmddyyyy, "ecephys", openephys_file.relative_to(run_dir.parent))
+                to_upload.append((ephys_path, openephys_relative, destination_relative))
 
     if qualifier:
         logging.info(f"Keeping only files that match qualifier: {qualifier}")
@@ -239,8 +242,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument(
         "--date", "-d",
         type=str,
-        help="Date of a session that was processed: MMDDYYYY. (default: prompt for input)",
-        default=None
+        nargs="+",
+        help="Date of a session that was processed: MMDDYYYY.  Multiple dates may be separated by spaces. (default: prompt for input)",
+        default=[]
     )
     parser.add_argument(
         "--qualifier", "-q",
@@ -298,11 +302,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         subject = input("Subject ID: ").strip()
     logging.info(f"Uploading files for subject id: {subject}")
 
-    session_dates_string = cli_args.date
-    if session_dates_string is None:
-        session_dates_string = input("Session date MMDDYYYY: ").strip()
-    session_date = datetime.strptime(session_dates_string, "%m%d%Y").date()
-    logging.info(f"Uploading files for session date: {session_dates_string} ({session_date})")
+    session_dates_strings = cli_args.date
+    if not session_dates_strings:
+        session_dates_strings = input("Session date MMDDYYYY (multiple dates may be separated by spaces): ").strip().split(' ')
+    session_dates = [datetime.strptime(s, "%m%d%Y").date() for s in session_dates_strings]
+    session_dates_formated = [str(d) for d in session_dates]
+    logging.info(f"Uploading files for session date(s): {session_dates_formated}")
 
     qualifier = cli_args.qualifier
     if qualifier is None:
@@ -329,7 +334,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             raw_data_path,
             experimenter,
             subject,
-            session_date,
+            session_dates,
             qualifier,
             username,
             cli_args.group_permissions,
