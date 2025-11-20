@@ -1,4 +1,6 @@
 .vscode/
 settings.json
 
+.groovylintrc.json
+
 scratch.sh
