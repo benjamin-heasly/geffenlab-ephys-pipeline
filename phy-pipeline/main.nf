@@ -81,7 +81,7 @@ process geffenlab_ecephys_tprime {
     path phy_export_results
 
     output:
-    path 'results/*', emit: events_results
+    path 'results/*', emit: tprime_results
 
     script:
     """
@@ -119,6 +119,7 @@ process geffenlab_phy_desktop {
 
     input:
     path phy_export_results
+    path wait_for_results
 
     output:
     path 'results/*', emit: phy_desktop_results
@@ -145,11 +146,15 @@ workflow {
         // For SpikeGlx, extract events and align spike times offline.
         raw_data_channel = channel.fromPath(params.raw_data_path)
         catgt_results = geffenlab_ecephys_catgt(raw_data_channel)
-        events_results = geffenlab_ecephys_tprime(catgt_results, phy_export_results)
-    }
-
-    if (params.interactive) {
-        // Bring up the Phy GUI for manual curation!
-        geffenlab_phy_desktop(phy_export_results)
+        tprime_results = geffenlab_ecephys_tprime(catgt_results, phy_export_results)
+        if (params.interactive) {
+            // Bring up the Phy GUI for manual curation, after TPrime is complete.
+            geffenlab_phy_desktop(phy_export_results, tprime_results)
+        }
+    } else {
+        if (params.interactive) {
+            // Bring up the Phy GUI for manual curation, right away.
+            geffenlab_phy_desktop(phy_export_results, phy_export_results)
+        }
     }
 }
