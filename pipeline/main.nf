@@ -54,7 +54,7 @@ process geffenlab_ecephys_phy_export {
 
 process geffenlab_ecephys_catgt {
     tag 'geffenlab_ecephys_catgt'
-    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.0'
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.1'
 
     publishDir "${params.processed_data_path}/exported",
         mode: 'copy',
@@ -76,6 +76,7 @@ process geffenlab_ecephys_catgt {
     mkdir -p results/catgt
     conda_run python /opt/code/catgt.py \
       --probe-id $params.probe_id \
+      --run $params.catgt_run \
       --gate $params.catgt_gate \
       --trigger $params.catgt_trigger \
       $raw_data_path/ecephys \
