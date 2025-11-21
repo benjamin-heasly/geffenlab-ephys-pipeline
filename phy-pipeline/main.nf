@@ -34,7 +34,7 @@ process geffenlab_ecephys_phy_export {
 // For SpikeGlx recordings, extract events (sync, behavior, stimulus, etc).
 process geffenlab_ecephys_catgt {
     tag 'geffenlab_ecephys_catgt'
-    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.3'
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.4'
 
     publishDir "${params.analysis_path}/phy-pipeline",
         mode: 'copy',
@@ -68,7 +68,7 @@ process geffenlab_ecephys_catgt {
 // For SpikeGlx recordings, align spike times and other events, based on sync events.
 process geffenlab_ecephys_tprime {
     tag 'geffenlab_ecephys_tprime'
-    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.3'
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.4'
 
     publishDir "${params.analysis_path}/phy-pipeline",
         mode: 'copy',
@@ -93,13 +93,13 @@ process geffenlab_ecephys_tprime {
     ls -alth $catgt_results
     conda_run python /opt/code/tprime.py \
       $catgt_results \
+      $phy_export_results \
       results/tprime \
       --sync-period $params.tprime_sync_period \
       --to-stream $params.tprime_to_stream \
       --from-streams $params.tprime_from_streams \
       --phy-from-stream $params.tprime_phy_from_stream \
-      --probe-id $params.probe_id \
-      --phy-pattern $phy_export_results/**/params.py
+      --probe-id $params.probe_id
     """
 }
 
@@ -119,7 +119,6 @@ process geffenlab_phy_desktop {
 
     input:
     path phy_export_results
-    path wait_for_results
 
     output:
     path 'results/*', emit: phy_desktop_results
@@ -148,13 +147,13 @@ workflow {
         catgt_results = geffenlab_ecephys_catgt(raw_data_channel)
         tprime_results = geffenlab_ecephys_tprime(catgt_results, phy_export_results)
         if (params.interactive) {
-            // Bring up the Phy GUI for manual curation, after TPrime is complete.
-            geffenlab_phy_desktop(phy_export_results, tprime_results)
+            // Bring up the Phy GUI for manual curation, after making TPrime adjustments.
+            geffenlab_phy_desktop(tprime_results)
         }
     } else {
         if (params.interactive) {
             // Bring up the Phy GUI for manual curation, right away.
-            geffenlab_phy_desktop(phy_export_results, phy_export_results)
+            geffenlab_phy_desktop(phy_export_results)
         }
     }
 }
