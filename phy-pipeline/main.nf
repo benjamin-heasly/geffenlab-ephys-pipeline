@@ -111,17 +111,8 @@ process geffenlab_phy_desktop {
     tag 'geffenlab_phy_desktop'
     container 'ghcr.io/benjamin-heasly/geffenlab-phy-desktop:v0.0.3'
 
-    publishDir "${params.processed_data_path}/curated",
-        mode: 'copy',
-        overwrite: true,
-        pattern: 'results/*',
-        saveAs: { filename -> file(filename).name }
-
     input:
     path phy_export_results
-
-    output:
-    path 'results/*', emit: phy_desktop_results
 
     script:
     """
