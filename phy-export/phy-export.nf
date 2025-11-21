@@ -34,7 +34,7 @@ process geffenlab_ecephys_phy_export {
 // For SpikeGlx recordings, extract events (sync, behavior, stimulus, etc).
 process geffenlab_ecephys_catgt {
     tag 'geffenlab_ecephys_catgt'
-    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.6'
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.7'
 
     publishDir "${params.analysis_path}/phy-pipeline",
         mode: 'copy',
@@ -68,7 +68,7 @@ process geffenlab_ecephys_catgt {
 // For SpikeGlx recordings, align spike times and other events, based on sync events.
 process geffenlab_ecephys_tprime {
     tag 'geffenlab_ecephys_tprime'
-    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.6'
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.7'
 
     publishDir "${params.analysis_path}/phy-pipeline",
         mode: 'copy',
@@ -103,36 +103,31 @@ process geffenlab_ecephys_tprime {
     """
 }
 
-// TODO: we could add a "bombcell" step here.
+// Do "bombcell" curation and visualization on the SpikeGlx/TPrime or Open Ephys phy/ output.
+// TODO: this is a placeholder for now!
+process geffenlab_ecephys_bombcell {
+    tag 'geffenlab_ecephys_bombcell'
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.6'
 
-// Launch a Phy GUI for manual curation of the sorting results.
-// We access this on cortex via remote desktop.
-// TODO: this might be better as a python script, not a pipeline step.
-// That way we can modify the data in place, if we want.
-// To make it work with nextflow's publishDir mechanism, we'd have to make a copy of the data every time.
-// So if you run Phy twice, you'd start with the original pipeline results, not where you left off last time.
-// A python script  would also make it easier to support a local Phy use case.
-// The container might still be good, though.
-process geffenlab_phy_desktop {
-    tag 'geffenlab_phy_desktop'
-    container 'ghcr.io/benjamin-heasly/geffenlab-phy-desktop:v0.0.3'
-
-    publishDir "${params.analysis_path}/phy-pipeline/curated",
+    publishDir "${params.analysis_path}/phy-pipeline",
         mode: 'copy',
         overwrite: true,
-        pattern: "$phy_dir/*",
+        pattern: 'results/*',
         saveAs: { filename -> file(filename).name }
 
     input:
     path phy_dir
 
+    output:
+    path 'results/*', emit: bombcell_results
+
     script:
     """
     #!/usr/bin/env bash
     set -e
-    conda_run python /opt/code/run_phy.py \
-      --data-root $phy_dir \
-      --params-py-pattern **/params.py
+
+    mkdir -p results/bombcell
+    echo "$phy_dir" > results/bombcell/TODO.txt
     """
 }
 
@@ -148,14 +143,11 @@ workflow {
         raw_data_channel = channel.fromPath(params.raw_data_path)
         catgt_results = geffenlab_ecephys_catgt(raw_data_channel)
         tprime_results = geffenlab_ecephys_tprime(catgt_results, phy_export_results)
-        if (params.interactive) {
-            // Bring up the Phy GUI for manual curation, after making TPrime adjustments.
-            geffenlab_phy_desktop(tprime_results)
-        }
+
+        // Run bombcell on the TPrime-adjusted phy/ dir.
+        bombcell_results = geffenlab_ecephys_bombcell(tprime_results)
     } else {
-        if (params.interactive) {
-            // Bring up the Phy GUI for manual curation, right away.
-            geffenlab_phy_desktop(phy_export_results)
-        }
+        // Run bombcell on phy/ dir exported from Spike Interface.
+        bombcell_results = geffenlab_ecephys_bombcell(phy_export_results)
     }
 }

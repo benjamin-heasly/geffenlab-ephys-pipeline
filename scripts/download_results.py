@@ -183,6 +183,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     cli_args = parser.parse_args(argv)
 
+    # TODO: we could put all logs in a "logs" subdir of experimenter/subject/date?
+    # We'd still want to look for AIND pipeline visualizations.
+
     # Prompt for missing input args as needed.
     local_path = Path(cli_args.local_root).expanduser().resolve()
     logging.info(f"Downloading files to local root: {local_path}")

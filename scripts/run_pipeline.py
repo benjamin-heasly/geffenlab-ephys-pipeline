@@ -217,6 +217,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     run_name = f"{workflow_path.stem}_{execution_time}"
 
     # Write logs to the sessions processed output subdirectory.
+    # TODO: why not put all the logs in a "logs" subdir of experimenter/subject/date?
     logs_path = Path(processed_data_root_path, cli_args.experimenter, cli_args.subject, cli_args.date)
     logs_path.mkdir(exist_ok=True, parents=True)
     script_log_path = Path(logs_path, f"{run_name}_run_pipeline.log")

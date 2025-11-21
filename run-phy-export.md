@@ -32,3 +32,14 @@ python run_pipeline.py \
   --subject AS20-minimal3 \
   --date 03112025
 ```
+
+```
+cd /home/ninjaben/codin/geffenlab-ephys-pipeline/scripts/
+conda activate geffen-pipelines
+
+python run_phy.py \
+  --gpu-device 3 \
+  --experimenter BH \
+  --subject AS20-minimal3 \
+  --date 03112025
+```

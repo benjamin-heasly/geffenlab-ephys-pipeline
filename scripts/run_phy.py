@@ -1,6 +1,6 @@
 import sys
-from os import environ
-from argparse import ArgumentParser
+from os import getuid, getgid, environ
+from argparse import ArgumentParser, BooleanOptionalAction
 from typing import Optional, Sequence
 import logging
 from datetime import datetime, timezone
@@ -28,23 +28,49 @@ def set_up_logging(
 
 def run_phy_in_docker(
     docker_image: str,
-    docker_args: list[str],
+    docker_run_args: list[str],
+    gpu_device: str,
+    x11: bool,
+    user: str,
     params_py: Path
 ) -> int:
     logging.info("Starting Phy run.\n")
 
     phy_dir = params_py.parent.absolute().as_posix()
+
+    if gpu_device and gpu_device != 'none':
+        gpus = ["--gpus", f"'device=${gpu_device}'"]
+    else:
+        gpus = []
+
+    if x11:
+        x11_args = ["--volume", "/tmp/.X11-unix:/tmp/.X11-unix", "--env", "DISPLAY"]
+        if "XAUTHORITY" in environ:
+            x_authority_host = Path(environ["XAUTHORITY"]).absolute().as_posix()
+            x_authority_container = "/var/.Xauthority"
+            x11_args += ["--volume", f"{x_authority_host}:{x_authority_container}", "--env", f"XAUTHORITY={x_authority_container}"]
+    else:
+        x11_args = []
+    
+    if not user:
+        user_args = []
+    elif user == 'self':
+        user_args = ["--user", f"{getuid()}:{getgid()}"]
+    else:
+        user_args = ["--user", user]
+
     step_args = [
         "--data-root", phy_dir,
         "--params-py-pattern", params_py.name,
     ]
     docker_run_command = [
         "docker",
-        "run"
-    ] + docker_args + [
+        "run",
+    ] + docker_run_args + gpus + x11_args + user_args + [
         "--volume", f"{phy_dir}:{phy_dir}",
         "--workdir", phy_dir,
-        docker_image
+        docker_image,
+        "conda_run", "python", "/opt/code/run_phy.py"
     ] + step_args
 
     logging.info(f"Running Phy with Docker command: {docker_run_command}.")
@@ -63,14 +89,11 @@ def run_phy_in_docker(
 
     exit_code = process.wait()
     if exit_code == 0:
-        logging.info(f"Completed OK, exit code {exit_code}")
+        logging.info(f"OK\n")
     else:
         logging.error(f"Completed with error, exit code {exit_code}")
-        pipeline_exit_code = exit_code
 
-
-    logging.info("OK\n")
-    return pipeline_exit_code
+    return exit_code
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
@@ -80,14 +103,30 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--docker-image", "-I",
         type=str,
         help="Which Docker image to use for running Phy. (default: %(default)s)",
-        default="ghcr.io/benjamin-heasly/geffenlab-phy-desktop:v0.0.3"
+        default="ghcr.io/benjamin-heasly/geffenlab-phy-desktop:v0.0.4"
     )
     parser.add_argument(
-        "--docker-args", "-D",
+        "--docker-run-args", "-D",
         type=str,
         nargs="*",
         help="Args to pass to 'docker run ...'. (default: %(default)s)",
-        default=["--rm", "--volume", "/tmp/.X11-unix:/tmp/.X11-unix", "--env", "DISPLAY"]
+        default=["--rm"]
+    )
+    parser.add_argument(
+        "--gpu-device", "-G",
+        type=str,
+        help="Which gpu device to use with Docker: integer device index, string device GUID, or 'none' (default: %(default)s)",
+        default=0
+    )
+    parser.add_argument("--x11",
+        action=BooleanOptionalAction,
+        help="Whether or not to configure an X11 display for the Docker container. (default: %(default)s)",
+        default=True
+    )
+    parser.add_argument("--user",
+        type=str,
+        help="Specify a user:group to run as in the container, or 'self' to use the caller's uid:gid, omit to use the system or image default. (default: %(default)s)",
+        default=None
     )
     parser.add_argument(
         "--analysis-root",
@@ -116,7 +155,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument(
         "--params-py-pattern", "-p",
         type=str,
-        help="Glob pattern to locate Phy params.py file(s) within ANALYSYS_ROOT/EXPERIMENTER/SUBJECT/DATE/. (default: %(default)s)",
+        help="Glob pattern to locate Phy params.py file(s) within ANALYSYS_ROOT/EXPERIMENTER/SUBJECT/DATE/ (default: %(default)s)",
         default="**/params.py"
     )
 
@@ -129,7 +168,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     set_up_logging(script_log_path)
 
     logging.info(f"Using Docker image: {cli_args.docker_image}")
-    logging.info(f"Using 'docker run' args: {cli_args.docker_args}")
+    logging.info(f"Using 'docker run' args: {cli_args.docker_run_args}")
+    logging.info(f"Using GPU device: {cli_args.gpu_device}")
+    logging.info(f"Configuring X11 display: {cli_args.x11}")
+    logging.info(f"Running container as user and group: {cli_args.user}")
     logging.info(f"Looking for phy/ data in: {data_path}")
     logging.info(f"Looking for params.py files(s) matchign pattern: {cli_args.params_py_pattern}")
 
@@ -138,20 +180,23 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         match_count = len(params_py_matches)
         logging.info(f"Found {match_count} params.py matches.")
         if match_count < 1:
-            raise ValueError(f"Found no params.py matching pattern {cli_args.params_py_pattern} within {data_path}.")
+            raise ValueError(f"Found no params.py matching pattern {cli_args.params_py_pattern} within {data_path}")
         elif match_count == 1:
             params_py_path = params_py_matches[0]
         else:
             logging.info(f"Please choose one:")
             for index, params_py_match in enumerate(params_py_matches):
                 logging.info(f"  {index}: {params_py_match}")
-            params_py_index = int(input(f"Pick by number 0-{match_count - 1}: ").strip())
+            params_py_index = int(input(f"Choose by number 0-{match_count - 1}: ").strip())
             params_py_path = params_py_matches[params_py_index]
         logging.info(f"Using params.py: {params_py_path}")
 
         main_exit_code = run_phy_in_docker(
             cli_args.docker_image,
-            cli_args.docker_args,
+            cli_args.docker_run_args,
+            cli_args.gpu_device,
+            cli_args.x11,
+            cli_args.user,
             params_py_path
         )
 
