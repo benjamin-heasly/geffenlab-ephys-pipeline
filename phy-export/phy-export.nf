@@ -1,5 +1,5 @@
-// Eject data from SpikeInterface format to Phy format.
-// This produces a phy/ folder similar to what we get from Kilosort.
+// Export data from SpikeInterface format, save in Phy format.
+// This produces an exported/phy/ folder similar to what we get from Kilosort.
 // But, this version also has quality metrics and automated curation done by SpikeInterface.
 process geffenlab_ecephys_phy_export {
     tag 'geffenlab_ecephys_phy_export'
@@ -22,10 +22,10 @@ process geffenlab_ecephys_phy_export {
     #!/usr/bin/env bash
     set -e
 
-    mkdir -p results
+    mkdir -p results/exported
     conda_run python /opt/code/run.py \
       --data-root $processed_data_path \
-      --results-root results \
+      --results-root results/exported \
       --postprocessed-pattern $params.postprocessed_pattern \
       --curated-pattern $params.curated_pattern
     """
@@ -107,20 +107,31 @@ process geffenlab_ecephys_tprime {
 
 // Launch a Phy GUI for manual curation of the sorting results.
 // We access this on cortex via remote desktop.
+// TODO: this might be better as a python script, not a pipeline step.
+// That way we can modify the data in place, if we want.
+// To make it work with nextflow's publishDir mechanism, we'd have to make a copy of the data every time.
+// So if you run Phy twice, you'd start with the original pipeline results, not where you left off last time.
+// A python script  would also make it easier to support a local Phy use case.
+// The container might still be good, though.
 process geffenlab_phy_desktop {
     tag 'geffenlab_phy_desktop'
     container 'ghcr.io/benjamin-heasly/geffenlab-phy-desktop:v0.0.3'
 
+    publishDir "${params.analysis_path}/phy-pipeline/curated",
+        mode: 'copy',
+        overwrite: true,
+        pattern: "$phy_dir/*",
+        saveAs: { filename -> file(filename).name }
+
     input:
-    path phy_export_results
+    path phy_dir
 
     script:
     """
     #!/usr/bin/env bash
     set -e
-    mkdir -p results
     conda_run python /opt/code/run_phy.py \
-      --data-root $phy_export_results \
+      --data-root $phy_dir \
       --params-py-pattern **/params.py
     """
 }

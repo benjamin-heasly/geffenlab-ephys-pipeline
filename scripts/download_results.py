@@ -7,7 +7,6 @@ from datetime import datetime, date
 from getpass import getpass
 import fnmatch
 
-
 from fabric import Connection
 
 
