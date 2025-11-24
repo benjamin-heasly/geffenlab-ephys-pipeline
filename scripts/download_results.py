@@ -54,11 +54,11 @@ def run_main(
             analysis_result = c.run(f"find {remote_analysis_path.as_posix()} -type f")
 
             # Download each file, preserving session subdirectory structure.
+            logging.info(f"Downloading files to: {local_path}")
             analysis_files = analysis_result.stdout.strip().split('\n')
             for analysis_file in analysis_files:
                 relative_file_path = Path(analysis_file).relative_to(remote_analysis_path)
                 local_file_path = Path(local_path, experimenter, subject_id, date_string, relative_file_path)
-                logging.info(f"Downloading to: {local_file_path}")
                 c.get(remote=analysis_file, local=local_file_path.as_posix())
 
         except Exception:
@@ -85,10 +85,10 @@ def run_main(
 
                 # Download each file, preserving session subdirectory structure.
                 remote_files = subdir_result.stdout.strip().split('\n')
+                logging.info(f"Downloading files to: {local_path}")
                 for remote_file in remote_files:
                     relative_file_path = Path(remote_file).relative_to(remote_processed_data_path)
                     local_file_path = Path(local_path, experimenter, subject_id, date_string, relative_file_path)
-                    logging.info(f"Downloading to: {local_file_path}")
                     c.get(remote=remote_file, local=local_file_path.as_posix())
 
         except Exception:
@@ -156,7 +156,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         type=str,
         nargs="+",
         help="Subdirectories to download from within the remote PROCESSED_DATA_ROOT/EXPERIMENTER/SUBJECT_ID/SESSION_DATE/. (default: %(default)s)",
-        default=["logs", "sorted/nextflow", "sorted/visualization"]
+        default=["logs", "sorted/visualization"]
     )
 
     cli_args = parser.parse_args(argv)

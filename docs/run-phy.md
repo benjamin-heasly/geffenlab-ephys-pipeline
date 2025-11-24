@@ -17,7 +17,7 @@ Until then, downloading the data and running Phy locally may be more practical.
 You can run Phy on cortex via remote desktop using our [run_phy.py](../scripts/run_phy.py).
 
 This script calls `docker run` to start a Docker container with Phy installed in it.
-The script will make the necessary session analysis subdirectory available within the container.
+The script will make the necessary session `analysis/` subdirectory available within the container.
 
 We tell the script which session to use via the `--experimenter`, `--subject`, and `--date` arguments.
 
@@ -36,7 +36,7 @@ python run_phy.py \
 
 ### Selecting a Phy subdirectory.
 
-The script will search the cortex analysis subdirectory for the given session, for `params.py` files and the associated directories of `.tsv` and `.npy` files.
+The script will search the cortex `analysis/` subdirectory for the given session, for `params.py` files and the associated directories of `.tsv` and `.npy` files.
 It might find multuple Phy directories, as from multiple probes, recordings, or stages of processing.
 If so, it will prompt you to choose one of them by number.
 
@@ -70,6 +70,13 @@ When you're done, the script should exit.
 
 Your curation results should be saved within the Phy directory that you chose, in this example, `phy-export/tprime/phy/block0_imec0.ap_recording1/params.py`.
 
-The script will also save a log from your Phy run within the overall session analysis subdirectory, and within the selected Phy subdirectory itself.
+The script will also save a log from your Phy run within the overall session `analysis/` subdirectory, and within the selected Phy subdirectory itself.
 
 ![Cortex remote desktop files view](./phy-gui-results.png)
+
+## Phy local with data download
+
+You can run Phy locally if you first download the session `analysis/` subdirectory.
+See [download-results.md](./download-results.md) for how to do this.
+
+## 
