@@ -44,19 +44,30 @@ python run_pipeline.py \
 The pipeline run should take less than an hour.  A clean run should end with a summary like this:
 
 ```
-Completed at: 14-Aug-2025 15:16:36
-Duration    : 5m 17s
-CPU hours   : 0.7
-Succeeded   : 12
+2025-11-24 13:02:06,751 [INFO] Completed at: 24-Nov-2025 13:02:06
+2025-11-24 13:02:06,751 [INFO] Duration    : 8m 28s
+2025-11-24 13:02:06,751 [INFO] CPU hours   : 0.4
+2025-11-24 13:02:06,751 [INFO] Succeeded   : 4
 ```
 
 ## Results overview
 
 The pipeline looks for processed session data within the lab's sotrage directory, `/vol/cortex/cd4/geffenlab/`.
 For the session in this example, the processed session data would be located at `/vol/cortex/cd4/geffenalb/processed_data/BH/AS20-minimal3/03112025/`.
+For SpikeGlx recordings, the pipeline also looks for raw session data, for example in `/vol/cortex/cd4/geffenalb/raw_data/BH/AS20-minimal3/03112025/`
 
-For SpikeGlx recordings, this pipeline also looks for raw session data, for example in `/vol/cortex/cd4/geffenalb/raw_data/BH/AS20-minimal3/03112025/`
+The pipeline writes Phy results into the session's analysis subdirectory, for example `/vol/cortex/cd4/geffenalb/analysis/BH/AS20-minimal3/03112025/`
 
-This pipeline writes Phy results into the session's analysis sibdirectory, for example `/vol/cortex/cd4/geffenalb/analysis/BH/AS20-minimal3/03112025/`
+![Cortex remote desktop files view](./phy-export-results.png)
 
-![Cortex remote desktop files view](./aind-ephys-pipeline-results.png)
+The pipeline may produce multiple subdirectories of Phy results, each with its own `params.py` and other `.tsv` and `.npy` files.
+These may should distinguished by their probe id, like `imec0`, and recording number, like `recording1`.
+
+Even for the same probe and recording, there can be multiple Phy subdirectories, from different stages of processing:
+
+ - `phy-export/exported/phy/block0_imec0.ap_recording1/params.py`: initial export from AIND ephys pipeline, Kilosort, and SpikeInterface
+ - `phy-export/tprime/phy/block0_imec0.ap_recording1/params.py`: for SpikeGlx recordings, with spike times adjusted by TPrime
+ - `phy-export/bombcell/phy/block0_imec0.ap_recording1/params.py`: with automated curation and diagnostic plots by bombcell
+
+The pipeline doesn't implement bombcell yet!
+When it does we should prefer the results within `phy-export/bombcell/phy/`.
