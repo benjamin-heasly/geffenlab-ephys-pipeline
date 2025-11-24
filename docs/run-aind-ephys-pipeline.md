@@ -14,7 +14,7 @@ We combine this with our own Nextflow configuration file which tells Nextflow to
  - Locate Geffen lab data and results within `/vol/cortex/cd4/geffenlab/`.
  - Share CPU, GPU, and RAM with other cortex users.
 
-To run the pipeline, use our Python script [run_pipeline.py](./scripts/run_pipeline.py).
+To run the pipeline, use our Python script [run_pipeline.py](../scripts/run_pipeline.py).
 This script calls `nextflow run` for the pipeline itself, and also saves detailed logs within the `processed_data` subdirectory directory for each session.
 
 We tell the script which pipeline to run with the `--workflow` argument.  We specifiy the configuration to use with `--config`.  We also pass the `--experimenter`, `--subject`, and `--date` for the session we want to process.

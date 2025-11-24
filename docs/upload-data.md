@@ -6,7 +6,7 @@ First, you'll need to do the one-time [cortex user setup](./cortex-user-setup.md
 
 ## Upload data to cortex
 
-This repo has a Python script [upload_data.py](./scripts/upload_data.py) that should help uploading data from your local lab machine to cortex.  Internally this uses `ssh` to connect to cortex using your own user credentials.
+This repo has a Python script [upload_data.py](../scripts/upload_data.py) that should help uploading data from your local lab machine to cortex.  Internally this uses `ssh` to connect to cortex using your own user credentials.
 
 Run this script from the WSL environment of your local lab machine:
 
@@ -14,9 +14,9 @@ Run this script from the WSL environment of your local lab machine:
 # Go to the directory that contains your data.
 # For example:
 cd /mnt/c/Users/labuser/Desktop/Data/
+conda activate geffen-pipelines
 
 # Run the data upload Python script.
-conda activate geffen-pipelines
 python ~/geffenlab-ephys-pipeline/scripts/upload_data.py
 ```
 

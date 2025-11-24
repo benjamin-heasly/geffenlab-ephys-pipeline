@@ -16,7 +16,7 @@ To make new configurations, copy and modify one or both of these files.  Commit 
 
 ## AIND nextflow `.config` file
 
-When running the AIND pipeline, specify your Nextflow `.config` file as the `--config` argument to [run_pipeline.py](./scripts/run_pipeline.py).  For example:
+When running the AIND pipeline, specify your Nextflow `.config` file as the `--config` argument to [run_pipeline.py](../scripts/run_pipeline.py).  For example:
 
 ```
 cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
@@ -105,7 +105,7 @@ To make new configurations, copy and modify this file.  Commit copies to this re
 
 ## Geffen lab nextflow `.config` file
 
-When running the Geffen lab pipeline, specify your Nextflow `.config` file as the `--config` argument to [run_pipeline.py](./scripts/run_pipeline.py).  For example:
+When running the Geffen lab pipeline, specify your Nextflow `.config` file as the `--config` argument to [run_pipeline.py](../scripts/run_pipeline.py).  For example:
 
 ```
 cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
