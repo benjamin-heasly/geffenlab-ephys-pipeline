@@ -59,6 +59,7 @@ def run_main(
             for analysis_file in analysis_files:
                 relative_file_path = Path(analysis_file).relative_to(remote_analysis_path)
                 local_file_path = Path(local_path, "analysis", experimenter, subject_id, date_string, relative_file_path)
+                local_file_path.parent.mkdir(exist_ok=True, parents=True)
                 c.get(remote=analysis_file, local=local_file_path.as_posix())
 
         except Exception:
@@ -89,6 +90,7 @@ def run_main(
                 for remote_file in remote_files:
                     relative_file_path = Path(remote_file).relative_to(remote_processed_data_path)
                     local_file_path = Path(local_path, "processed_data", processed_subdir, experimenter, subject_id, date_string, relative_file_path)
+                    local_file_path.parent.mkdir(exist_ok=True, parents=True)
                     c.get(remote=remote_file, local=local_file_path.as_posix())
 
         except Exception:
