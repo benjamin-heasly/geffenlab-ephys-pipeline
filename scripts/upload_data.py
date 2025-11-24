@@ -48,6 +48,7 @@ def run_main(
     behavior_path: Path,
     behavior_txt_pattern_original: str,
     behavior_mat_pattern_original: str,
+    behavior_hdf5_pattern_original: str,
     ephys_path: Path,
     spikeglx_meta_pattern_original: str,
     openephys_oebin_pattern_original: str,
@@ -71,6 +72,7 @@ def run_main(
         # Resolve session-specific placeholders in glob patterns.
         behavior_txt_pattern = apply_placeholders(behavior_txt_pattern_original, experimenter, subject, session_date)
         behavior_mat_pattern = apply_placeholders(behavior_mat_pattern_original, experimenter, subject, session_date)
+        behavior_hdf5_pattern = apply_placeholders(behavior_hdf5_pattern_original, experimenter, subject, session_date)
         spikeglx_meta_pattern = apply_placeholders(spikeglx_meta_pattern_original, experimenter, subject, session_date)
         openephys_oebin_pattern = apply_placeholders(openephys_oebin_pattern_original, experimenter, subject, session_date)
 
@@ -88,6 +90,13 @@ def run_main(
             logging.info(f"  {mat_relative}")
             destination_relative = Path(experimenter, subject, session_mmddyyyy, "behavior", mat_match.name)
             to_upload.append((behavior_path, mat_relative, destination_relative, session_mmddyyyy))
+
+        logging.info(f"Searching local behavior_root for .hdf5 like: {behavior_hdf5_pattern}")
+        for hdf5_match in behavior_path.glob(behavior_hdf5_pattern):
+            hdf5_relative = hdf5_match.relative_to(behavior_path)
+            logging.info(f"  {hdf5_relative}")
+            destination_relative = Path(experimenter, subject, session_mmddyyyy, "behavior", hdf5_match.name)
+            to_upload.append((behavior_path, hdf5_relative, destination_relative, session_mmddyyyy))
 
         # Locate spikeglx meta files as representatives spikeglx run dirs.
         logging.info(f"Searching local ephys_root for .meta like: {spikeglx_meta_pattern}")
@@ -198,6 +207,19 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default="<SUBJECT>/**/*_<MM><DD><YY>_*.mat"
     )
     parser.add_argument(
+        "--behavior-hdf5-pattern", "-H",
+        type=str,
+        help="Glob pattern to match behavior .hdf5 files within BEHAVIOR_ROOT. May include placeholders <EXPERIMENTER>, <SUBJECT>, <YYYY>, <YY>, <MM>, <DD> (default: %(default)s)",
+        default="<SUBJECT>/**/*_<YYYY><MM><DD>_*.hdf5"
+    )
+    parser.add_argument(
+        "--behavior-mat-pattern", "-M",
+        type=str,
+        help="Glob pattern to match behavior .mat files within BEHAVIOR_ROOT. May include placeholders <EXPERIMENTER>, <SUBJECT>, <YYYY>, <YY>, <MM>, <DD> (default: %(default)s)",
+        default="<SUBJECT>/**/*_<MM><DD><YY>_*.mat"
+    )
+
+    parser.add_argument(
         "--ephys-root", "-E",
         type=str,
         help="Local root directory to search for a SpikeGLX run directory. (default: %(default)s)",
@@ -283,6 +305,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     behavior_mat_pattern = cli_args.behavior_mat_pattern
     logging.info(f"Using behavior .mat pattern: {behavior_mat_pattern}")
 
+    behavior_hdf5_pattern = cli_args.behavior_hdf5_pattern
+    logging.info(f"Using behavior .hdf5 pattern: {behavior_hdf5_pattern}")
+
     ephys_path = Path(cli_args.ephys_root).expanduser().resolve()
     logging.info(f"Uploading ephys files from: {ephys_path}")
 
@@ -333,6 +358,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             behavior_path,
             behavior_txt_pattern,
             behavior_mat_pattern,
+            behavior_hdf5_pattern,
             ephys_path,
             spikeglx_meta_pattern,
             openephys_oebin_pattern,
