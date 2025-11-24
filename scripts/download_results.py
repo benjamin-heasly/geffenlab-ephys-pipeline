@@ -5,7 +5,6 @@ import logging
 from pathlib import Path
 from datetime import datetime, date
 from getpass import getpass
-import fnmatch
 
 from fabric import Connection
 
@@ -23,7 +22,6 @@ def run_main(
     remote_host: str,
     processed_data_path: Path,
     analysis_path: Path,
-    log_patterns: list[str],
     processed_subdirs: list[str],
     experimenter: str,
     subject_id: str,
@@ -50,7 +48,7 @@ def run_main(
             # List files and subdirectories in the session analysis directory.
             remote_analysis_path = Path(analysis_path, experimenter, subject_id, date_string)
             logging.info(f"Checking for remote analysis session directory {remote_analysis_path}:")
-            analysis_result = c.run(f"ls {remote_analysis_path.as_posix()}")
+            c.run(f"ls {remote_analysis_path.as_posix()}")
 
             # Recursively find regular files within the analysis subdirectory.
             analysis_result = c.run(f"find {remote_analysis_path.as_posix()} -type f")
@@ -67,25 +65,12 @@ def run_main(
             logging.warning(f"Error downloading from analysis session directory.")
             # Don't return, keep trying below.
 
-        # Download logs and selected subdirs files from the session "processed_data" dir.
+        # Download selected subdirs files from the session "processed_data" dir.
         try:
             # List files and subdirectories in the session processed data directory.
             remote_processed_data_path = Path(processed_data_path, experimenter, subject_id, date_string)
             logging.info(f"Checking for remote processed data session directory {remote_processed_data_path}:")
-            processed_result = c.run(f"ls {remote_processed_data_path.as_posix()}")
-
-            # Download log files from the session processed data subdirectory.
-            processed_list = processed_result.stdout.strip().split('\n')
-            processed_logs = []
-            for log_pattern in log_patterns:
-                processed_logs += fnmatch.filter(processed_list, log_pattern)
-
-            print(f"Found session processing logs: {processed_logs}")
-            for processed_log in processed_logs:
-                remote_log_path = Path(remote_processed_data_path, processed_log)
-                local_log_path = Path(local_path, experimenter, subject_id, date_string, processed_log)
-                logging.info(f"Downloading to: {local_log_path}")
-                c.get(remote=remote_log_path, local=local_log_path.as_posix())
+            c.run(f"ls {remote_processed_data_path.as_posix()}")
 
             # Download selected processing subdirectories.
             for processed_subdir in processed_subdirs:
@@ -116,7 +101,7 @@ def run_main(
 def main(argv: Optional[Sequence[str]] = None) -> int:
     set_up_logging()
 
-    parser = ArgumentParser(description="Download pipeline results from eg cortex to the local machine.")
+    parser = ArgumentParser(description="Download the analysis/ subdir and selected processed_data/ subdirs for a session.")
 
     parser.add_argument(
         "--local-root", "-L",
@@ -167,24 +152,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default=None
     )
     parser.add_argument(
-        "--log-patterns", "-l",
-        type=str,
-        nargs="+",
-        help="File name patterns to match logs within the remote PROCESSED_DATA_ROOT/EXPERIMENTER/SUBJECT_ID/SESSION_DATE/. (default: %(default)s)",
-        default=["*.log", "*.md"]
-    )
-    parser.add_argument(
         "--processed-subdirs", "-S",
         type=str,
         nargs="+",
         help="Subdirectories to download from within the remote PROCESSED_DATA_ROOT/EXPERIMENTER/SUBJECT_ID/SESSION_DATE/. (default: %(default)s)",
-        default=["nextflow", "sorted/nextflow", "sorted/visualization"]
+        default=["logs", "sorted/nextflow", "sorted/visualization"]
     )
 
     cli_args = parser.parse_args(argv)
-
-    # TODO: we could put all logs in a "logs" subdir of experimenter/subject/date?
-    # We'd still want to look for AIND pipeline visualizations.
 
     # Prompt for missing input args as needed.
     local_path = Path(cli_args.local_root).expanduser().resolve()
@@ -199,11 +174,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     analysis_path = Path(cli_args.analysis_root)
     logging.info(f"Downloading files from remote analysis root: {analysis_path}")
 
-    log_patterns = cli_args.log_patterns
-    logging.info(f"Downloading processing logs that match patterns: {log_patterns}")
-
     processed_subdirs = cli_args.processed_subdirs
-    logging.info(f"Downloading processed data subdirs: {processed_subdirs}")
+    logging.info(f"Downloading processed_data subdirs: {processed_subdirs}")
 
     experimenter = cli_args.subject
     if experimenter is None:
@@ -235,7 +207,6 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             remote_host,
             processed_data_path,
             analysis_path,
-            log_patterns,
             processed_subdirs,
             experimenter,
             subject,
