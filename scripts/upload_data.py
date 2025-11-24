@@ -213,13 +213,6 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default="<SUBJECT>/**/*_<YYYY><MM><DD>_*.hdf5"
     )
     parser.add_argument(
-        "--behavior-mat-pattern", "-M",
-        type=str,
-        help="Glob pattern to match behavior .mat files within BEHAVIOR_ROOT. May include placeholders <EXPERIMENTER>, <SUBJECT>, <YYYY>, <YY>, <MM>, <DD> (default: %(default)s)",
-        default="<SUBJECT>/**/*_<MM><DD><YY>_*.mat"
-    )
-
-    parser.add_argument(
         "--ephys-root", "-E",
         type=str,
         help="Local root directory to search for a SpikeGLX run directory. (default: %(default)s)",
