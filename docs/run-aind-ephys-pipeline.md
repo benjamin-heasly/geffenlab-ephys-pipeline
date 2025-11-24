@@ -17,7 +17,7 @@ We combine this with our own Nextflow configuration file which tells Nextflow to
 To run the pipeline, use our Python script [run_pipeline.py](./scripts/run_pipeline.py).
 This script calls `nextflow run` for the pipeline itself, and also saves detailed logs within the `processed_data` subdirectory directory for each session.
 
-We tell the script which pipeline to run with the `--workflow` argument.  We specifiy the configuration to use with `--config`.  We also pass the `experimenter`, `--subject`, and `--date` for the session we want to process.
+We tell the script which pipeline to run with the `--workflow` argument.  We specifiy the configuration to use with `--config`.  We also pass the `--experimenter`, `--subject`, and `--date` for the session we want to process.
 
 The `--input` parameter can be `spikeglx` or `openephys`, to tell the AIND pipeline what type of data to read.
 
