@@ -131,10 +131,10 @@ python geffenlab-ephys-pipeline/scripts/upload_data.py --date 03112025 03122025 
 Session date MMDDYYYY (multiple dates may be separated by spaces): 03112025 03122025 03132025
 ```
 
-## Results
+## Results overview
 
-Matchin session behavior and ephys data should now be on cortex, within the lab's sotrage directory, `/vol/cortex/cd4/geffenlab/`.
+Matching session behavior and ephys data should now be on cortex, within the lab's sotrage directory, `/vol/cortex/cd4/geffenlab/`.
 
-For the particular session in this example, the raw session data should be located at `/vol/cortex/cd4/geffenalb/raw_data/BH/AS20-minimal3/03112025/`:
+For the session in this example, the raw session data should be located at `/vol/cortex/cd4/geffenalb/raw_data/BH/AS20-minimal3/03112025/`:
 
 ![Cortex remote desktop files view](./upload-data.png)

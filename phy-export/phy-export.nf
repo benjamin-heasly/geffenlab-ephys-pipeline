@@ -5,7 +5,7 @@ process geffenlab_ecephys_phy_export {
     tag 'geffenlab_ecephys_phy_export'
     container 'ghcr.io/benjamin-heasly/geffenlab-ecephys-phy-export:v0.0.7'
 
-    publishDir "${params.analysis_path}/phy-pipeline",
+    publishDir "${params.analysis_path}/phy-export",
         mode: 'copy',
         overwrite: true,
         pattern: 'results/*',
@@ -36,7 +36,7 @@ process geffenlab_ecephys_catgt {
     tag 'geffenlab_ecephys_catgt'
     container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.7'
 
-    publishDir "${params.analysis_path}/phy-pipeline",
+    publishDir "${params.analysis_path}/phy-export",
         mode: 'copy',
         overwrite: true,
         pattern: 'results/*',
@@ -70,7 +70,7 @@ process geffenlab_ecephys_tprime {
     tag 'geffenlab_ecephys_tprime'
     container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.7'
 
-    publishDir "${params.analysis_path}/phy-pipeline",
+    publishDir "${params.analysis_path}/phy-export",
         mode: 'copy',
         overwrite: true,
         pattern: 'results/*',
@@ -109,7 +109,7 @@ process geffenlab_ecephys_bombcell {
     tag 'geffenlab_ecephys_bombcell'
     container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.6'
 
-    publishDir "${params.analysis_path}/phy-pipeline",
+    publishDir "${params.analysis_path}/phy-export",
         mode: 'copy',
         overwrite: true,
         pattern: 'results/*',
@@ -132,7 +132,7 @@ process geffenlab_ecephys_bombcell {
 }
 
 workflow {
-    println "Running phy-pipeline with params: ${params}"
+    println "Running phy-export with params: ${params}"
 
     // Export SpikeInterface results to a phy/ folder in the analysis subdirectory.
     processed_data_channel = channel.fromPath(params.processed_data_path)

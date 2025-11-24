@@ -1,25 +1,32 @@
-# Running the Phy pipeline
+# Run Geffen lab Phy export
 
-This doc should help you run the Phy export pipeline for manual creation.
-This pipeline is defined in [phy-export/phy-export.nf](./phy-export/phy-export.nf).
+This doc should help you run the Geffen lab's [phy-export.nf](../phy-export/phy-export.nf) Nextflow pipeline.
+This will export sorting and SpikeInterface curation results from the AIND ephys pipeline, to the format used by Phy.
 
-Before running this and other pipelines you'll need to do some one-time [cortex user setup](./cortex-user-setup.md) for your cortex user account and local lab machine.
+For SpikeGlx recordings, this also includes running CatGT to extract events and TPrime to align events and spike times.
 
-The Phy pipeline is intended to run after the [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline), which does spike sorting and generates quality metrics.
+Before running this you must run the AIND ephys pipeline for your session: [run-aind-ephys-pipeline.md](./run-aind-ephys-pipeline.md)
 
-# WIP...
 
-```
-cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
-conda activate geffen-pipelines
+## Pipeline configuration and arguments
 
-python run_pipeline.py \
-  --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
-  --config geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
-  --experimenter BH \
-  --subject AS20-minimal3 \
-  --date 03112025
-```
+We use our own Nextflow pipline defined in [phy-export.nf](../phy-export/phy-export.nf) to export AIND ephys pipeline results to Phy.
+
+We combine this with a Nextflow configuration file which tells Nextflow to do things like:
+ - Locate Geffen lab data and results within `/vol/cortex/cd4/geffenlab/`.
+ - Share CPU, GPU, and RAM with other cortex users.
+
+To run the pipeline, use our Python script [run_pipeline.py](./scripts/run_pipeline.py).
+This script calls `nextflow run` for the pipeline itself, and also saves detailed logs within the `processed_data` subdirectory directory for each session.
+
+We tell the script which pipeline to run with the `--workflow` argument.  We specifiy the configuration to use with `--config`.  We also pass the `experimenter`, `--subject`, and `--date` for the session we want to process.
+
+The `--input` parameter can be `spikeglx` or `openephys`, to tell whether we need to run CatGT and TPrime.
+
+## Run the pipeline
+
+To run the pipeline, connect to cortex via remote desktop and open a terminal window.
+Run the following command (or similar, depending on your data).
 
 ```
 cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
@@ -30,16 +37,26 @@ python run_pipeline.py \
   --config geffenlab-ephys-pipeline/phy-export/cortex.config \
   --experimenter BH \
   --subject AS20-minimal3 \
-  --date 03112025
+  --date 03112025 \
+  --input spikeglx
 ```
 
-```
-cd /home/ninjaben/codin/geffenlab-ephys-pipeline/scripts/
-conda activate geffen-pipelines
+The pipeline run should take less than an hour.  A clean run should end with a summary like this:
 
-python run_phy.py \
-  --gpu-device 3 \
-  --experimenter BH \
-  --subject AS20-minimal3 \
-  --date 03112025
 ```
+Completed at: 14-Aug-2025 15:16:36
+Duration    : 5m 17s
+CPU hours   : 0.7
+Succeeded   : 12
+```
+
+## Results overview
+
+The pipeline looks for processed session data within the lab's sotrage directory, `/vol/cortex/cd4/geffenlab/`.
+For the session in this example, the processed session data would be located at `/vol/cortex/cd4/geffenalb/processed_data/BH/AS20-minimal3/03112025/`.
+
+For SpikeGlx recordings, this pipeline also looks for raw session data, for example in `/vol/cortex/cd4/geffenalb/raw_data/BH/AS20-minimal3/03112025/`
+
+This pipeline writes Phy results into the session's analysis sibdirectory, for example `/vol/cortex/cd4/geffenalb/analysis/BH/AS20-minimal3/03112025/`
+
+![Cortex remote desktop files view](./aind-ephys-pipeline-results.png)
