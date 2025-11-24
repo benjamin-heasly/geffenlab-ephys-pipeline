@@ -103,7 +103,7 @@ conda activate geffen-pipelines
 python run_phy.py \
   --gpu-device none \
   --user self \
-  --analysis-root /mnt/c/Users/labuser/Desktop/pipeline-results \
+  --analysis-root /mnt/c/Users/labuser/Desktop/pipeline-results/analysis \
   --experimenter BH \
   --subject AS20-minimal3 \
   --date 03112025
