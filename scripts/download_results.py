@@ -62,7 +62,7 @@ def run_main(
                 c.get(remote=analysis_file, local=local_file_path.as_posix())
 
         except Exception:
-            logging.warning(f"Error downloading from analysis session directory.")
+            logging.error(f"Error downloading from analysis session directory.", exc_info=True)
             # Don't return, keep trying below.
 
         # Download selected subdirs files from the session "processed_data" dir.
@@ -88,11 +88,11 @@ def run_main(
                 logging.info(f"Downloading files to: {local_path}")
                 for remote_file in remote_files:
                     relative_file_path = Path(remote_file).relative_to(remote_processed_data_path)
-                    local_file_path = Path(local_path,"processed_data", processed_subdir, experimenter, subject_id, date_string, relative_file_path)
+                    local_file_path = Path(local_path, "processed_data", processed_subdir, experimenter, subject_id, date_string, relative_file_path)
                     c.get(remote=remote_file, local=local_file_path.as_posix())
 
         except Exception:
-            logging.warning(f"Error downloading from processed_data session directory.")
+            logging.error(f"Error downloading from processed_data session directory.", exc_info=True)
             return
 
     logging.info("OK.\n")
