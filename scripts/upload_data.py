@@ -62,7 +62,7 @@ def run_main(
     group_permissions: str,
     other_permissions: str,
 ):
-    # Collect files to upload as a list of (source_root, source_relative, destination_relative)
+    # Collect files to upload as a list of (source_root, source_relative, destination_relative, session_mmddyyyy)
     to_upload = []
 
     for session_date in session_dates:
@@ -142,7 +142,7 @@ def run_main(
         logging.info(f"  {destination_relative}")
 
     # Confirm before uploading
-    go_ahead = input("Do you want to upload these files?  Type 'yes' to proceed: ").strip()
+    go_ahead = input(f"Do you want to upload these {len(to_upload)} files?  Type 'yes' to proceed: ").strip()
     if go_ahead != "yes":
         logging.warning("Stopping without uploading files.")
         return

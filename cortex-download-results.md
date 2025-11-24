@@ -11,7 +11,7 @@ This repo has a Python script [download_results.py](./scripts/download_results.p
 Run this script from the WSL environment of your local lab machine:
 
 ```
-# Go to the directory that will contain your `ephys-pipeline-outputs/`. folder of results.
+# Go to the directory that will contain your `pipeline-results/`. folder of results.
 # This is one example:
 cd /mnt/c/Users/labuser/Desktop
 
@@ -23,7 +23,7 @@ python ~/geffenlab-ephys-pipeline/scripts/download_results.py
 This will prompt you for the experimenter initials, subject id, and session date you want to download.  It will also ask for your cortex credentials.  For example:
 
 ```
-2025-10-03 15:32:25,755 [INFO] Downloading files to local root: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs
+2025-10-03 15:32:25,755 [INFO] Downloading files to local root: /mnt/c/Users/labuser/Desktop/pipeline-results
 2025-10-03 15:32:25,755 [INFO] Downloading files from remote host: 128.91.19.199
 2025-10-03 15:32:25,755 [INFO] Downloading files from remote processed data root: /vol/cortex/cd4/geffenlab/processed_data
 2025-10-03 15:32:25,755 [INFO] Downloading files from remote analysis root: /vol/cortex/cd4/geffenlab/analysis
@@ -53,10 +53,10 @@ synthesis
 /vol/cortex/cd4/geffenlab/analysis/BH/AS20-minimal3/03112025/synthesis/figures/AS20-minimal3-03112025_neurons_1.png
 /vol/cortex/cd4/geffenlab/analysis/BH/AS20-minimal3/03112025/synthesis/BH_AS20-minimal3_03112025_summary.pkl
 
-2025-10-03 15:32:53,120 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/synthesis/figures/AS20-minimal3-03112025_demo.png
+2025-10-03 15:32:53,120 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/synthesis/figures/AS20-minimal3-03112025_demo.png
 2025-10-03 15:32:53,158 [INFO] [chan 2] Opened sftp connection (server version 3)
-2025-10-03 15:32:53,263 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/synthesis/figures/AS20-minimal3-03112025_neurons_1.png
-2025-10-03 15:32:53,333 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/synthesis/BH_AS20-minimal3_03112025_summary.pkl
+2025-10-03 15:32:53,263 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/synthesis/figures/AS20-minimal3-03112025_neurons_1.png
+2025-10-03 15:32:53,333 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/synthesis/BH_AS20-minimal3_03112025_summary.pkl
 ```
 
 It will summarize what it finds in the sessions's processed data subdirectory on cortex:
@@ -79,12 +79,12 @@ It will download log files from the session's processed data directory:
 
 ```
 Found session processing logs: ['main_20251003T190321UTC_nextflow.log', 'main_20251003T190321UTC_run_pipeline.log', 'main_20251003T190321UTC_process_detail.md', 'main_multi_backend_20251003T175141UTC_nextflow.log', 'main_multi_backend_20251003T175141UTC_run_pipeline.log', 'main_multi_backend_20251003T175141UTC_process_detail.md']
-2025-10-03 15:32:53,869 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/main_20251003T190321UTC_nextflow.log
-2025-10-03 15:32:53,890 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/main_20251003T190321UTC_run_pipeline.log
-2025-10-03 15:32:54,235 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/main_20251003T190321UTC_process_detail.md
-2025-10-03 15:32:53,999 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/main_multi_backend_20251003T175141UTC_nextflow.log
-2025-10-03 15:32:54,021 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/main_multi_backend_20251003T175141UTC_run_pipeline.log
-2025-10-03 15:32:54,276 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/main_multi_backend_20251003T175141UTC_process_detail.md
+2025-10-03 15:32:53,869 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/main_20251003T190321UTC_nextflow.log
+2025-10-03 15:32:53,890 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/main_20251003T190321UTC_run_pipeline.log
+2025-10-03 15:32:54,235 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/main_20251003T190321UTC_process_detail.md
+2025-10-03 15:32:53,999 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/main_multi_backend_20251003T175141UTC_nextflow.log
+2025-10-03 15:32:54,021 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/main_multi_backend_20251003T175141UTC_run_pipeline.log
+2025-10-03 15:32:54,276 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/main_multi_backend_20251003T175141UTC_process_detail.md
 ```
 
 It will download selected subdirectories from within the session's processed data directory.
@@ -97,10 +97,10 @@ These should contain Nexflow reports and AIND pipeline diagnostic plots.
 /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/nextflow/report.html
 /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/nextflow/trace.txt
 /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/nextflow/timeline.html
-2025-10-03 15:32:54,320 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/nextflow/dag.html
-2025-10-03 15:32:54,373 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/nextflow/report.html
-2025-10-03 15:32:54,457 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/nextflow/trace.txt
-2025-10-03 15:32:54,475 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/nextflow/timeline.html
+2025-10-03 15:32:54,320 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/nextflow/dag.html
+2025-10-03 15:32:54,373 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/nextflow/report.html
+2025-10-03 15:32:54,457 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/nextflow/trace.txt
+2025-10-03 15:32:54,475 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/nextflow/timeline.html
 ```
 
 `sorted/nextflow`
@@ -110,10 +110,10 @@ These should contain Nexflow reports and AIND pipeline diagnostic plots.
 /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/nextflow/report.html
 /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/nextflow/trace.txt
 /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/nextflow/timeline.html
-2025-10-03 15:32:54,557 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/nextflow/dag.html
-2025-10-03 15:32:54,618 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/nextflow/report.html
-2025-10-03 15:32:54,709 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/nextflow/trace.txt
-2025-10-03 15:32:54,736 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/nextflow/timeline.html
+2025-10-03 15:32:54,557 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/nextflow/dag.html
+2025-10-03 15:32:54,618 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/nextflow/report.html
+2025-10-03 15:32:54,709 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/nextflow/trace.txt
+2025-10-03 15:32:54,736 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/nextflow/timeline.html
 ```
 
 `sorted/visualization`
@@ -123,13 +123,13 @@ These should contain Nexflow reports and AIND pipeline diagnostic plots.
 /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/motion.png
 /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_full_seg0.png
 /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/drift_map.png
-2025-10-03 15:32:54,841 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_proc_seg0.png
-2025-10-03 15:32:55,022 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/motion.png
-2025-10-03 15:32:55,095 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_full_seg0.png
-2025-10-03 15:32:55,205 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/ephys-pipeline-outputs/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/drift_map.png
+2025-10-03 15:32:54,841 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_proc_seg0.png
+2025-10-03 15:32:55,022 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/motion.png
+2025-10-03 15:32:55,095 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_full_seg0.png
+2025-10-03 15:32:55,205 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/drift_map.png
 ```
 
-When finished you should be able to open `ephys-pipeline-outputs` on the Windows desktop and browse to the results.
+When finished you should be able to open `pipeline-results` on the Windows desktop and browse to the results.
 
 ## Options
 
