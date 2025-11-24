@@ -1,32 +1,24 @@
 # geffenlab-ephys-pipeline
 
-This repo contains a [Nextflow](https://www.nextflow.io/) pipeline for processing Geffen lab ephys data.
+This repo contains [Nextflow](https://www.nextflow.io/) pipelines and Python scripts for processing Geffen lab ephys data.
 
 For each datset:
- - First we want to run the [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline).  This will do spike sorting and automated curation based on quality metrics.
- - Then we want to run this Geffen lab ephys pipeline.  This will convert sorting outputs to Phy format, optionally invoke Phy for intearactive curation, then save outputs from some of the lab's [population-analysis](https://github.com/jcollina/population-analysis) code.
+ - First we want to run the [aind-ephys-pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline).  This will do spike sorting and automated curation based on quality metrics.
+ - Then we can run the Geffen lab's [phy-export](./phy-export/phy-export.nf) pipeline.  This will convert the `aind-ephys-pipeline` pipeline results to the format expected by Phy, for manual curation.
+
+From there we'll have a few options for manual curation and further processing (work in progress).
 
 # Getting started on cortex
 
-For docs on getting started with processing on the cortex server, please see:
- - [cortex-user-setup.md](./cortex-user-setup.md)
- - [cortex-first-run.md](./cortex-first-run.md)
+First, you should go through our [cortex-user-setup.md](./docs/cortex-user-setup.md) docs, to get your local and cortex environments set up.
 
-To upload data to cortex and download results from cortex, plese see:
- - [cortex-moving-data.md](./cortex-moving-data.md)
+# Running pipelines
 
-To configure pipelines for different experiment setups, plese see:
- - [pipeline-configurations.md](./pipeline-configurations.md)
- - [summary-plotting-scripts.md](./summary-plotting-scripts.md)
-
-# Overview
-
-Here's an overview of the pipeline.
-
-![Diagram of flow from rig data, through AIND ephys pipeline and Geffen lab ephys pipeline, to analysis subdirectories](./geffen-lab-ephys-pipeline.png)
-[editable diagram at draw.io](https://drive.google.com/file/d/1dpmN89oHnOK7tfIegiJ8pkNQINFG5Lw_/view?usp=sharing)
-
-The pipeline starts with raw, original SpikeGLX and behavior data from a rig.  The AIND ephys pipeline does spike sorting with Kilosort4 and automated curation based on quality metrics with SpikeInterface.  The Geffen lab ephys pipeline converts sorting results to the Phy format and allows for interactive curation with Phy.  It uses CatGT, TPrime, and custom lab code to align curated sorting results with event and behavior data.  It produces several subdirectories of analysis results, includgin a `synthesis/` subdirectory intended to support further analysis.
+To run your first pipeline, you can follow these docs:
+ - [cortex-upload-data.md](./docs/cortex-upload-data.md)
+ - [run-aind-ephys-pipeline.md](./docs/run-aind-ephys-pipeline.md)
+ - [run-phy-export.md](./docs/run-phy-export.md)
+ - [cortex-download-results.md](./docs/cortex-download-results.md)
 
 # Pipeline steps and Docker images 
 
@@ -49,8 +41,6 @@ It has Python wrappers for calling these tools in a more familiar Python style.
 ## geffenlab-phy-desktop
 
 The [geffenlab-phy-desktop](https://github.com/benjamin-heasly/geffenlab-phy-desktop) image has a [Phy](https://phy.readthedocs.io/en/latest/) installation that we can use for interactive curation.
-
-It can also create a default `cluster_info.tsv`, noninteractively, making interactive curation optional.
 
 ## geffenlab-synthesis
 

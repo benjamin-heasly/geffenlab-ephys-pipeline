@@ -87,48 +87,6 @@ Found session processing logs: ['main_20251003T190321UTC_nextflow.log', 'main_20
 2025-10-03 15:32:54,276 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/main_multi_backend_20251003T175141UTC_process_detail.md
 ```
 
-It will download selected subdirectories from within the session's processed data directory.
-These should contain Nexflow reports and AIND pipeline diagnostic plots.
-
-`nextflow`
-```
-2025-10-03 15:32:54,295 [INFO] Checking for processed data subdir nextflow:
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/nextflow/dag.html
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/nextflow/report.html
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/nextflow/trace.txt
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/nextflow/timeline.html
-2025-10-03 15:32:54,320 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/nextflow/dag.html
-2025-10-03 15:32:54,373 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/nextflow/report.html
-2025-10-03 15:32:54,457 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/nextflow/trace.txt
-2025-10-03 15:32:54,475 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/nextflow/timeline.html
-```
-
-`sorted/nextflow`
-```
-2025-10-03 15:32:54,542 [INFO] Checking for processed data subdir sorted/nextflow:
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/nextflow/dag.html
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/nextflow/report.html
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/nextflow/trace.txt
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/nextflow/timeline.html
-2025-10-03 15:32:54,557 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/nextflow/dag.html
-2025-10-03 15:32:54,618 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/nextflow/report.html
-2025-10-03 15:32:54,709 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/nextflow/trace.txt
-2025-10-03 15:32:54,736 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/nextflow/timeline.html
-```
-
-`sorted/visualization`
-```
-2025-10-03 15:32:54,820 [INFO] Checking for processed data subdir sorted/visualization:
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_proc_seg0.png
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/motion.png
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_full_seg0.png
-/vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/drift_map.png
-2025-10-03 15:32:54,841 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_proc_seg0.png
-2025-10-03 15:32:55,022 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/motion.png
-2025-10-03 15:32:55,095 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/traces_full_seg0.png
-2025-10-03 15:32:55,205 [INFO] Downloading to: /mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/03112025/sorted/visualization/block0_imec0.ap_recording1/drift_map.png
-```
-
 When finished you should be able to open `pipeline-results` on the Windows desktop and browse to the results.
 
 ## Options

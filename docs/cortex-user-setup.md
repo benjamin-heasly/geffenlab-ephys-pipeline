@@ -2,9 +2,6 @@
 
 This doc should help you configure your local lab machine and your cortex user account for running Geffen lab pipelines with Nextflow.
 
-When you're done here please see [cortex-first-run.md](./cortex-first-run.md) to try a pipeline run with known data.
-This should validate your setup and indicate how to run other data as well.
-
 # Overview
 
 Our workflow has a few steps to it which will run from local lab machines or cortex:
@@ -341,9 +338,9 @@ Expect output like this:
 
 ## pipeline code
 
-We're using two Nexftlow pipelines:
- - the [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) for spike sorting and quality metrics
- - our [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline) for combining data modalities and producing summary figures and pickles
+We're using two repos with Nexftlow pipelines:
+ - the [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) repo for spike sorting and quality metrics
+ - our [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline) repo for exporting to Phy and other processing
 
 We cloned these two Git repos into the geffenlab `nextflow/` subdirectory.
 
@@ -407,9 +404,9 @@ Expect the diff to show one line changed:
 We'd prefer not to make changes like this or to keep track of them!
 Hopefully the main pipeline will be updated, and we can update to a version that we can use whole, as-is.
 
-### Geffen lab pipeline version
+### Geffen lab repo version
 
-We've been actively developing and debugging our own [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline).
+We've been actively developing and debugging in our own [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline) repo.
 When things are settled, we should choose a release tag to check out on cortex, and use for all processing.
 Meanwhile, we should try to keep this repo up to date with the latest on GitHub.
 
