@@ -79,7 +79,7 @@ The script will also save a log from your Phy run within the overall session `an
 You can run Phy locally if you first download the session `analysis/` subdirectory.
 See [download-results.md](./download-results.md) for how to do this.
 
-## Running Phy (any old way)
+### Running Phy (any old way)
 
 If you've installed and used Phy locally in the past, try running it like you have before.
 The `params.py` will be located within your local `pipeline-results/` folder.
@@ -87,7 +87,7 @@ For example: `/mnt/c/Users/labuser/Desktop/pipeline-results/BH/AS20-minimal3/031
 
 ![Windows desktop files view](./download-results.png)
 
-## Running Phy (Docker)
+### Running Phy (Docker)
 
 You can also use Docker to run the same kind of Phy container that we use on cortex -- but locally.
 For this to work you'll need to install Docker locally, for example [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/).
