@@ -15,7 +15,7 @@ First, you should go through our [cortex-user-setup.md](./docs/cortex-user-setup
 # Running pipelines
 
 Here are docs for several steps that should be working so far:
- - Upload session data to cortex: [cortex-upload-data.md](./docs/cortex-upload-data.md)
+ - Upload session data to cortex: [cortex-upload-data.md](./docs/upload-data.md)
  - Run the AIND sorting pipeline: [run-aind-ephys-pipeline.md](./docs/run-aind-ephys-pipeline.md)
  - Run the phy-export pipeline: [run-phy-export.md](./docs/run-phy-export.md)
 
@@ -26,7 +26,7 @@ You can do Phy curation on cortex, via remote desktop.  This should work, but mi
  - Phy curation on cortex: [phy-on-cortex-remote-desktop](./docs/run-phy.md#phy-on-cortex-remote-desktop)
 
 When you're done with Phy on cortex (or if you skip that step) you can download results from cortex:
- - Download results from cortex: [cortex-download-results.md](./docs/cortex-download-results.md)
+ - Download results from cortex: [cortex-download-results.md](./docs/download-results.md)
 
 You can also to the Phy curation locally, using the results you downloaded:
  - Local Phy curation: [phy-local-with-data-download](./docs/run-phy.md#phy-local-with-data-download)
