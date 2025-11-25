@@ -1,4 +1,4 @@
-# Cortex Moving Data
+# Download Results
 
 This doc should help you download pipelines results from cortex to your local machine.
 
