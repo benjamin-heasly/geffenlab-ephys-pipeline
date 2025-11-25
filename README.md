@@ -6,7 +6,7 @@ For each datset:
  - First we want to run the [aind-ephys-pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline).  This will do spike sorting and automated curation based on quality metrics.
  - Then we can run the Geffen lab's [phy-export](./phy-export/phy-export.nf) pipeline.  This will convert the `aind-ephys-pipeline` pipeline results to the format expected by Phy, for manual curation.
 
-From there we'll have a few options for manual curation and further processing (work in progress).
+From there we'll have a few options for manual curation and further processing (work in progress...).
 
 # Getting started on cortex
 
@@ -14,11 +14,25 @@ First, you should go through our [cortex-user-setup.md](./docs/cortex-user-setup
 
 # Running pipelines
 
-To run your first pipeline, you can follow these docs:
- - [cortex-upload-data.md](./docs/cortex-upload-data.md)
- - [run-aind-ephys-pipeline.md](./docs/run-aind-ephys-pipeline.md)
- - [run-phy-export.md](./docs/run-phy-export.md)
- - [cortex-download-results.md](./docs/cortex-download-results.md)
+Here docs for several steps that should be working so far:
+ - Upload session data to cortex: [cortex-upload-data.md](./docs/cortex-upload-data.md)
+ - Run the AIND sorting pipeline: [run-aind-ephys-pipeline.md](./docs/run-aind-ephys-pipeline.md)
+ - Run the phy-export pipeline: [run-phy-export.md](./docs/run-phy-export.md)
+
+The steps above will save sorting results in Phy format, on cortex.
+From there we have some options.
+
+You can do Phy curation on cortex, via remote desktop.  This should work, but might be slow (for now):
+ - Phy curation on cortex: [phy-on-cortex-remote-desktop](./docs/run-phy.md#phy-on-cortex-remote-desktop)
+
+When you're done with Phy on cortex (or if you skip this step) you can download results from cortex:
+ - Download results from cortex: [cortex-download-results.md](./docs/cortex-download-results.md)
+
+You can also to the Phy curation locally, using the downloaded data:
+ - Local Phy curation: [phy-local-with-data-download](./docs/run-phy.md#phy-local-with-data-download)
+
+When you're done with local Phy curation, you can upload the curated data back to cortex:
+ - Upload analysys back to cortex: [upload-analysis.md](./docs/upload-analysis.md)
 
 # Pipeline steps and Docker images 
 
