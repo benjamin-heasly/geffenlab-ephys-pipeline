@@ -3,7 +3,7 @@
 // But, this version also has quality metrics and automated curation done by SpikeInterface.
 process geffenlab_ecephys_phy_export {
     tag 'geffenlab_ecephys_phy_export'
-    container 'ghcr.io/benjamin-heasly/geffenlab-ecephys-phy-export:v0.0.7'
+    container 'ghcr.io/benjamin-heasly/geffenlab-ecephys-phy-export:v0.0.8'
 
     publishDir "${params.analysis_path}/phy-export",
         mode: 'copy',
@@ -34,7 +34,7 @@ process geffenlab_ecephys_phy_export {
 // For SpikeGlx recordings, extract events (sync, behavior, stimulus, etc).
 process geffenlab_ecephys_catgt {
     tag 'geffenlab_ecephys_catgt'
-    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.7'
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.8'
 
     publishDir "${params.analysis_path}/phy-export",
         mode: 'copy',
@@ -57,10 +57,6 @@ process geffenlab_ecephys_catgt {
     conda_run python /opt/code/catgt.py \
       $raw_data_path/ecephys \
       results/catgt \
-      --run $params.catgt_run \
-      --gate $params.catgt_gate \
-      --trigger $params.catgt_trigger \
-      --probe-id $params.probe_id \
       $params.catgt_args
     """
 }
@@ -68,7 +64,7 @@ process geffenlab_ecephys_catgt {
 // For SpikeGlx recordings, align spike times and other events, based on sync events.
 process geffenlab_ecephys_tprime {
     tag 'geffenlab_ecephys_tprime'
-    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.7'
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.8'
 
     publishDir "${params.analysis_path}/phy-export",
         mode: 'copy',
@@ -98,8 +94,7 @@ process geffenlab_ecephys_tprime {
       --sync-period $params.tprime_sync_period \
       --to-stream $params.tprime_to_stream \
       --from-streams $params.tprime_from_streams \
-      --phy-from-stream $params.tprime_phy_from_stream \
-      --probe-id $params.probe_id
+      --phy-from-stream $params.tprime_phy_from_stream
     """
 }
 
@@ -107,7 +102,7 @@ process geffenlab_ecephys_tprime {
 // TODO: this is a placeholder for now!
 process geffenlab_ecephys_bombcell {
     tag 'geffenlab_ecephys_bombcell'
-    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.6'
+    container 'ubuntu'
 
     publishDir "${params.analysis_path}/phy-export",
         mode: 'copy',
