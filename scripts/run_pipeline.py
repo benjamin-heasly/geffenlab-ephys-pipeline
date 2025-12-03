@@ -38,6 +38,7 @@ def run_main(
     experimenter: str,
     subject: str,
     date: str,
+    ecephys_session_name: str,
     run_name: str,
     nextflow_log_path: Path,
     pass_through_args: list[str],
@@ -47,6 +48,10 @@ def run_main(
     logging.info("Starting pipeline run.\n")
 
     pipeline_exit_code = 0
+
+    session_name_args = []
+    if ecephys_session_name:
+        session_name_args = ["--session_name", ecephys_session_name]
 
     run_command = [
         nextflow,
@@ -60,7 +65,7 @@ def run_main(
         "--experimenter", experimenter,
         "--subject", subject,
         "--date", date,
-    ] + pass_through_args
+    ] + session_name_args + pass_through_args
     logging.info(f"Nextflow run command: {run_command}.")
 
     try:
@@ -211,6 +216,23 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     processed_data_root_path = Path(cli_args.processed_data_root)
     analysis_root_path = Path(cli_args.analysis_root)
 
+    # Choose a "session name" based on a subdir of the session's raw data "ecephys" subdir.
+    # For example, the name of a SpikeGlx or OpenEphys recording directory.
+    ecephys_session_name = None
+    raw_data_ecephys_path = Path(raw_data_root_path, cli_args.experimenter, cli_args.subject, cli_args.date, "ecephys")
+    if raw_data_ecephys_path.exists():
+        session_names = [subdir.name for subdir in raw_data_ecephys_path.iterdir() if subdir.is_dir()]
+        session_count = len(session_names)
+        logging.info(f"Found {session_count} ecephys session subdir(s).")
+        if session_count == 1:
+            ecephys_session_name = session_names[0]
+        else:
+            logging.info(f"Please choose one:")
+            for index, name in enumerate(session_names):
+                logging.info(f"  {index}: {name}")
+            session_index = int(input(f"Choose by number 0-{session_count - 1}: ").strip())
+            ecephys_session_name = session_names[session_index]
+
     # Choose a reasonably unique "run name" for this Nextflow run.
     # This allows us to aggregate process logs after the run completes.
     execution_time = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%Z')
@@ -235,6 +257,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     logging.info(f"For experimenter {cli_args.experimenter}")
     logging.info(f"For session subject {cli_args.subject}")
     logging.info(f"For session date {cli_args.date}")
+    logging.info(f"For session name: {ecephys_session_name}")
     logging.info(f"Writing Nextflow log to {nextflow_log_path}")
     logging.info(f"Using process detail report template {report_template_path}")
     logging.info(f"Writing process detail report to {process_detail_path}")
@@ -251,6 +274,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             cli_args.experimenter,
             cli_args.subject,
             cli_args.date,
+            ecephys_session_name,
             run_name,
             nextflow_log_path,
             pass_through_args,
