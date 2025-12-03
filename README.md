@@ -55,7 +55,3 @@ It has Python wrappers for calling these tools in a more familiar Python style.
 ## geffenlab-phy-desktop
 
 The [geffenlab-phy-desktop](https://github.com/benjamin-heasly/geffenlab-phy-desktop) image has a [Phy](https://phy.readthedocs.io/en/latest/) installation that we can use for interactive curation.
-
-## geffenlab-synthesis
-
-The [geffenlab-synthesis](https://github.com/benjamin-heasly/geffenlab-synthesis) image incorporates the lab's [population-analysis](https://github.com/jcollina/population-analysis) code for aligning and combining data into dataframes, and plotting session summary figures.

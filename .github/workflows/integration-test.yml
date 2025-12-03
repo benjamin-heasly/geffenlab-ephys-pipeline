@@ -97,7 +97,7 @@ jobs:
         python run_pipeline.py \
         --work-dir $GITHUB_WORKSPACE/nextflow \
         --workflow $GITHUB_WORKSPACE/pipeline/main.nf \
-        --config $GITHUB_WORKSPACE/pipeline/cortex.config \
+        --config $GITHUB_WORKSPACE/phy-export/cortex.config \
         --experimenter BH \
         --subject AS20-minimal3 \
         --date 03112025 \
