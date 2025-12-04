@@ -51,7 +51,7 @@ def run_main(
 
     session_name_args = []
     if ecephys_session_name:
-        session_name_args = ["--session_name", ecephys_session_name]
+        session_name_args = ["--ecephys_session_name", ecephys_session_name]
 
     run_command = [
         nextflow,
