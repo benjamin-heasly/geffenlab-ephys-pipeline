@@ -5,10 +5,10 @@ process geffenlab_ecephys_phy_export {
     tag 'geffenlab_ecephys_phy_export'
     container 'ghcr.io/benjamin-heasly/geffenlab-ecephys-phy-export:v0.0.9'
 
-    publishDir "${params.analysis_path}/phy-export",
+    publishDir "${params.analysis_path}/phy-export/exported/$params.ecephys_session_name",
         mode: 'copy',
-        overwrite: false,
-        pattern: 'results/*',
+        overwrite: true,
+        pattern: "results/exported/$params.ecephys_session_name/*",
         saveAs: { filename -> file(filename).name }
 
     input:
@@ -36,10 +36,10 @@ process geffenlab_ecephys_catgt {
     tag 'geffenlab_ecephys_catgt'
     container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.10'
 
-    publishDir "${params.analysis_path}/phy-export",
+    publishDir "${params.analysis_path}/phy-export/catgt/$params.ecephys_session_name",
         mode: 'copy',
-        overwrite: false,
-        pattern: 'results/*',
+        overwrite: true,
+        pattern: "results/catgt/$params.ecephys_session_name/*",
         saveAs: { filename -> file(filename).name }
 
     input:
@@ -66,10 +66,10 @@ process geffenlab_ecephys_tprime {
     tag 'geffenlab_ecephys_tprime'
     container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.10'
 
-    publishDir "${params.analysis_path}/phy-export",
+    publishDir "${params.analysis_path}/phy-export/tprime/$params.ecephys_session_name",
         mode: 'copy',
-        overwrite: false,
-        pattern: 'results/*',
+        overwrite: true,
+        pattern: "results/tprime/$params.ecephys_session_name/*",
         saveAs: { filename -> file(filename).name }
 
     input:
@@ -104,10 +104,10 @@ process geffenlab_ecephys_bombcell {
     tag 'geffenlab_ecephys_bombcell'
     container 'ubuntu'
 
-    publishDir "${params.analysis_path}/phy-export",
+    publishDir "${params.analysis_path}/phy-export/bombcell/$params.ecephys_session_name",
         mode: 'copy',
-        overwrite: false,
-        pattern: 'results/*',
+        overwrite: true,
+        pattern: "results/bombcell/$params.ecephys_session_name/*",
         saveAs: { filename -> file(filename).name }
 
     input:
