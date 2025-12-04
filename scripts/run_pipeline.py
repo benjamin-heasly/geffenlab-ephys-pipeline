@@ -216,6 +216,19 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     processed_data_root_path = Path(cli_args.processed_data_root)
     analysis_root_path = Path(cli_args.analysis_root)
 
+    # Choose a reasonably unique "run name" for this Nextflow run.
+    # This allows us to aggregate process logs after the run completes.
+    execution_time = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%Z')
+    run_name = f"{workflow_path.stem}_{execution_time}"
+
+    # Write logs to the session's processed data subdirectory.
+    logs_path = Path(processed_data_root_path, cli_args.experimenter, cli_args.subject, cli_args.date, "logs")
+    logs_path.mkdir(exist_ok=True, parents=True)
+    script_log_path = Path(logs_path, f"{run_name}_run_pipeline.log")
+    nextflow_log_path = Path(logs_path, f"{run_name}_nextflow.log")
+    process_detail_path = Path(logs_path, f"{run_name}_process_detail.md")
+    set_up_logging(script_log_path)
+
     # Choose a "session name" based on a subdir of the session's raw data "ecephys" subdir.
     # For example, the name of a SpikeGlx or OpenEphys recording directory.
     ecephys_session_name = None
@@ -232,19 +245,6 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 logging.info(f"  {index}: {name}")
             session_index = int(input(f"Choose by number 0-{session_count - 1}: ").strip())
             ecephys_session_name = session_names[session_index]
-
-    # Choose a reasonably unique "run name" for this Nextflow run.
-    # This allows us to aggregate process logs after the run completes.
-    execution_time = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%Z')
-    run_name = f"{workflow_path.stem}_{execution_time}"
-
-    # Write logs to the session's processed data subdirectory.
-    logs_path = Path(processed_data_root_path, cli_args.experimenter, cli_args.subject, cli_args.date, "logs")
-    logs_path.mkdir(exist_ok=True, parents=True)
-    script_log_path = Path(logs_path, f"{run_name}_run_pipeline.log")
-    nextflow_log_path = Path(logs_path, f"{run_name}_nextflow.log")
-    process_detail_path = Path(logs_path, f"{run_name}_process_detail.md")
-    set_up_logging(script_log_path)
 
     logging.info(f"From work dir {work_dir_path}")
     logging.info(f"Running workflow {workflow_path}")
