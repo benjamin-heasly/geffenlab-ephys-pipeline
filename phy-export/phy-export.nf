@@ -7,7 +7,7 @@ process geffenlab_ecephys_phy_export {
 
     publishDir "${params.analysis_path}/phy-export",
         mode: 'copy',
-        overwrite: true,
+        overwrite: false,
         pattern: 'results/*',
         saveAs: { filename -> file(filename).name }
 
@@ -38,7 +38,7 @@ process geffenlab_ecephys_catgt {
 
     publishDir "${params.analysis_path}/phy-export",
         mode: 'copy',
-        overwrite: true,
+        overwrite: false,
         pattern: 'results/*',
         saveAs: { filename -> file(filename).name }
 
@@ -68,7 +68,7 @@ process geffenlab_ecephys_tprime {
 
     publishDir "${params.analysis_path}/phy-export",
         mode: 'copy',
-        overwrite: true,
+        overwrite: false,
         pattern: 'results/*',
         saveAs: { filename -> file(filename).name }
 
@@ -106,7 +106,7 @@ process geffenlab_ecephys_bombcell {
 
     publishDir "${params.analysis_path}/phy-export",
         mode: 'copy',
-        overwrite: true,
+        overwrite: false,
         pattern: 'results/*',
         saveAs: { filename -> file(filename).name }
 
