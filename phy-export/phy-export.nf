@@ -22,10 +22,10 @@ process geffenlab_ecephys_phy_export {
     #!/usr/bin/env bash
     set -e
 
-    mkdir -p results/exported/$params.ecephys_session_name
+    mkdir -p results/exported
     conda_run python /opt/code/run.py \
       --data-root $processed_data_path \
-      --results-root results/exported/$params.ecephys_session_name \
+      --results-root results/exported \
       --postprocessed-pattern $params.postprocessed_pattern \
       --curated-pattern $params.curated_pattern
     """
@@ -53,10 +53,10 @@ process geffenlab_ecephys_catgt {
     #!/usr/bin/env bash
     set -e
 
-    mkdir -p results/catgt/$params.ecephys_session_name
+    mkdir -p results/catgt
     conda_run python /opt/code/catgt.py \
       $raw_data_path/ecephys/$params.ecephys_session_name \
-      results/catgt/$params.ecephys_session_name \
+      results/catgt \
       $params.catgt_args
     """
 }
@@ -84,13 +84,13 @@ process geffenlab_ecephys_tprime {
     #!/usr/bin/env bash
     set -e
 
-    mkdir -p results/tprime/$params.ecephys_session_name
+    mkdir -p results/tprime
     echo $catgt_results
     ls -alth $catgt_results
     conda_run python /opt/code/tprime.py \
-      $catgt_results/$params.ecephys_session_name \
-      $phy_export_results/$params.ecephys_session_name \
-      results/tprime/$params.ecephys_session_name \
+      $catgt_results \
+      $phy_export_results \
+      results/tprime \
       --sync-period $params.tprime_sync_period \
       --to-stream $params.tprime_to_stream \
       --from-streams $params.tprime_from_streams \
@@ -121,8 +121,8 @@ process geffenlab_ecephys_bombcell {
     #!/usr/bin/env bash
     set -e
 
-    mkdir -p results/bombcell/$params.ecephys_session_name
-    echo "$phy_dir" > results/bombcell/$params.ecephys_session_name/TODO.txt
+    mkdir -p results/bombcell
+    echo "$phy_dir" > results/bombcell/TODO.txt
     """
 }
 
