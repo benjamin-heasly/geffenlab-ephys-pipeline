@@ -88,8 +88,8 @@ process geffenlab_ecephys_tprime {
     echo $catgt_results
     ls -alth $catgt_results
     conda_run python /opt/code/tprime.py \
-      $catgt_results \
-      $phy_export_results \
+      $catgt_results/$params.ecephys_session_name \
+      $phy_export_results/$params.ecephys_session_name \
       results/tprime/$params.ecephys_session_name \
       --sync-period $params.tprime_sync_period \
       --to-stream $params.tprime_to_stream \
