@@ -34,7 +34,7 @@ process geffenlab_ecephys_phy_export {
 // For SpikeGlx recordings, extract events (sync, behavior, stimulus, etc).
 process geffenlab_ecephys_catgt {
     tag 'geffenlab_ecephys_catgt'
-    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.9'
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.10'
 
     publishDir "${params.analysis_path}/phy-export",
         mode: 'copy',
@@ -64,7 +64,7 @@ process geffenlab_ecephys_catgt {
 // For SpikeGlx recordings, align spike times and other events, based on sync events.
 process geffenlab_ecephys_tprime {
     tag 'geffenlab_ecephys_tprime'
-    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.9'
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.10'
 
     publishDir "${params.analysis_path}/phy-export",
         mode: 'copy',
