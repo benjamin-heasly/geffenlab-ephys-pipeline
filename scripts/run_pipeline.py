@@ -229,6 +229,21 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     process_detail_path = Path(logs_path, f"{run_name}_process_detail.md")
     set_up_logging(script_log_path)
 
+    logging.info(f"From work dir {work_dir_path}")
+    logging.info(f"Running workflow {workflow_path}")
+    logging.info(f"With config {config_path}")
+    logging.info(f"With pipeline params and Nextflow options {pass_through_args}")
+    logging.info(f"Using Nextflow {cli_args.nextflow}")
+    logging.info(f"Using raw data root {raw_data_root_path}")
+    logging.info(f"Using processed data root {processed_data_root_path}")
+    logging.info(f"Using analysis root {analysis_root_path}")
+    logging.info(f"For experimenter {cli_args.experimenter}")
+    logging.info(f"For session subject {cli_args.subject}")
+    logging.info(f"For session date {cli_args.date}")
+    logging.info(f"Writing Nextflow log to {nextflow_log_path}")
+    logging.info(f"Using process detail report template {report_template_path}")
+    logging.info(f"Writing process detail report to {process_detail_path}")
+
     # Choose a "session name" based on a subdir of the session's raw data "ecephys" subdir.
     # For example, the name of a SpikeGlx or OpenEphys recording directory.
     ecephys_session_name = None
@@ -245,22 +260,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 logging.info(f"  {index}: {name}")
             session_index = int(input(f"Choose by number 0-{session_count - 1}: ").strip())
             ecephys_session_name = session_names[session_index]
-
-    logging.info(f"From work dir {work_dir_path}")
-    logging.info(f"Running workflow {workflow_path}")
-    logging.info(f"With config {config_path}")
-    logging.info(f"With pipeline params and Nextflow options {pass_through_args}")
-    logging.info(f"Using Nextflow {cli_args.nextflow}")
-    logging.info(f"Using raw data root {raw_data_root_path}")
-    logging.info(f"Using processed data root {processed_data_root_path}")
-    logging.info(f"Using analysis root {analysis_root_path}")
-    logging.info(f"For experimenter {cli_args.experimenter}")
-    logging.info(f"For session subject {cli_args.subject}")
-    logging.info(f"For session date {cli_args.date}")
-    logging.info(f"For session name: {ecephys_session_name}")
-    logging.info(f"Writing Nextflow log to {nextflow_log_path}")
-    logging.info(f"Using process detail report template {report_template_path}")
-    logging.info(f"Writing process detail report to {process_detail_path}")
+    logging.info(f"Using ecephys session name: {ecephys_session_name}")
 
     try:
         main_exit_code = run_main(
