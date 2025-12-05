@@ -248,18 +248,19 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     # For example, the name of a SpikeGlx or OpenEphys recording directory.
     ecephys_session_name = None
     raw_data_ecephys_path = Path(raw_data_root_path, cli_args.experimenter, cli_args.subject, cli_args.date, "ecephys")
-    if raw_data_ecephys_path.exists():
-        session_names = [subdir.name for subdir in raw_data_ecephys_path.iterdir() if subdir.is_dir()]
-        session_count = len(session_names)
-        logging.info(f"Found {session_count} ecephys session subdir(s).")
-        if session_count == 1:
-            ecephys_session_name = session_names[0]
-        else:
-            logging.info(f"Please choose one:")
-            for index, name in enumerate(session_names):
-                logging.info(f"  {index}: {name}")
-            session_index = int(input(f"Choose by number 0-{session_count - 1}: ").strip())
-            ecephys_session_name = session_names[session_index]
+    if not raw_data_ecephys_path.exists():
+        raise ValueError(f"Raw data ecephys path does not exist: {raw_data_ecephys_path}")
+    session_names = [subdir.name for subdir in raw_data_ecephys_path.iterdir() if subdir.is_dir()]
+    session_count = len(session_names)
+    logging.info(f"Found {session_count} ecephys session subdir(s).")
+    if session_count == 1:
+        ecephys_session_name = session_names[0]
+    else:
+        logging.info(f"Please choose one:")
+        for index, name in enumerate(session_names):
+            logging.info(f"  {index}: {name}")
+        session_index = int(input(f"Choose by number 0-{session_count - 1}: ").strip())
+        ecephys_session_name = session_names[session_index]
     logging.info(f"Using ecephys session name: {ecephys_session_name}")
 
     try:
