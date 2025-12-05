@@ -178,7 +178,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     try:
         params_py_matches = list(data_path.glob(cli_args.params_py_pattern))
         match_count = len(params_py_matches)
-        logging.info(f"Found {match_count} params.py matches.")
+        params_py_matches.sort()
+        logging.info(f"Found {match_count} params.py matches within {data_path}")
         if match_count < 1:
             raise ValueError(f"Found no params.py matching pattern {cli_args.params_py_pattern} within {data_path}")
         elif match_count == 1:
@@ -186,7 +187,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         else:
             logging.info(f"Please choose one:")
             for index, params_py_match in enumerate(params_py_matches):
-                logging.info(f"  {index}: {params_py_match}")
+                logging.info(f"  {index}: {params_py_match.relative_to(data_path)}")
             params_py_index = int(input(f"Choose by number 0-{match_count - 1}: ").strip())
             params_py_path = params_py_matches[params_py_index]
         logging.info(f"Using params.py: {params_py_path}")
