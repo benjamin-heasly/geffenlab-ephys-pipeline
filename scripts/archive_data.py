@@ -166,7 +166,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--bucket-path-prefix", "-p",
         type=str,
         help="Which key prefix (subfolder) to use within the S3 BUCKET. (default: %(default)s)",
-        default="cortex"
+        default="cortex/raw_data"
     )
     parser.add_argument(
         "--storage-class", "-S",
