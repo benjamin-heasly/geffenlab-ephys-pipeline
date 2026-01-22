@@ -329,8 +329,19 @@ We installed the access key on cortex:
  - Use "Default output format" `json`.
  - Verify this worked with `aws sts get-caller-identity`.
 
+From the last step expect output like this:
+
+```
+$ aws sts get-caller-identity
+{
+    "UserId": "AIDAYIZ4MBX6AGEWBPEQ2",
+    "Account": "568672914940",
+    "Arn": "arn:aws:iam::568672914940:user/cortex-data-transfer-user"
+}
+```
+
 We copied the access key to a location on cortex where users in the `geffenlab` group can access it:
- - `cp ~/.aws/ /vol/cortex/cd4/geffenlab/`
+ - `cp -r ~/.aws/ /vol/cortex/cd4/geffenlab/`
  - `chmod g+r /vol/cortex/cd4/geffenlab/.aws/credentials`
  - `chmod g+r /vol/cortex/cd4/geffenlab/.aws/config`
 
