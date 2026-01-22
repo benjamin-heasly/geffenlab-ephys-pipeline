@@ -56,7 +56,7 @@ def run_main(
     raw_data_path: Path,
     experimenter: str,
     subject: str,
-    session_dates: list[str],
+    session_dates: list[date],
     qualifier: str,
     username: str,
     group_permissions: str,

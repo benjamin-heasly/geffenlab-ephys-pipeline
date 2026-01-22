@@ -8,3 +8,4 @@ dependencies:
   - pip=25.2
   - pip:
     - fabric==3.2.2
+    - boto3==1.42.31
