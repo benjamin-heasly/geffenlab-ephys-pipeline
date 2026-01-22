@@ -178,13 +178,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--aws-shared-credentials-file", "-C",
         type=str,
         help="Location of AWS credentials, eg from 'aws configure'. (default: %(default)s)",
-        default="~/.aws/credentials"
+        default="/vol/cortex/cd4/geffenlab/.aws/credentials"
     )
     parser.add_argument(
         "--aws-config-file", "-c",
         type=str,
         help="Location of AWS config, eg from 'aws configure'. (default: %(default)s)",
-        default="~/.aws/config"
+        default="/vol/cortex/cd4/geffenlab/.aws/config"
     )
     parser.add_argument(
         "--delete",

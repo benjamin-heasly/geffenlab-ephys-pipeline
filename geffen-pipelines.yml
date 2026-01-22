@@ -3,6 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
+  - awscli=2.33.3
   - openjdk=17.0.14
   - python=3.13
   - pip=25.2

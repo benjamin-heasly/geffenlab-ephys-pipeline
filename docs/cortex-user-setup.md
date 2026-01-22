@@ -308,6 +308,32 @@ We created several subdirectories to organized things:
  - `/vol/cortex/cd4/geffenlab/processed_data`: intermediate pipeline outputs and logs (subdirectories per experimenter, subject, and session date)
  - `/vol/cortex/cd4/geffenlab/analysis`: pipeline results, downloadable figures and data pickles (subdirectories per experimenter, subject, and session date)
 
+## AWS account setup
+
+The Geffen lab has an AWS S3 storage bucket at `s3://upenn-research.geffen-lab-01.us-east-1/`.
+We are accessing this bucket from cortex using a Penn AWS account named `cortex-data-transfer-user`.
+
+We created an access key for this account:
+ - Visit [cortex-data-transfer-user](https://us-east-1.console.aws.amazon.com/iam/home?region=us-east-1#/users/details/cortex-data-transfer-user?section=security_credentials) credentials page (requires Penn AWS account and permissions).
+ - Scroll to "Access keys" and click "Create access key".
+ - Choose "Command Line Interface".
+ - Use description "Geffen lab data archiving from cortex".
+ - Choose create.
+ - Use the generated access key and secret access key during `aws configure`, below.
+
+We installed the access key on cortex:
+ - On cortex, type `aws configure`.
+ - Enter the "AWS Access Key ID" from above.
+ - Enter the "AWS Secret Access Key" from above.
+ - Use "Default region name" `us-east-1`.
+ - Use "Default output format" `json`.
+ - Verify this worked with `aws sts get-caller-identity`.
+
+We copied the access key to a location on cortex where users in the `geffenlab` group can access it:
+ - `cp ~/.aws/ /vol/cortex/cd4/geffenlab/`
+ - `chmod g+r /vol/cortex/cd4/geffenlab/.aws/credentials`
+ - `chmod g+r /vol/cortex/cd4/geffenlab/.aws/config`
+
 ## Nextflow
 
 We installed the [Nextflow](https://www.nextflow.io/) pipeline tool into the geffenlab `nextflow/` subdirectory.
