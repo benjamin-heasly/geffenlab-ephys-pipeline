@@ -3,7 +3,7 @@
 // But, this version also has quality metrics and automated curation done by SpikeInterface.
 process geffenlab_ecephys_phy_export {
     tag 'geffenlab_ecephys_phy_export'
-    container 'ghcr.io/benjamin-heasly/geffenlab-ecephys-phy-export:v0.0.10'
+    container 'ghcr.io/benjamin-heasly/geffenlab-ecephys-phy-export:v0.0.11'
 
     publishDir "${params.analysis_path}/phy-export/$params.ecephys_session_name",
         mode: 'copy',
@@ -12,6 +12,7 @@ process geffenlab_ecephys_phy_export {
         saveAs: { filename -> file(filename).name }
 
     input:
+    path ecephys_path
     path processed_data_path
 
     output:
@@ -24,10 +25,16 @@ process geffenlab_ecephys_phy_export {
 
     mkdir -p results/exported
     conda_run python /opt/code/run.py \
-      --data-root $processed_data_path \
-      --results-root results/exported \
+      --ecephys-dir $ecephys_path \
+      --processed-data-dir $processed_data_path \
+      --results-dir \$PWD/results/exported \
+      --preprocessed-pattern $params.preprocessed_pattern \
       --postprocessed-pattern $params.postprocessed_pattern \
-      --curated-pattern $params.curated_pattern
+      --curated-pattern $params.curated_pattern \
+      --compute-pc-features true \
+      --copy-binary false \
+      --export-sparse false \
+      --n-jobs $params.n_jobs
     """
 }
 
@@ -131,7 +138,8 @@ workflow {
 
     // Export SpikeInterface results to a phy/ folder in the analysis subdirectory.
     processed_data_channel = channel.fromPath(params.processed_data_path)
-    phy_export_results = geffenlab_ecephys_phy_export(processed_data_channel)
+    ecephys_channel = channel.fromPath(params.ecephys_path)
+    phy_export_results = geffenlab_ecephys_phy_export(ecephys_channel, processed_data_channel)
 
     if (params.input == 'spikeglx') {
         // For SpikeGlx, extract events and align spike times offline.

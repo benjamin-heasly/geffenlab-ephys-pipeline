@@ -90,9 +90,9 @@ def run_main(
 
             exit_code = process.wait()
             if exit_code == 0:
-                logging.info(f"Completed OK, exit code {exit_code}")
+                logging.info(f"Pipeline completed OK, exit code {exit_code}")
             else:
-                logging.error(f"Completed with error, exit code {exit_code}")
+                logging.error(f"Pipeline completed with error, exit code {exit_code}")
                 pipeline_exit_code = exit_code
 
     except Exception:
@@ -125,15 +125,18 @@ def run_main(
 
             exit_code = process.wait()
             if exit_code == 0:
-                logging.info(f"Completed OK, exit code {exit_code}")
+                logging.info(f"Logging completed OK, exit code {exit_code}")
             else:
-                logging.error(f"Completed with error, exit code {exit_code}")
+                logging.error(f"Logging completed with error, exit code {exit_code}")
 
     except Exception:
         logging.error(f"Error gathering Nextflow logs", exc_info=True)
 
     if pipeline_exit_code == 0:
         logging.info("OK\n")
+    else:
+        logging.error("Please see above for pipeline error info.")
+
     return pipeline_exit_code
 
 
