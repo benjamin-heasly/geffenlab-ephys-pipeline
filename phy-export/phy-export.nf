@@ -106,35 +106,54 @@ process geffenlab_ecephys_tprime {
 }
 
 // Do "bombcell" curation and visualization on the SpikeGlx/TPrime or Open Ephys phy/ output.
-// TODO: this is a placeholder for now!
 process geffenlab_ecephys_bombcell {
     tag 'geffenlab_ecephys_bombcell'
-    container 'ubuntu'
+    container 'ghcr.io/benjamin-heasly/geffenlab-bombcell:v0.0.2'
 
-    publishDir "${params.analysis_path}/phy-export/$params.ecephys_session_name",
+    input:
+    path phy_dir
+    val bombcell_params_json
+
+    output:
+    path 'results/*'
+    path "$phy_dir/phy/*"
+
+    // Publish Bombcell results like diagnostic plots.
+    publishDir "${params.analysis_path}/phy-export/$params.ecephys_session_name/bombcell/other",
         mode: 'copy',
         overwrite: true,
         pattern: 'results/*',
         saveAs: { filename -> file(filename).name }
 
-    input:
-    path phy_dir
-
-    output:
-    path 'results/*', emit: bombcell_results
+    // Publish a version of the Phy dir(s) that include TSVs from Bombcell.
+    publishDir "${params.analysis_path}/phy-export/$params.ecephys_session_name/bombcell/phy",
+        mode: 'copy',
+        overwrite: true,
+        pattern: "$phy_dir/phy/*",
+        saveAs: { filename -> file(filename).name }
 
     script:
     """
     #!/usr/bin/env bash
     set -e
 
-    mkdir -p results/bombcell
-    echo "$phy_dir" > results/bombcell/TODO.txt
+    mkdir -p results
+    conda_run python /opt/code/run.py \
+      --phy-root $phy_dir \
+      --phy-pattern "phy/*/params.py" \
+      --bombcell-params-json '$bombcell_params_json' \
+      --results-dir \$PWD/results \
     """
 }
 
 workflow {
     println "Running phy-export with params: ${params}"
+
+    // Load Bombcell params from JSON, to pass to the bombcell step.
+    String bombcell_params_json = '{}'
+    if (params.bombcell_params_file) {
+        bombcell_params_json = file(params.bombcell_params_file).text
+    }
 
     // Export SpikeInterface results to a phy/ folder in the analysis subdirectory.
     processed_data_channel = channel.fromPath(params.processed_data_path)
@@ -148,9 +167,9 @@ workflow {
         tprime_results = geffenlab_ecephys_tprime(catgt_results, phy_export_results)
 
         // Run bombcell on the TPrime-adjusted phy/ dir.
-        bombcell_results = geffenlab_ecephys_bombcell(tprime_results)
+        geffenlab_ecephys_bombcell(tprime_results, bombcell_params_json)
     } else {
         // Run bombcell on phy/ dir exported from Spike Interface.
-        bombcell_results = geffenlab_ecephys_bombcell(phy_export_results)
+        geffenlab_ecephys_bombcell(phy_export_results, bombcell_params_json)
     }
 }

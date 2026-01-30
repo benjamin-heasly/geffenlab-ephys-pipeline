@@ -1,7 +1,7 @@
 # Run Geffen lab Phy export
 
 This doc should help you run the Geffen lab's [phy-export.nf](../phy-export/phy-export.nf) Nextflow pipeline.
-This will export sorting and SpikeInterface curation results from the AIND ephys pipeline, to the format used by Phy.
+This will export sorting and SpikeInterface curation results from the AIND ephys pipeline and Bombcell, to the format used by Phy.
 
 For SpikeGlx recordings, this also includes running CatGT to extract events and TPrime to align events and spike times.
 
@@ -22,6 +22,16 @@ This script calls `nextflow run` for the pipeline itself, and also saves detaile
 We tell the script which pipeline to run with the `--workflow` argument.  We specifiy the configuration to use with `--config`.  We also pass the `--experimenter`, `--subject`, and `--date` for the session we want to process.
 
 The `--input` parameter can be `spikeglx` or `openephys`, to tell whether we need to run CatGT and TPrime.
+
+## Bombcell parameters
+
+The pipeline will run Bombcell after exporting to Phy and after running TPrime.
+It uses a number of Bombcell parameters from a JSON file in this repo: [phy-export/bombcell-params.json](../phy-export/bombcell-params.json).
+If you want to use different Bombcell parameters, you could edit this JSON file.
+This will affect all pipeline users.
+
+You could also copy this JSON file and edit your own copy.
+To run the pipeline with your own copy, include `--bombcell_params_file` along with the path to your JSON file, when you run `python run_pipeline.py ...`, below.
 
 ## Run the pipeline
 
@@ -52,22 +62,22 @@ The pipeline run should take less than an hour.  A clean run should end with a s
 
 ## Results overview
 
-The pipeline looks for processed session data within the lab's sotrage directory, `/vol/cortex/cd4/geffenlab/`.
+The pipeline looks for raw and processed session data within the lab's sotrage directory, `/vol/cortex/cd4/geffenlab/`.
 For the session in this example, the processed session data would be located at `/vol/cortex/cd4/geffenalb/processed_data/BH/AS20-minimal3/03112025/`.
-For SpikeGlx recordings, the pipeline also looks for raw session data, for example in `/vol/cortex/cd4/geffenalb/raw_data/BH/AS20-minimal3/03112025/`
+For SpikeGlx recordings, the pipeline also looks for raw session data, for example in `/vol/cortex/cd4/geffenalb/raw_data/BH/AS20-minimal3/03112025/`.
 
 The pipeline writes Phy results into the session's analysis subdirectory, for example `/vol/cortex/cd4/geffenalb/analysis/BH/AS20-minimal3/03112025/`
 
 ![Cortex remote desktop files view](./phy-export-results.png)
 
 The pipeline may produce multiple subdirectories of Phy results, each with its own `params.py` and other `.tsv` and `.npy` files.
-These may should distinguished by their probe id, like `imec0`, and recording number, like `recording1`.
+These are distinguished by their probe id, like `imec0`, and recording number, like `recording1`.
 
-Even for the same probe and recording, there can be multiple Phy subdirectories, from different stages of processing:
+Even for the same probe and recording, there can be multiple output subdirectories, from different stages of processing:
 
  - `phy-export/exported/phy/block0_imec0.ap_recording1/params.py`: initial export from AIND ephys pipeline, Kilosort, and SpikeInterface
  - `phy-export/tprime/phy/block0_imec0.ap_recording1/params.py`: for SpikeGlx recordings, with spike times adjusted by TPrime
  - `phy-export/bombcell/phy/block0_imec0.ap_recording1/params.py`: with automated curation and diagnostic plots by bombcell
+ - `phy-export/bombcell/figures/block0_imec0.ap_recording1/`: bombcell diagnostic plots
 
-The pipeline doesn't implement bombcell yet!
-When it does we should prefer the results within `phy-export/bombcell/phy/`.
+When running Phy or other downstream processing, we should prefer the results in `phy-export/bombcell/phy/`.
