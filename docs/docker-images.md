@@ -1,6 +1,6 @@
 # Docker Images
 
-The [aind-ephys-pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) and the Geffen lab's [phy-export](./phy-export/phy-export.nf) pipeline are both based on Docker images.  These images are how we obtain processing code, along with all their dependencies, in a versioned and reproducible way.
+The [aind-ephys-pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) and the Geffen lab's [phy-export](./phy-export/phy-export.nf) pipeline are both based on Docker images.  These images are how we obtain processing code, along with all dependencies, in a versioned and reproducible way.
 
 Some Docker images are large (multiple GB).
 Here are some tips for managing them.
@@ -24,7 +24,8 @@ ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.10                7d588b66
 ```
 
 There are several images for `aind-ephys-pipeline` and several for `geffenlab`.
-Each of these was downloaded automatically by Nextflow, the first time it was needed.
+Each of these was downloaded automatically by Nextflow, the first time it was needed for a pipeline run.
+
 Keeping the images on disk speeds up subsequent pipeline runs.
 Otherwise, we'd have wait for the same images to be re-downloaded every time.
 
@@ -66,7 +67,7 @@ Removing this one image would free up about 3GB of disk space.
 ## acceidentally removing required images
 
 If you accidentally `docker rmi` an image that's needed for a pipeline, don't worry.
-Nextflow will re-download the image the next time it's needed for a pipeline run.
+Nextflow will re-download the image the next time it's needed.
 
 ## `docker system prune`
 
@@ -123,7 +124,7 @@ Note `36G` of images stored in `/home/ben/.local/share/docker/overlay2`.
 # Moving the Docker data directory
 
 You can configure your rootless Docker to save images and other data to a different location, outside of your home directory.
-On cortex, you could choose a location within `/vol/cortex/cd4/geffenlab/`.
+On cortex you can choose a location within `/vol/cortex/cd4/geffenlab/`.
 
 ## confirm the Docker data directory
 
@@ -131,15 +132,20 @@ First, confirm where Docker is storing data:
 
 ```
 $ docker info | grep "Docker Root Dir"
+
 Docker Root Dir: /home/ben/.local/share/docker
 ```
 
 This confirms that Docker is saving images and other data within the user's home directory at `/home/ben/.local/share/docker`.
 
+In this example the username is `ben`.
+You must use your own username, instead.
+
 ## clean up existing images
 
-Before moving the Docker data directory, clean up existing images.
-You can do this with `docker system prune`.  The `--all` flag asks Docker to remove all saved images, used or unused.
+Before moving to a new Docker data directory it can be helpful to clean up the current data directory.
+You can do this with `docker system prune`.
+Adding the `--all` flag asks Docker to clean up completely, instead of keeping some images.
 
 ```
 $ docker system prune --all
@@ -160,14 +166,14 @@ It will also remove any cruft that we don't need to move -- or can't move due to
 
 ## stop Docker
 
-Stop your Docker system process.
+Stop your Docker system process while the data move is happening.
 With rootless Docker, this will only affect your cortex user, not anyone else.
 
 ```
-systemctl --user stop docker
+$ systemctl --user stop docker
 ```
 
-Confirm that docker really isn't running.  Try to run `docker images` again and expect an error like the following:
+Confirm that docker is not running.  Try to run `docker images` again and expect an error like the following:
 
 ```
 $ docker images
@@ -180,42 +186,43 @@ failed to connect to the docker API at unix:///run/user/10078/docker.sock; check
 Create a new directory to hold your Docker images and other data.
 A directory within `/vol/cortex/cd4/geffenlab/` won't count against your home directory quota.
 
-The commands below use the cortex username `ben` -- you must change this to your own username.
+Replace the username `ben` with your own cortex username.
 
 ```
-mkdir -p /vol/cortex/cd4/geffenlab/docker-data/ben
+$ mkdir -p /vol/cortex/cd4/geffenlab/docker-data/ben
 ```
 
 Move your existing Docker data to the new location.
 
 ```
-mv ~/.local/share/docker /vol/cortex/cd4/geffenlab/docker-data/ben/docker
+$ mv ~/.local/share/docker /vol/cortex/cd4/geffenlab/docker-data/ben/docker
 ```
 
-## create a link from old to new location
+## create a link from old location to new
 
 Create a file system link from the old Docker data location to the new location.
 
 ```
-ln -s /vol/cortex/cd4/geffenlab/docker-data/ben/docker ~/.local/share/docker
+$ ln -s /vol/cortex/cd4/geffenlab/docker-data/ben/docker ~/.local/share/docker
 ```
 
 Docker will still look for `~/.local/share/docker` when it wants to store data.  But now, it will find that this is a link to the new location within `/vol/cortex/cd4/geffenlab`.
 
+You can confirm the link with `ls`:
+
 ```
-$ ls -alth ~/.local/share
-total 104K
-drwx------ 17 ben geffenlab 4.0K Feb 27 15:29  .
-lrwxrwxrwx  1 ben geffenlab   48 Feb 27 15:29  docker -> /vol/cortex/cd4/geffenlab/docker-data/ben/docker
+$ ls -alth ~/.local/share/docker
+
+lrwxrwxrwx 1 ben geffenlab 48 Feb 27 15:29 /home/ben/.local/share/docker -> /vol/cortex/cd4/geffenlab/docker-data/ben/docker
 ```
 
 ## restart Docker
 
 With the data moved and a link to the new location, Docker should be able to run again.
-Restart the system Docker process.
+Restart your Docker system process.
 
 ```
-systemctl --user start docker
+$ systemctl --user start docker
 ```
 
 Confirm that Docker can run its `hello-world` example.
@@ -239,14 +246,14 @@ Docker should download its `hello-world` image and display a message like "Hello
 
 ## Confirm the new Docker data location
 
-Finally, confirm that Docker is storing its data in the new location:
+Finally, confirm that Docker is storing data in the new location:
 
 ```
 $ docker info | grep "Docker Root Dir"
 Docker Root Dir: /vol/cortex/cd4/geffenlab/docker-data/ben/docker
 ```
 
-This confirms that Docker found our link from the old location to the new location, and is now saving images and other data within `/vol/cortex/cd4/geffenlab/docker-data/ben/docker`.
+This confirms that Docker found the link from the old location to the new location, and is now saving images and other data within `/vol/cortex/cd4/geffenlab/docker-data/ben/docker`.
 
 You should be able to list the image(s) in the new location:
 
@@ -258,4 +265,4 @@ hello-world:latest   1b44b5a3e06a       10.1kB             0B
 
 At first `hello-world` might be the only image present.
 
-But at this point you should be ready to run pipelines again, and see those larger images saved outside of your home directory.
+But now you should be ready to run pipelines again, and see those larger images saved outside of your home directory.
