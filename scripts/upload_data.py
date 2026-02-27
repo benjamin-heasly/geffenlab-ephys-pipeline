@@ -98,13 +98,11 @@ def run_main(
             destination_relative = Path(experimenter, subject, session_mmddyyyy, "behavior", hdf5_match.name)
             to_upload.append((behavior_path, hdf5_relative, destination_relative, session_mmddyyyy))
 
-        # Locate spikeglx meta files as representatives spikeglx run dirs.
+        # Locate spikeglx meta files as representatives of spikeglx run dirs.
         logging.info(f"Searching local ephys_root for .meta like: {spikeglx_meta_pattern}")
         spikeglx_metas = list(ephys_path.glob(spikeglx_meta_pattern))
         logging.info(f"Found {len(spikeglx_metas)} .meta matches: {spikeglx_metas}")
-        if spikeglx_metas:
-            # Take the shortest match -- eg the nidq.meta, not a probe/ap.meta.
-            spikeglx_meta = min(spikeglx_metas, key=lambda meta: len(meta.parts))
+        for spikeglx_meta in spikeglx_metas:
             run_dir = spikeglx_meta.parent
             logging.info(f"Found spikeglx run dir: {run_dir}")
             for spikglx_file in walk_flat(run_dir):
@@ -113,15 +111,17 @@ def run_main(
                 destination_relative = Path(experimenter, subject, session_mmddyyyy, "ecephys", spikglx_file.relative_to(run_dir.parent))
                 to_upload.append((ephys_path, spikglx_relative, destination_relative, session_mmddyyyy))
 
-        # Locate openephys oebin files as representatives recording dirs.
+        # Locate openephys oebin files as representatives of recording dirs.
         logging.info(f"Searching local ephys_root for .oebin like: {openephys_oebin_pattern}")
         oebins = list(ephys_path.glob(openephys_oebin_pattern))
         logging.info(f"Found {len(oebins)} .oebin matches: {oebins}")
-        if oebins:
-            # Walk up several parents from an .oebin to find the recording dir.
-            #   date/record_node/experiment/recording/structure.oebin
-            oebin = oebins[0]
-            run_dir = oebin.parent.parent.parent.parent
+
+        # Walk up several parents from an .oebin to find the run dir.
+        #   date/record_node/experiment/recording/structure.oebin
+        # Only keep unique run dirs (Open Ephys can put multiple experiment and recording subdirs in one run dir)
+        run_dirs = {oebin.parent.parent.parent.parent for oebin in oebins}
+        logging.info(f"Found {len(run_dirs)} run dirs: {run_dirs}")
+        for run_dir in run_dirs:
             logging.info(f"Found openephys run dir: {run_dir}")
             for openephys_file in walk_flat(run_dir):
                 openephys_relative = openephys_file.relative_to(ephys_path)
@@ -222,7 +222,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--spikeglx-meta-pattern", "-S",
         type=str,
         help="Glob pattern to match SpikeGLX .meta files within EPHYS_ROOT. May include placeholders <EXPERIMENTER>, <SUBJECT>, <YYYY>, <YY>, <MM>, <DD> (default: %(default)s)",
-        default="<SUBJECT>/**/*_<MM><DD><YYYY>_*.meta"
+        default="<SUBJECT>/**/*_<MM><DD><YYYY>_*.nidq.meta"
     )
     parser.add_argument(
         "--openephys-oebin-pattern", "-O",
