@@ -242,6 +242,13 @@ Expect a graphical window to appear with a title like "xeyes".
 The window should contain two silly eyeballs that look at the mouse cursor and follow it as it moves.
 You can close the window by clicking the `x` any time.
 
+## cortex Docker image location (optional)
+
+Docker images can take up a lot of space and consume your cortex home directory quota.
+See [docker-images.md](./docker-images.md) for tips on managing Docker images and home directory usage.
+
+[docker-images.md#moving-the-docker-data-directory](./docker-images.md#moving-the-docker-data-directory) has instructions for moving Docker image storage out of your home directory, into `/vol/cortex/cd4/geffenlab`.  You can do this now or wait until quota becomes a problem.
+
 ## cortex Conda
 
 We can use [Conda](https://anaconda.org/anaconda/conda) to manage dependencies on cortex, just like we did on your local lab machine.
