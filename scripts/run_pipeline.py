@@ -210,7 +210,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default="03112025"
     )
 
-    (cli_args, pass_through_args) = parser.parse_known_args()
+    (cli_args, pass_through_args) = parser.parse_known_args(argv)
     work_dir_path = Path(cli_args.work_dir)
     workflow_path = Path(cli_args.workflow)
     config_path = Path(cli_args.config)

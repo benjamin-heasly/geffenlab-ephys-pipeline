@@ -159,7 +159,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default="**/params.py"
     )
 
-    cli_args = parser.parse_args()
+    cli_args = parser.parse_args(argv)
 
     # Write logs to the sessions processed output subdirectory.
     data_path = Path(cli_args.analysis_root, cli_args.experimenter, cli_args.subject, cli_args.date)
