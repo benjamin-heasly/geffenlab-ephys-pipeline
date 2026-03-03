@@ -15,6 +15,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Free Disk Space (Ubuntu)
+      uses: jlumbroso/free-disk-space@main
+      with:
+        tool-cache: true
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: true
+        docker-images: true
+        swap-storage: true
+
     - name: Configure environment for geffen-pipelines
       uses: conda-incubator/setup-miniconda@v3
       with:
@@ -56,17 +67,6 @@ jobs:
         pwd
         ls -althR
 
-    - name: Free Disk Space (Ubuntu)
-      uses: jlumbroso/free-disk-space@main
-      with:
-        tool-cache: true
-        android: true
-        dotnet: true
-        haskell: true
-        large-packages: true
-        docker-images: true
-        swap-storage: true
-
     - name: Nextflow AIND ephys pipeline
       shell: bash -el {0}
       run: |
@@ -86,7 +86,8 @@ jobs:
         --n_jobs 4 \
         --memory '7 GB' \
         --gpu_device none \
-        --params_file $GITHUB_WORKSPACE/aind-ephys-pipeline/spikeglx-ks4-default.json
+        --params_file $GITHUB_WORKSPACE/aind-ephys-pipeline/spikeglx-ks4-default.json \
+        --report-template $GITHUB_WORKSPACE/scripts/process-detail-template.md
 
     - name: Geffen lab ephys pipeline
       shell: bash -el {0}
@@ -96,7 +97,7 @@ jobs:
 
         python run_pipeline.py \
         --work-dir $GITHUB_WORKSPACE/nextflow \
-        --workflow $GITHUB_WORKSPACE/pipeline/main.nf \
+        --workflow $GITHUB_WORKSPACE/phy-export/phy-export.nf \
         --config $GITHUB_WORKSPACE/phy-export/cortex.config \
         --experimenter BH \
         --subject AS20-minimal3 \
@@ -106,7 +107,8 @@ jobs:
         --analysis-root $GITHUB_WORKSPACE/analysis/ \
         --n_jobs 4 \
         --memory '7 GB' \
-        --interactive='--no-interactive'
+        --report-template $GITHUB_WORKSPACE/scripts/process-detail-template.md \
+        --bombcell_params_file $GITHUB_WORKSPACE/phy-export/bombcell-params.json
 
     - name: Upload Results
       uses: actions/upload-artifact@v4
@@ -114,10 +116,5 @@ jobs:
         name: pipeline-logs-and-figures
         retention-days: 7
         path: |
-          processed_data/BH/AS20-minimal3/03112025/*.log
-          processed_data/BH/AS20-minimal3/03112025/*.md
-          processed_data/BH/AS20-minimal3/03112025/nextflow/
-          processed_data/BH/AS20-minimal3/03112025/sorted/nextflow/
-          processed_data/BH/AS20-minimal3/03112025/sorted/quality_control/
-          processed_data/BH/AS20-minimal3/03112025/sorted/visualization/
+          processed_data/BH/AS20-minimal3/03112025/logs/
           analysis/

@@ -49,8 +49,8 @@ You can create a script and launch VSCode using the `code` command.
 code batch_demo.py
 ```
 
-Popups:
- - VSCode might ask you to create a new keyring.  This is up to you.  Creating the keyring can help you configure VSCode extensions that do things like log in to GitHub, automatically.
+VSCode Popups:
+ - VSCode might ask you to create a new keyring.  This is up to you.  Creating the keyring can help you configure VSCode extensions that automate tasks like logging into GitHub.
  - VSCode might ask you to install a Python extension.  This is also up to you.  Installing the extension will make editing your Python code easier and more pleasant.
 
 In VSCode, add the following text to your batch script:
@@ -68,7 +68,7 @@ This will let you test your script as you make changes.
 Go to:
  - `Terminal` -> `New Terminal`
 
-Run the follwing in the VSCode terminal:
+Run the following in the VSCode terminal:
 
 ```
 cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
