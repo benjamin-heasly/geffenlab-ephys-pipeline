@@ -97,7 +97,37 @@ main(["--help"])
 ```
 
 Run your script again and you should see the `--help` text for [run_pipeline.py](../scripts/run_pipeline.py).
+Here's how it looks all together, in the VSCode terminal.
 
 ```
-python batch_demo.py 
+(geffen-pipelines) ben@cortex:/vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts$ python batch_demo.py 
+
+usage: batch_demo.py [-h] [--nextflow NEXTFLOW] [--config CONFIG] [--workflow WORKFLOW] [--report-template REPORT_TEMPLATE] [--work-dir WORK_DIR] [--raw-data-root RAW_DATA_ROOT] [--processed-data-root PROCESSED_DATA_ROOT]
+                     [--analysis-root ANALYSIS_ROOT] [--experimenter EXPERIMENTER] [--subject SUBJECT] [--date DATE]
+
+Run a Nextflow pipeline and aggregate logs to one place.
+
+... etc ...
 ```
+
+# Run pipelines back-to-back
+
+One you can call [run_pipeline.py](../scripts/run_pipeline.py) from your own Python script, you're free to code up some batch processing.
+The arguments to the `main()` Python function are the same as the arguments we pass on the command line, but now they can come from Python variables.
+
+Here's an example script that reproduces the command line examples in [run-aind-ephys-pipeline.md](../docs/run-aind-ephys-pipeline.md) and [run-phy-export.md](../docs/run-phy-export.md).
+The script calls the two pipelines back-to-back, so you don't have to wait for the AIND ephys pipeline to finish before issuing the next command.
+
+To make the processing non-interactive, the script adds the `` argument for [run_pipeline.py](../scripts/run_pipeline.py).
+
+The script passes along the `-resume` flag to Nextflow.
+This should make it safe to re-run the entire batch, or restart after fixing an error.
+Nextflow will verify which pipelines and sessions have already completed, and skip those instead of repeating them.
+
+```
+```
+
+# Run sessions with variables and loops
+
+The script uses Python [try...except](https://docs.python.org/3/tutorial/errors.html#handling-exceptions) blocks to contain errors.
+This way, a single-session error won't cause the entire batch to fail.

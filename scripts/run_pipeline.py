@@ -209,6 +209,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         help="Date of the session to be processed DDMMYYYY. (default: %(default)s)",
         default="03112025"
     )
+    parser.add_argument(
+        "--ecephys-session-name",
+        type=str,
+        help="Name of a specific session/subdir to process, within RAW_DATA_ROOT/EXPERIMENTER/SUBJECT/DATE/ecephys/.  Omit this to choose a session interactively.  (default: %(default)s)",
+        default=None
+    )
 
     (cli_args, pass_through_args) = parser.parse_known_args(argv)
     work_dir_path = Path(cli_args.work_dir)
@@ -247,23 +253,24 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     logging.info(f"Using process detail report template {report_template_path}")
     logging.info(f"Writing process detail report to {process_detail_path}")
 
-    # Choose a "session name" based on a subdir of the session's raw data "ecephys" subdir.
-    # For example, the name of a SpikeGlx or OpenEphys recording directory.
-    ecephys_session_name = None
-    raw_data_ecephys_path = Path(raw_data_root_path, cli_args.experimenter, cli_args.subject, cli_args.date, "ecephys")
-    if not raw_data_ecephys_path.exists():
-        raise ValueError(f"Raw data ecephys path does not exist: {raw_data_ecephys_path}")
-    session_names = [subdir.name for subdir in raw_data_ecephys_path.iterdir() if subdir.is_dir()]
-    session_count = len(session_names)
-    logging.info(f"Found {session_count} ecephys session subdir(s).")
-    if session_count == 1:
-        ecephys_session_name = session_names[0]
-    else:
-        logging.info(f"Please choose one:")
-        for index, name in enumerate(session_names):
-            logging.info(f"  {index}: {name}")
-        session_index = int(input(f"Choose by number 0-{session_count - 1}: ").strip())
-        ecephys_session_name = session_names[session_index]
+    ecephys_session_name = cli_args.ecephys_session_name
+    if ecephys_session_name is None:
+        # Choose a "session name" based on a subdir of the session's raw data "ecephys" subdir.
+        # For example, the name of a SpikeGlx or OpenEphys recording directory.
+        raw_data_ecephys_path = Path(raw_data_root_path, cli_args.experimenter, cli_args.subject, cli_args.date, "ecephys")
+        if not raw_data_ecephys_path.exists():
+            raise ValueError(f"Raw data ecephys path does not exist: {raw_data_ecephys_path}")
+        session_names = [subdir.name for subdir in raw_data_ecephys_path.iterdir() if subdir.is_dir()]
+        session_count = len(session_names)
+        logging.info(f"Found {session_count} ecephys session subdir(s).")
+        if session_count == 1:
+            ecephys_session_name = session_names[0]
+        else:
+            logging.info(f"Please choose one:")
+            for index, name in enumerate(session_names):
+                logging.info(f"  {index}: {name}")
+            session_index = int(input(f"Choose by number 0-{session_count - 1}: ").strip())
+            ecephys_session_name = session_names[session_index]
     logging.info(f"Using ecephys session name: {ecephys_session_name}")
 
     try:
