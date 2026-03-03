@@ -125,9 +125,136 @@ This should make it safe to re-run the entire batch, or restart after fixing an 
 Nextflow will verify which pipelines and sessions have already completed, and skip those instead of repeating them.
 
 ```
+from run_pipeline import main
+
+# Run the AIND ephys sorting pipeline on a minimal dataset, as in docs/run-aind-ephys-pipeline.md.
+aind_ephys_args = [
+  "--workflow", "aind-ephys-pipeline/pipeline/main_multi_backend.nf",
+  "--config", "geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config",
+  "--experimenter", "BH",
+  "--subject", "AS20-minimal3",
+  "--date", "03112025",
+  "--input", "spikeglx",
+  "--ecephys-session-name", "AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0",
+  "-resume"
+]
+main(aind_ephys_args)
+
+# Run the Geffen lab Phy export pipeline on the same dataset, as in docs/run-phy-export.md.
+phy_export_args = [
+  "--workflow", "geffenlab-ephys-pipeline/phy-export/phy-export.nf",
+  "--config", "geffenlab-ephys-pipeline/phy-export/cortex.config",
+  "--experimenter", "BH",
+  "--subject", "AS20-minimal3",
+  "--date", "03112025",
+  "--input", "spikeglx",
+  "--ecephys-session-name", "AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0",
+  "-resume"
+]
+main(phy_export_args)
 ```
 
-# Run sessions with variables and loops
+When you run this you should see lots of logging, similar to when you call [run_pipeline.py](../scripts/run_pipeline.py) from the terminal.
+For example:
 
-The script uses Python [try...except](https://docs.python.org/3/tutorial/errors.html#handling-exceptions) blocks to contain errors.
-This way, a single-session error won't cause the entire batch to fail.
+```
+$ python batch_demo.py 
+
+2026-03-03 10:49:25,865 [INFO] Writing logs for this script to stdout and /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/logs/main_multi_backend_20260303T154925UTC_run_pipeline.log
+2026-03-03 10:49:25,865 [INFO] From work dir /vol/cortex/cd4/geffenlab/nextflow
+2026-03-03 10:49:25,865 [INFO] Running workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf
+
+... etc ...
+
+2026-03-03 10:49:41,474 [INFO] OK
+
+2026-03-03 10:49:41,474 [INFO] Wrote the Nextflow log to /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/logs/phy-export_20260303T154933UTC_nextflow.log
+2026-03-03 10:49:41,475 [INFO] Wrote details of each Nextflow processing step to /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/logs/phy-export_20260303T154933UTC_process_detail.md
+2026-03-03 10:49:41,475 [INFO] Wrote a copy of this console log to /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/logs/phy-export_20260303T154933UTC_run_pipeline.log
+```
+
+# Run multiple sessions in a loop
+
+The example above combines two pipelines back-to-back.
+Finally, let's add a loop over multiple sessions.
+
+This script adds a Python list to specify which sessions to run and a loop to iterate the list elements.
+
+The script also uses a Python [try...except](https://docs.python.org/3/tutorial/errors.html#handling-exceptions) block to contain errors.
+This way, a single-session error won't fail the entire batch.
+
+```
+from run_pipeline import main
+
+# List all the sessions to process.
+# Each session gets a tuple of (experimenter, subject, date, ecephys_session_name).
+sessions = [
+    ("BH", "AS20-minimal3", "03112025", "AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0"),
+    ("BH", "AS20-minimal3", "03112025", "another_session_test_g0"),
+]
+
+# Collect any exceptions so we can report them at the end.
+exceptions = []
+
+print(f"Starting batch of {len(sessions)} sessions:")
+print(sessions)
+
+for (experimenter, subject, date, ecephys_session_name) in sessions:
+
+    print("\n")
+    print(f"Starting session: {experimenter}, {subject}, {date}, {ecephys_session_name}")
+
+    try:
+        # Run the AIND ephys sorting pipeline on a minimal dataset, as in docs/run-aind-ephys-pipeline.md.
+        aind_ephys_args = [
+            "--workflow", "aind-ephys-pipeline/pipeline/main_multi_backend.nf",
+            "--config", "geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config",
+            "--experimenter", experimenter,
+            "--subject", subject,
+            "--date", date,
+            "--input", "spikeglx",
+            "--ecephys-session-name", ecephys_session_name,
+            "-resume"
+        ]
+        main(aind_ephys_args)
+
+        # Run the Geffen lab Phy export pipeline on the same dataset, as in docs/run-phy-export.md.
+        phy_export_args = [
+            "--workflow", "geffenlab-ephys-pipeline/phy-export/phy-export.nf",
+            "--config", "geffenlab-ephys-pipeline/phy-export/cortex.config",
+            "--experimenter", experimenter,
+            "--subject", subject,
+            "--date", date,
+            "--input", "spikeglx",
+            "--ecephys-session-name", ecephys_session_name,
+            "-resume"
+        ]
+        main(phy_export_args)
+
+    except Exception as exception:
+        exceptions.append((experimenter, subject, date, ecephys_session_name, exception))
+        print(f"Collected exception for {experimenter}, {subject}, {date}, {ecephys_session_name}:")
+        print(exception)
+
+print("\n")
+print(f"Finished batch of {len(sessions)} sessions with {len(exceptions)} exceptions.")
+
+for (experimenter, subject, date, ecephys_session_name, exception) in exceptions:
+    print("\n")
+    print(f"Had exception for {experimenter}, {subject}, {date}, {ecephys_session_name}:")
+    print(exception)
+```
+
+# Custom batch scripts.
+
+The example batch script above is saved here in this repo as [batch_demo.py](../scripts/batch_demo.py).
+You could copy this and write your own variation using different sessions, different pipeline arguments, etc.
+
+To keep track of your work, remember how to run it later, etc., you can add your own script to this repo.
+For example:
+
+```
+git add scripts/batch_demo.py
+git commit -m "Add example script for batch processing multiple sessions."
+git push
+```
