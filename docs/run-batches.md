@@ -2,15 +2,15 @@
 
 This page gives an example of how to run multiple pipelines and sessions as a batch, all in one go.
 
-We usually invoke each session and pipeline one at a time, from the command line, using a command line script like [run_pipeline.py](../scripts/run_pipeline.py).
-We can invoke the same script many times in a row, using a loop and a wrapper Python script.
+We usually invoke pipelines using a Python script like [run_pipeline.py](../scripts/run_pipeline.py), one at a time, from the terminal command line.
+Here we will invoke a batch of similar commands, one after another, from a separate Python script.
 
 # Setup
 
-First, let's get set up with a running Python environment.
+First, let's get set up with a working Python environment.
 This will be similar to how we run other [scripts](../scripts/), so you'll need to do one-time [cortex user setup](./cortex-user-setup.md) for your cortex user account.
 
-From a terminal on Cortex, go to our [scripts](../scripts/) directory and activate our usual Conda environment.
+From a terminal on Cortex, go to our [scripts](../scripts/) directory and activate our `geffen-pipelines` Conda environment.
 Double check that you can find and run our existing scripts, like [run_pipeline.py](../scripts/run_pipeline.py).
 
 ```
@@ -20,7 +20,7 @@ conda activate geffen-pipelines
 python run_pipeline.py --help
 ```
 
-You should see help text printed, like this:
+You should see help text like this:
 
 ```
 usage: run_pipeline.py [-h] [--nextflow NEXTFLOW] [--config CONFIG] [--workflow WORKFLOW] [--report-template REPORT_TEMPLATE] [--work-dir WORK_DIR] [--raw-data-root RAW_DATA_ROOT]
@@ -31,18 +31,19 @@ Run a Nextflow pipeline and aggregate logs to one place.
 ... etc ...
 ```
 
-# Create a wrapper script
+# Create a batch script
 
-Next, let's create your batch script/.
-We'll start by printing "Hello World", then build from there to do pipeline batch processing. 
+Next, let's create your batch script.
+We'll start by having this print "Hello World", then build up to pipeline batch processing.
 
 We can put batch scripts in the `scripts/` subdir of this repo.
 This example will create `scripts/batch_demo.py`.
-You should choose a different name for your own batch script: a name like `batch_ben.py` would make it clear that this is a batch script for the user `ben`, and this should help to avoid confusion.
+You should choose a different name for your own batch script: a name like `batch_ben.py` would make it clear that this is a batch script for the user `ben`.
+Sticking to a convention like this should help avoid confusion.
 
 You'll need a text editor to create your batch script.
-[VSCode](https://code.visualstudio.com/) is a good option on Cortex.
-You can create a script and launch VSCode with the `code` command.
+[VSCode](https://code.visualstudio.com/) is a good option, which is already installed on Cortex.
+You can create a script and launch VSCode using the `code` command.
 
 ```
 code batch_demo.py
@@ -59,6 +60,8 @@ print("Hello World")
 ```
 
 And save changes to the script.
+
+# Run you script in the VSCode terminal
 
 Open a new Terminal within VS code.
 This will let you test your script as you make changes.
@@ -80,15 +83,15 @@ You should see your "Hello World" message printed in the terminal:
 Hello World
 ```
 
-# Create a wrapper script
+# Import the `run_pipeline.py` script
 
 "Hello World" is only a sanity check to test your environment, tools, etc.
 Next we can start running pipeline scripts.
 
 Edit your batch script to:
-    - Delete the "Hello World" sanity check.
-    - Import our existing [run_pipeline.py](../scripts/run_pipeline.py) script.
-    - Print the `--help` text we saw earlier.
+ - Delete the "Hello World" sanity check.
+ - Import our existing [run_pipeline.py](../scripts/run_pipeline.py) script.
+ - Print the `--help` text we saw earlier.
 
 ```
 from run_pipeline import main
@@ -110,17 +113,22 @@ Run a Nextflow pipeline and aggregate logs to one place.
 ... etc ...
 ```
 
+`(geffen-pipelines)` confirms that we're using the correct Conda environment.
+
+`/vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts` confirms that we're running from the correct directory.
+
+
 # Run pipelines back-to-back
 
 One you can call [run_pipeline.py](../scripts/run_pipeline.py) from your own Python script, you're free to code up some batch processing.
-The arguments to the `main()` Python function are the same as the arguments we pass on the command line, but now they can come from Python variables.
+The arguments to the `main()` Python function are the same as the arguments we pass on the command line -- but now they can come from Python variables.
 
 Here's an example script that reproduces the command line examples in [run-aind-ephys-pipeline.md](../docs/run-aind-ephys-pipeline.md) and [run-phy-export.md](../docs/run-phy-export.md).
 The script calls the two pipelines back-to-back, so you don't have to wait for the AIND ephys pipeline to finish before issuing the next command.
 
-To make the processing non-interactive, the script adds the `` argument for [run_pipeline.py](../scripts/run_pipeline.py).
+To make the processing non-interactive, this script adds the `--ecephys-session-name` argument for [run_pipeline.py](../scripts/run_pipeline.py).
 
-The script passes along the `-resume` flag to Nextflow.
+The script also passes in the `-resume` flag for Nextflow.
 This should make it safe to re-run the entire batch, or restart after fixing an error.
 Nextflow will verify which pipelines and sessions have already completed, and skip those instead of repeating them.
 
@@ -205,7 +213,7 @@ for (experimenter, subject, date, ecephys_session_name) in sessions:
     print(f"Starting session: {experimenter}, {subject}, {date}, {ecephys_session_name}")
 
     try:
-        # Run the AIND ephys sorting pipeline on a minimal dataset, as in docs/run-aind-ephys-pipeline.md.
+        # Run the AIND ephys sorting pipeline, as in docs/run-aind-ephys-pipeline.md.
         aind_ephys_args = [
             "--workflow", "aind-ephys-pipeline/pipeline/main_multi_backend.nf",
             "--config", "geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config",
@@ -245,7 +253,7 @@ for (experimenter, subject, date, ecephys_session_name, exception) in exceptions
     print(exception)
 ```
 
-# Custom batch scripts.
+# Custom batch scripts
 
 The example batch script above is saved here in this repo as [batch_demo.py](../scripts/batch_demo.py).
 You could copy this and write your own variation using different sessions, different pipeline arguments, etc.
@@ -254,6 +262,8 @@ To keep track of your work, remember how to run it later, etc., you can add your
 For example:
 
 ```
+cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
+
 git add scripts/batch_demo.py
 git commit -m "Add example script for batch processing multiple sessions."
 git push
