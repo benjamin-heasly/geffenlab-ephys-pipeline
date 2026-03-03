@@ -3,4 +3,6 @@ settings.json
 
 .groovylintrc.json
 
+__pycache__/
+
 scratch.sh
