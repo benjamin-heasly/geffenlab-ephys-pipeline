@@ -53,7 +53,7 @@ It will also search for events and neuronal sorting/curation results within `/vo
 
 For a given experimenter, subject, and date, the search might find data from multiple sessions or probes.  It will attempt to match up the behavioral and neuronal data for each session by sorting the search results on session name.
 
-The result of this script should be one or more `neuronal_plus_behavioral.pkl` files, one for each session or probe.  Each `.pkl` file will contain a doctionary of dataframes with neuronal and behavioral data.
+The result of this script should be one or more `neuronal_plus_behavioral.pkl` files, one for each session or probe.  Each `.pkl` file will contain a dictionary of dataframes with neuronal and behavioral data.
 
 The pickles will be written within `/vol/cortex/cd4/geffenlab/analysis`.
 
@@ -85,13 +85,17 @@ Each of the multiplot plots should look something like this:
 
 Where possible, we should use existing [population-analysis](https://github.com/jcollina/population-analysis) code across projects.
 
-The [run_data_collection.py](https://github.com/jcollina/population-analysis/blob/main/run_data_collection.py) script is intended to work on data from rigs that use SpikeGlx and store behavior data in `.txt` and `.mat` files.  This script is intended to "just know" where raw and processed data are stored on cortex, and produce a handy `.pkl` to support further analysis.  The script takes several parameters to adjust its behavior, in addition to `--experimenter`, `--subject`, and `--date` used in the examples above.  See `python run_data_collection.py --help` for details.
+The [run_data_collection.py](https://github.com/jcollina/population-analysis/blob/main/run_data_collection.py) script is intended to work on data from rigs that use SpikeGlx and store behavior data in `.txt` and `.mat` files.  This script is intended to "just know" where raw and processed data are stored on cortex, and produce a convenient, portable `.pkl` to support further analysis.  The script takes several parameters to adjust its behavior, in addition to `--experimenter`, `--subject`, and `--date` as used above.  See `python run_data_collection.py --help` for details.
 
-The [run_neuronal_multiplot.py](https://github.com/jcollina/population-analysis/blob/main/run_neuronal_multiplot.py) is one example of what to do with the collected `.pkl` data.
+The [run_neuronal_multiplot.py](https://github.com/jcollina/population-analysis/blob/main/run_neuronal_multiplot.py) is one example of what to do with the collected `.pkl` data.  You can use this if it's helful, and/or copy and modify it.
 
-For other kinds of rig data, or other downstream plotting and analysis, you might need to write new code.  You might start with a copy of [run_data_collection.py](https://github.com/jcollina/population-analysis/blob/main/run_data_collection.py) or [run_neuronal_multiplot.py](https://github.com/jcollina/population-analysis/blob/main/run_neuronal_multiplot.py), save it to your own repo, then modify it from there.  In that case the overall workflow could still be the same:
- - Upload data to cortex and run pipelines using the scipts in this repo.
- - Clone your own analysis repo to your home folder on cortex.
- - Set up your own Conda environment similar to [population-analysis.yml](https://github.com/jcollina/population-analysis/blob/main/population-analysis.yml).
- - Run your own script to collect data from cortex and save to a convenient, portable `.pkl` file.
- - Run your own script(s) to read each `.pkl` for other analysis or plotting.
+For other kinds of rig data, or other downstream plotting and analysis, you might need to write new code.  You might start with a copy of [run_data_collection.py](https://github.com/jcollina/population-analysis/blob/main/run_data_collection.py) or [run_neuronal_multiplot.py](https://github.com/jcollina/population-analysis/blob/main/run_neuronal_multiplot.py), save it to your own repo, then modify it from there.
+
+Even if you write custom collection or analysis code, the overall workflow could still be the same:
+ - Upload rig data to cortex and run pipelines using the scipts in this repo.
+ - Clone this and/or your own analysis repo into your home folder on cortex.
+ - Set up your own Conda environment(s) similar to [population-analysis.yml](https://github.com/jcollina/population-analysis/blob/main/population-analysis.yml).
+ - Use [run_data_collection.py](https://github.com/jcollina/population-analysis/blob/main/run_data_collection.py) or your own script to collect data from cortex and save to a convenient, portable `.pkl` file.
+ - Use [run_neuronal_multiplot.py](https://github.com/jcollina/population-analysis/blob/main/run_neuronal_multiplot.py) and/or your own script(s) to read each `.pkl` and do analysis and plotting.
+
+When you're done running things on cortex you can download your analysis products from cortex -- see [download-results.md](./download-results.md).
