@@ -5,6 +5,7 @@ from typing import Optional, Sequence
 import logging
 from pathlib import Path
 from datetime import datetime, date
+from urllib.parse import urlencode
 
 import boto3
 
@@ -33,6 +34,7 @@ def archive(
     bucket_name: str,
     bucket_path_prefix: str,
     storage_class: str,
+    tags: dict[str, str],
     local_root: Path,
     local_relative: Path,
     dry_run: bool
@@ -40,6 +42,13 @@ def archive(
     local_path = Path(local_root, local_relative)
     s3_key = f"{bucket_path_prefix}/{local_relative}"
     s3_url = f"s3://{bucket_name}/{s3_key}"
+
+    # AWS S3 supports two kinds of user-supplied key-value annotations for storage objects: "metadata" and "tags":
+    #   https://stackoverflow.com/questions/42126348/difference-between-object-tags-and-object-metadata
+    # The "tags" seem to support lifecycle automation, which might be what we want.
+    # The "metadta" ride with the objcets themselves, which might be what we want.
+    # Maybe we don't need to choose, and we can just supply the same annotations to both.
+    encoded_tags = urlencode(tags)
 
     if dry_run:
         logging.info(f"Dry run archiving {s3_url}")
@@ -49,7 +58,11 @@ def archive(
             Filename=local_path,
             Bucket=bucket_name,
             Key=s3_key,
-            ExtraArgs={"StorageClass": storage_class}
+            ExtraArgs={
+                "StorageClass": storage_class,
+                "Metadata": tags,
+                "Tagging": encoded_tags
+            }
         )
 
 
@@ -58,6 +71,7 @@ def run_main(
     experimenter: str,
     subject: str,
     session_dates: list[date],
+    project_name: str,
     qualifier: str,
     bucket: str,
     bucket_path_prefix: str,
@@ -71,6 +85,15 @@ def run_main(
     subject_path = session_path = Path(raw_data_path, experimenter, subject)
 
     for session_date in session_dates:
+        tags = {
+            "experimenter": experimenter,
+            "subject": subject,
+            "year": session_date.strftime("%Y"),
+            "month": session_date.strftime("%m"),
+            "day": session_date.strftime("%d"),
+            "project_name": project_name
+        }
+
         session_mmddyyyy = session_date.strftime("%m%d%Y")
         logging.info(f"Looking for session date: {session_date} AKA {session_mmddyyyy}")
 
@@ -79,18 +102,22 @@ def run_main(
         logging.info(f"Found {len(session_files)} files within: {session_path}")
         for file in session_files:
             raw_relative = file.relative_to(raw_data_path)
-            to_archive.append(raw_relative)
+            to_archive.append((raw_relative, tags))
 
     if qualifier:
         logging.info(f"Keeping only files that match qualifier: {qualifier}")
-        to_archive = [raw_relative for raw_relative in to_archive if qualifier in raw_relative.as_posix()]
+        to_archive = [
+            (raw_relative, tags)
+            for (raw_relative, tags) in to_archive
+            if qualifier in raw_relative.as_posix()
+        ]
 
     if not to_archive:
         logging.warning("No files to archive.")
         return
 
     logging.info(f"Planning to archive {len(to_archive)} files within {subject_path}:")
-    for raw_relative in to_archive:
+    for (raw_relative, tags) in to_archive:
         full_path = Path(raw_data_path, raw_relative)
         subject_relative = full_path.relative_to(subject_path)
         logging.info(f"  {subject_relative}")
@@ -105,14 +132,14 @@ def run_main(
 
     # The boto3 client should find env vars we set earlier: AWS_SHARED_CREDENTIALS_FILE and AWS_CONFIG_FILE.
     s3_client = boto3.client("s3")
-    for raw_relative in to_archive:
-        archive(s3_client, bucket, bucket_path_prefix, storage_class, raw_data_path, raw_relative, dry_run)
+    for (raw_relative, tags) in to_archive:
+        archive(s3_client, bucket, bucket_path_prefix, storage_class, tags, raw_data_path, raw_relative, dry_run)
 
     logging.info(f"Archived {len(to_archive)} files")
 
     if delete:
         logging.warning("Proceeding to delete local files.")
-        for raw_relative in to_archive:
+        for (raw_relative, tags) in to_archive:
             full_path = Path(raw_data_path, raw_relative)
             if dry_run:
                 logging.info(f"Dry run deleting {raw_relative}")
@@ -154,6 +181,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--qualifier", "-q",
         type=str,
         help="Additional text that must match uploaded file names, for example 'training', 'test', or 'ap.bin'. (default: None, upload all files)",
+        default=None
+    )
+    parser.add_argument(
+        "--project-name", "-n",
+        type=str,
+        help="Value to use for stored object tag 'project_name'. (default: prompt for input)",
         default=None
     )
     parser.add_argument(
@@ -230,6 +263,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     else:
         logging.info(f"Archiving all files")
 
+    project_name = cli_args.project_name
+    if project_name is None:
+        project_name = input("Project name (for tag 'project_name' on stored objects: )").strip()
+    logging.info(f"Adding stored object tag project_name={project_name}.")
+
     logging.info(f"Using S3 bucket: {cli_args.bucket}")
     logging.info(f"Using S3 bucket path prefix: {cli_args.bucket_path_prefix}")
     logging.info(f"Using S3 storage class: {cli_args.storage_class}")
@@ -245,7 +283,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     if cli_args.delete:
         logging.warning(f"Deleting local files after archiving.")
     else:
-        logging.info(f"Keeping local files after archiving.")
+        logging.info(f"Keeping local files after archiving (pass flag --delete to delete them).")
 
     if cli_args.dry_run:
         logging.warning(f"This is only a dry run: no actual archiving or deleting.")
@@ -257,6 +295,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             subject,
             session_dates,
             qualifier,
+            project_name,
             cli_args.bucket,
             cli_args.bucket_path_prefix,
             cli_args.storage_class,
