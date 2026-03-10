@@ -131,6 +131,42 @@ python geffenlab-ephys-pipeline/scripts/upload_data.py --date 03112025 03122025 
 Session date MMDDYYYY (multiple dates may be separated by spaces): 03112025 03122025 03132025
 ```
 
+## Pattern matching for finding local files to upload
+
+The script uses pattern matching to locate files to upload.  By default it will look for behavior files that end with `.txt` and `.mat`, and SpikeGlx meta files that end with `.nidq.meta`.
+
+You can supply alternative patterns on the command line.  Here are the relevant parameters and their default values:
+
+| parameter | default value | notes |
+|---|---|---|
+| `--behavior-root` | `.` (current directory) | searches within for `--behavior-*` pattern matches |
+| `--behavior-txt-pattern` | `<SUBJECT>/**/*_<MM><DD><YY>_*.txt` | upload all matches |
+| `--behavior-mat-pattern` | `<SUBJECT>/**/*_<MM><DD><YY>_*.mat` | upload all matches |
+| `--behavior-hdf5-pattern` | `<SUBJECT>/**/*_<YYYY><MM><DD>_*.hdf5` | upload all matches |
+| `--ephys-root` | `.` (current directory) | searches within for SpikeGlx or OpenEphys pattern matches |
+| `--spikeglx-meta-pattern` | `<SUBJECT>/**/*_<MM><DD><YYYY>_*.nidq.meta` | upload SpikeGlx run dirs that contains matches |
+| `--openephys-oebin-pattern` | `<SUBJECT>/**/<YYYY>-<MM>-<DD>_*/*/*/*/structure.oebin` | upload OpenEphys session dirs that are four levels above matches |
+
+Each of these matching patterns supports wildcards and replacements for flexibility:
+ - `?`: match any single character
+ - `*`: match zero or more characters, or any single subdirectory
+ - `**`: match zero or more subdirectories
+ - `<EXPERIMENTER>`: replaced with the given `--experimenter`
+ - `<SUBJECT>`: replaced with the given `--subject`
+ - `<YYYY>`: replaced with the four-digit year part of the given `--date`
+ - `<YY>`: replaced with the two-digit year part of the given `--date`
+ - `<MM>`: replaced with the two-digit month part of the given `--date`
+ - `<DD>`: replaced with the two-digit day part of the given `--date`
+
+This example could match SpikeGlx "onebox" run dirs, instead of NIDQ/PXIe run dirs:
+
+```
+cd /mnt/c/Users/labuser/Desktop/Data/
+conda activate geffen-pipelines
+
+python ~/geffenlab-ephys-pipeline/scripts/upload_data.py --spikeglx-meta-pattern '<SUBJECT>/**/*_<MM><DD><YYYY>_*.obx.bin'
+```
+
 ## Results overview
 
 Matching session behavior and ephys data should now be on cortex, within the lab's sotrage directory, `/vol/cortex/cd4/geffenlab/`.
