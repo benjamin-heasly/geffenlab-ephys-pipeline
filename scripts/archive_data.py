@@ -85,6 +85,9 @@ def run_main(
     subject_path = session_path = Path(raw_data_path, experimenter, subject)
 
     for session_date in session_dates:
+        session_mmddyyyy = session_date.strftime("%m%d%Y")
+        logging.info(f"Looking for session date: {session_date} AKA {session_mmddyyyy}")
+
         tags = {
             "experimenter": experimenter,
             "subject": subject,
@@ -93,9 +96,7 @@ def run_main(
             "day": session_date.strftime("%d"),
             "project_name": project_name
         }
-
-        session_mmddyyyy = session_date.strftime("%m%d%Y")
-        logging.info(f"Looking for session date: {session_date} AKA {session_mmddyyyy}")
+        logging.info(f"Using these tags for this date: {tags}")
 
         session_path = Path(subject_path, session_mmddyyyy)
         session_files = walk_flat(session_path)
@@ -265,7 +266,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     project_name = cli_args.project_name
     if project_name is None:
-        project_name = input("Project name (for tag 'project_name' on stored objects: )").strip()
+        project_name = input("Project name (for tag 'project_name' on stored objects): ").strip()
     logging.info(f"Adding stored object tag project_name={project_name}.")
 
     logging.info(f"Using S3 bucket: {cli_args.bucket}")

@@ -14,7 +14,7 @@ Connect to cortex via remote desktop and open a terminal window and run this scr
 cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
 conda activate geffen-pipelines
 
-python ~/geffenlab-ephys-pipeline/scripts/archive_data.py --delete
+python archive_data.py --delete
 ```
 
 The `--delete` flag means files data will be deleted from cortex once it's succesfully archived to S3.  If you don't supply this flag, the files will be kept on cortex even after archiving.
