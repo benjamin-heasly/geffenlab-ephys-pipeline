@@ -83,7 +83,7 @@ Do you want to upload these 6 files?  Type 'yes' to proceed: yes
 ```
 
 You must type `yes` to proceed.  Otherwise the script will exit before uploading.
-If you do type `yes` the script will prompt for your cortex user password and, then upload each file to cortex:
+If you do type `yes` the script will prompt for your cortex user password, then upload each file to cortex:
 
 ```
 2025-11-24 11:37:52,237 [WARNING] Proceeding to upload files.
@@ -109,12 +109,12 @@ Password for remote user ben:
 The example above used several default options like the cortex host address, the local directories to search for behavior and spikeglx files, and the lab's assigned data directory on cortex.
 All of these can be modified from the command line as needed.
 
-You can also specify many values like `--experimenter`, `--subject`, `--date`, and `--qualifier` on the command line instead of waiting for the script to prompt you interactively.  The only argument you can not speicy on the command line is your cortex user password -- this is to prevent your password from being saved into your terminal command history.
+You can also specify many values like `--experimenter`, `--subject`, `--date`, and `--qualifier` on the command line instead of waiting for the script to prompt you interactively.  The only argument you can not specify on the command line is your cortex user password -- this is to prevent your password from being saved into your terminal command history.
 
 For details of command line options please see:
 
 ```
-python geffenlab-ephys-pipeline/scripts/upload_data.py --help
+python ~/geffenlab-ephys-pipeline/scripts/upload_data.py --help
 ```
 
 ## Uploading multiple dates at once
@@ -124,7 +124,7 @@ For the `--date` command line option, or when prompted interactively for session
 For example:
 
 ```
-python geffenlab-ephys-pipeline/scripts/upload_data.py --date 03112025 03122025 03132025
+python ~/geffenlab-ephys-pipeline/scripts/upload_data.py --date 03112025 03122025 03132025
 ```
 
 ```
@@ -139,7 +139,7 @@ You can supply alternative patterns on the command line.  Here are the relevant 
 
 | parameter | default value | notes |
 |---|---|---|
-| `--behavior-root` | `.` (current directory) | searches within for `--behavior-*` pattern matches |
+| `--behavior-root` | `.` (current directory) | searches within for behavior pattern matches |
 | `--behavior-txt-pattern` | `<SUBJECT>/**/*_<MM><DD><YY>_*.txt` | upload all matches |
 | `--behavior-mat-pattern` | `<SUBJECT>/**/*_<MM><DD><YY>_*.mat` | upload all matches |
 | `--behavior-hdf5-pattern` | `<SUBJECT>/**/*_<YYYY><MM><DD>_*.hdf5` | upload all matches |
@@ -151,12 +151,12 @@ Each of these matching patterns supports wildcards and replacements for flexibil
  - `?`: match any single character
  - `*`: match zero or more characters, or any single subdirectory
  - `**`: match zero or more subdirectories
- - `<EXPERIMENTER>`: replaced with the given `--experimenter`
- - `<SUBJECT>`: replaced with the given `--subject`
- - `<YYYY>`: replaced with the four-digit year part of the given `--date`
- - `<YY>`: replaced with the two-digit year part of the given `--date`
- - `<MM>`: replaced with the two-digit month part of the given `--date`
- - `<DD>`: replaced with the two-digit day part of the given `--date`
+ - `<EXPERIMENTER>`: replaced with the given `--experimenter` (or experimenter entered at prompt)
+ - `<SUBJECT>`: replaced with the given `--subject` (or subject entered at prompt)
+ - `<YYYY>`: replaced with the four-digit year part of the given `--date` (or date entered at prompt)
+ - `<YY>`: replaced with the two-digit year part of the given `--date` (or date entered at prompt)
+ - `<MM>`: replaced with the two-digit month part of the given `--date` (or date entered at prompt)
+ - `<DD>`: replaced with the two-digit day part of the given `--date` (or date entered at prompt)
 
 This example could match SpikeGlx "onebox" run dirs, instead of NIDQ/PXIe run dirs:
 
