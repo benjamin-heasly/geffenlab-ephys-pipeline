@@ -2,12 +2,12 @@
 
 The [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) and the Geffen lab's [phy-export](./phy-export/phy-export.nf) pipeline are both driven by [Nextflow config files](https://www.nextflow.io/docs/latest/config.html).
 
-This doc should when you want to create a new config file, for example to support a new rig.  The same kind of config applies when you [run the AIND ephys pipeline](./run-aind-ephys-pipeline.md) or you [run the Geffen lab phy-export pipeline](./run-phy-export.md).  This doc will focus on the [phy-export](./phy-export/phy-export.nf) pipeline.
+This doc should help you create a new config file, for example to support a new rig.  The same kind of config applies when you [run the AIND ephys pipeline](./run-aind-ephys-pipeline.md) and when you [run the Geffen lab phy-export pipeline](./run-phy-export.md).  This doc will focus on the [phy-export](./phy-export/phy-export.nf) pipeline.
 
 # Existing config
 
 The existing, default config file for the Geffen lab phy-export pipeline is here in this repo, at [phy-export/cortex.config](../phy-export/cortex.config).
-When running the pipeline, we specify which config file to use, for example:
+When running the pipeline, you specify which config file to use, for example:
 
 ```
 cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
@@ -38,7 +38,7 @@ cp cortex.config ben-cortex.config
 
 Each config file has several sections like `params { ... }`, `process { ... }`, `docker { ... }`, `dag { ... }`, `report { ... }`, `timeline { ... }`, `trace { ... }`.  Most of these are needed to make the pipeline run on cortex, and you should leave them as-is.
 
-The `params { ... }` section is the only section that you'll need to customize.  And even many of the parameters in this section can be left as-is.  The parameters to edit start around [line 36](../phy-export/cortex.config#L38).  Here they are:
+The `params { ... }` section is the only section that you'll need to customize.  And -- many of the parameters in this section can also be left as-is.  The parameters to edit start around [line 38](../phy-export/cortex.config#L38).  As of writing they look like this:
 
 ```
     // Should CatGT look for Neuropixels plus NIDQ ('-ap -ni') or just Neuropixels ('-ap')?
@@ -93,34 +93,43 @@ The `params { ... }` section is the only section that you'll need to customize. 
 
 ## CatGT params
 
-You can edit the `catgt_` params to suit your SpikeGlx rig.  All of these are combined into one, long string, `catgt_args`.  These are passed directly to CatGT when the pipeline runs.
+You can edit the `catgt_` params to suit your SpikeGlx rig.  All of these are combined into one long string of arguments, `catgt_args`.  These are passed to CatGT when the pipeline runs.
 
 ## TPrime params
 
-You can edit the `tprime_` parames to suit your SpikeGlx rig, as well.  These are passed to our own [tprime.py](https://github.com/benjamin-heasly/geffenlab-spikeglx-tools/blob/main/code/tprime.py) wrapper script when the pipeline runs.  The wrapper is intended to make it easier to find and configure "from" and "to" mappings for multiple files.  In turn, this wrapper script generates a long string of command line arguments to pass to TPrime itself.
+You can edit the `tprime_` params to suit your SpikeGlx rig, as well.  These are passed to our own [tprime.py](https://github.com/benjamin-heasly/geffenlab-spikeglx-tools/blob/main/code/tprime.py) wrapper script when the pipeline runs.  The wrapper is intended to make it easier to find and configure "from" and "to" mappings for multiple streams and event channels.  In turn, this wrapper script generates a long string of arguments to pass to TPrime itself.
 
-`tprime_to_stream` should be a [glob](https://docs.python.org/3/library/glob.html) pattern.  It's used to search among the outpus fo CatGT, to select the file of sync event times to which other event streams are aligned.  The default  `*/*/*.imec0.ap.*.txt` would match sync events for probe `imec0`.  A possible alternative `*/*nidq.xd_8_4_500.txt` could match NIDQ sync events.
+`tprime_to_stream` should be a [glob](https://docs.python.org/3/library/glob.html) pattern.  It's used to search among the outpus of CatGT, to select the file of sync event times to which other event streams are aligned.  The default  `*/*/*.imec0.ap.*.txt` would match sync events for probe `imec0`.  A possible alternative `*/*nidq.xd_8_4_500.txt` might match NIDQ sync events.
 
-`tprime_from_map` configures other event streams.  Each of these requires two glob patterns, for example `"*/*nidq.xa_0_500.txt": "*/*nidq.xd_8_4_500.txt",`.  The pattern on the left of the colon `:`, like `*/*nidq.xa_0_500.txt` selects interesting event times to be mapped.  The pattern on the right of the colon selects the corresponding sync events from the same stream, like `*/*nidq.xd_8_4_500.txt`.
+`tprime_from_map` configures other event streams.  Each of these requires two glob patterns, separated by a colon `:`.
+For example:
 
-All of these mappings are combined into a long line of arguments for our `tprime.py` wrapper script, `tprime_from_streams`.
+```
+        "*/*nidq.xa_0_500.txt": "*/*nidq.xd_8_4_500.txt",
+```
 
-Our `tprime.py` wrapper script will also convert spike times for each probe, found in one or more Phy folders.  `tprime_phy_from_pattern` matches the probe sync event files.
+The glob on the left of each colon, like `*/*nidq.xa_0_500.txt`, selects interesting event times to be mapped.
+
+The glob on the right of each colon, like `*/*nidq.xd_8_4_500.txt`, selects the sync events from the same stream.
+
+All of these mappings are combined into a long line of arguments, `tprime_from_streams`, to pass to our `tprime.py` wrapper script.
+
+Our `tprime.py` wrapper script can also convert sorted spike times for each probe, found in one or more Phy folders.  The paremeter `tprime_phy_from_pattern` is a glob pattern to match probe sync event files in the CatGT output folder.
 
 ## Bombcell params
 
-Finally, the `bombcell_params_file` specifies a file of Bombcell parameters to use during automated curation.  Bombcell accepts a large number of parameters, so these are stored in a separate file.
+Finally, `bombcell_params_file` specifies a file of Bombcell parameters to use during automated curation.  Bombcell accepts a large number of parameters, so these are stored in a separate file.
 
-The default file is in this repo, [phy-export/bombcell-params.json](../phy-export/bombcell-params.json).  This is specified in the pipeline config file as
+The default file is in this repo, [phy-export/bombcell-params.json](../phy-export/bombcell-params.json).  This is specified in the overall pipeline config file as:
 
 ```
     // Choose a JSON file of parameters Bombcell.
     bombcell_params_file = "geffenlab-ephys-pipeline/phy-export/bombcell-params.json"
 ```
 
-This file path is relative to our Nextflow working directory, `/vol/cortex/cd4/geffenlab/nextflow`.  This working directory is automatically set by our `run_pipeline.py` script.
+The file path here is relative to our Nextflow working directory, `/vol/cortex/cd4/geffenlab/nextflow`.  This working directory is automatically set by our `run_pipeline.py` script.
 
-Like the pipeline config file, you can copy and modify the Bombcell parameters file.
+Like the overall pipeline config file, you can copy and modify the Bombcell parameters file.
 
 # Create a custom Bombcell parameters file
 
@@ -136,7 +145,7 @@ cp bombcell-params.json ben-bombcell-params.json
 
 # Edit your custom Bombcell parameters file
 
-When the pipeline runs, our [Bombcell Python wrapper script](https://github.com/benjamin-heasly/geffenlab-bombcell/blob/main/code/run.py) will automatically set several Bombcell parameters based on the pipeline data locations and data that we get from the AIND ephys pipeline:
+When the pipeline runs, our [Bombcell Python wrapper script](https://github.com/benjamin-heasly/geffenlab-bombcell/blob/main/code/run.py) will automatically set several Bombcell parameters based on the pipeline data:
 
  - `savePlots`
  - `plotsSaveDir`
@@ -145,11 +154,11 @@ When the pipeline runs, our [Bombcell Python wrapper script](https://github.com/
  - `nChannels`
  - `nSyncChannels`
 
-You can change values in your own JSON file to overwrite these or any other default values.
+You can omit these from your own JSON file.  If you do specify these, the values you specify will take precedence.
 
 # Select your custom Bombcell parameters file
 
-To select your custom Bombcell parameters file, edit the corresponding line or your custom pipeline config file.
+To select your custom Bombcell parameters file, edit the corresponding line or your overall pipeline config file.
 For example:
 
 ```
@@ -159,7 +168,7 @@ For example:
 
 # Run with your custom pipeline config file
 
-Now you can run a pipeline with your own, custom pipeline config and Bombcell parameters JSON.
+Now you can run a pipeline with your own, custom pipeline config and Bombcell parameters.
 All you have to do is pass your own config file to the `run_pipeline.py` command.
 For example:
 
@@ -181,7 +190,7 @@ python run_pipeline.py \
 It's a good idea to commit your custom pipeline config and Bombcell parameters JSON to this repository.
 You should commit changes whenever you make them, so that you can keep track of changes over time, and reproduce config you might have used in the past.
 
-Review the your new files:
+Review your new files:
 
 ```
 $ cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/phy-export
@@ -228,4 +237,4 @@ git push
 You will be prompted for a GitHub username and password.
 You should [create a personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) and use the token, instead of your normal GitHub login password.
 
-TODO: we'll need to manage GitHub contributors for this repo.  We might want to move it from [benjamin-heasly](https://github.com/benjamin-heasly?tab=repositories) to [geffenlab](https://github.com/geffenlab?tab=repositories).
+TODO: we'll need to manage GitHub contributors for this repo.  We might want to move it from [benjamin-heasly](https://github.com/benjamin-heasly?tab=repositories) to [geffenlab](https://github.com/geffenlab?tab=repositories).  In the meantime we can still run with custom config on cortex, and it'll be up to ben to push changes.
