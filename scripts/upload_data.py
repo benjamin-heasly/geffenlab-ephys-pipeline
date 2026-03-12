@@ -40,7 +40,15 @@ def apply_placeholders(
     yyyy = session_date.strftime("%Y")
     mm = session_date.strftime("%m")
     dd = session_date.strftime("%d")
-    applied = original.replace('<EXPERIMENTER>', experimenter).replace("<SUBJECT>", subject_id).replace("<YYYY>", yyyy).replace("<YY>", yy).replace("<MM>", mm).replace("<DD>", dd)
+    applied = (
+        original
+        .replace('<EXPERIMENTER>', experimenter)
+        .replace("<SUBJECT>", subject_id)
+        .replace("<YYYY>", yyyy)
+        .replace("<YY>", yy)
+        .replace("<MM>", mm)
+        .replace("<DD>", dd)
+    )
     return applied
 
 
@@ -50,8 +58,8 @@ def run_main(
     behavior_mat_pattern_original: str,
     behavior_hdf5_pattern_original: str,
     ephys_path: Path,
-    spikeglx_meta_pattern_original: str,
-    openephys_oebin_pattern_original: str,
+    spikeglx_run_patterns_original: list[str],
+    oebin_pattern_original: str,
     remote_host: str,
     raw_data_path: Path,
     experimenter: str,
@@ -73,8 +81,11 @@ def run_main(
         behavior_txt_pattern = apply_placeholders(behavior_txt_pattern_original, experimenter, subject, session_date)
         behavior_mat_pattern = apply_placeholders(behavior_mat_pattern_original, experimenter, subject, session_date)
         behavior_hdf5_pattern = apply_placeholders(behavior_hdf5_pattern_original, experimenter, subject, session_date)
-        spikeglx_meta_pattern = apply_placeholders(spikeglx_meta_pattern_original, experimenter, subject, session_date)
-        openephys_oebin_pattern = apply_placeholders(openephys_oebin_pattern_original, experimenter, subject, session_date)
+        spikeglx_run_patterns = [
+            apply_placeholders(pattern, experimenter, subject, session_date)
+            for pattern in spikeglx_run_patterns_original
+        ]
+        openephys_oebin_pattern = apply_placeholders(oebin_pattern_original, experimenter, subject, session_date)
 
         # Locate behavior .mat and .txt within behavior_path.
         logging.info(f"Searching local behavior_root for .txt like: {behavior_txt_pattern}")
@@ -99,17 +110,24 @@ def run_main(
             to_upload.append((behavior_path, hdf5_relative, destination_relative, session_mmddyyyy))
 
         # Locate spikeglx meta files as representatives of spikeglx run dirs.
-        logging.info(f"Searching local ephys_root for .meta like: {spikeglx_meta_pattern}")
-        spikeglx_metas = list(ephys_path.glob(spikeglx_meta_pattern))
-        logging.info(f"Found {len(spikeglx_metas)} .meta matches: {spikeglx_metas}")
-        for spikeglx_meta in spikeglx_metas:
-            run_dir = spikeglx_meta.parent
-            logging.info(f"Found spikeglx run dir: {run_dir}")
-            for spikglx_file in walk_flat(run_dir):
-                spikglx_relative = spikglx_file.relative_to(ephys_path)
-                logging.info(f"  {spikglx_relative}")
-                destination_relative = Path(experimenter, subject, session_mmddyyyy, "ecephys", spikglx_file.relative_to(run_dir.parent))
-                to_upload.append((ephys_path, spikglx_relative, destination_relative, session_mmddyyyy))
+        for spikeglx_run_pattern in spikeglx_run_patterns:
+            logging.info(f"Searching local ephys_root for SpikeGlx files like: {spikeglx_run_pattern}")
+            spikeglx_matches = list(ephys_path.glob(spikeglx_run_pattern))
+            logging.info(f"Found {len(spikeglx_matches)} SpikeGlx matches: {spikeglx_matches}")
+            for spikeglx_match in spikeglx_matches:
+                run_dir = spikeglx_match.parent
+                logging.info(f"Found spikeglx run dir: {run_dir}")
+                for spikglx_file in walk_flat(run_dir):
+                    spikglx_relative = spikglx_file.relative_to(ephys_path)
+                    logging.info(f"  {spikglx_relative}")
+                    destination_relative = Path(
+                        experimenter,
+                        subject,
+                        session_mmddyyyy,
+                        "ecephys",
+                        spikglx_file.relative_to(run_dir.parent)
+                    )
+                    to_upload.append((ephys_path, spikglx_relative, destination_relative, session_mmddyyyy))
 
         # Locate openephys oebin files as representatives of recording dirs.
         logging.info(f"Searching local ephys_root for .oebin like: {openephys_oebin_pattern}")
@@ -126,7 +144,13 @@ def run_main(
             for openephys_file in walk_flat(run_dir):
                 openephys_relative = openephys_file.relative_to(ephys_path)
                 logging.info(f"  {openephys_relative}")
-                destination_relative = Path(experimenter, subject, session_mmddyyyy, "ecephys", openephys_file.relative_to(run_dir.parent))
+                destination_relative = Path(
+                    experimenter,
+                    subject,
+                    session_mmddyyyy,
+                    "ecephys",
+                    openephys_file.relative_to(run_dir.parent)
+                )
                 to_upload.append((ephys_path, openephys_relative, destination_relative, session_mmddyyyy))
 
     if qualifier:
@@ -219,10 +243,16 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default="."
     )
     parser.add_argument(
-        "--spikeglx-meta-pattern", "-S",
+        "--spikeglx-run-patterns", "-S",
         type=str,
-        help="Glob pattern to match SpikeGLX .meta files within EPHYS_ROOT. May include placeholders <EXPERIMENTER>, <SUBJECT>, <YYYY>, <YY>, <MM>, <DD> (default: %(default)s)",
-        default="<SUBJECT>/**/*_<MM><DD><YYYY>_*.nidq.meta"
+        nargs="+",
+        help="Glob pattern(s) to match files in SpikeGLX run dirs ('nidq.meta', 'obx.bin', etc) within EPHYS_ROOT. May include placeholders <EXPERIMENTER>, <SUBJECT>, <YYYY>, <YY>, <MM>, <DD> (default: %(default)s)",
+        default=[
+            "<SUBJECT>/**/*_<MM><DD><YYYY>_*.nidq.meta",
+            "<SUBJECT>/**/*_<MM><DD><YYYY>_*.obx.bin",
+            "<SUBJECT>/**/*_<YY><MM><DD>_*.nidq.meta",
+            "<SUBJECT>/**/*_<YY><MM><DD>_*.obx.bin"
+        ]
     )
     parser.add_argument(
         "--openephys-oebin-pattern", "-O",
@@ -304,11 +334,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ephys_path = Path(cli_args.ephys_root).expanduser().resolve()
     logging.info(f"Uploading ephys files from: {ephys_path}")
 
-    spikeglx_meta_pattern = cli_args.spikeglx_meta_pattern
-    logging.info(f"Using SpikeGLX .meta pattern: {spikeglx_meta_pattern}")
+    spikeglx_run_patterns = cli_args.spikeglx_run_patterns
+    logging.info(f"Using SpikeGLX matching pattern(s): {spikeglx_run_patterns}")
 
     openephys_oebin_pattern = cli_args.openephys_oebin_pattern
-    logging.info(f"Using Open Ephys .oebin pattern: {openephys_oebin_pattern}")
+    logging.info(f"Using Open Ephys .oebin matching pattern: {openephys_oebin_pattern}")
 
     remote_host = cli_args.remote_host
     logging.info(f"Uploading files to remote host: {remote_host}")
@@ -326,10 +356,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         subject = input("Subject ID: ").strip()
     logging.info(f"Uploading files for subject id: {subject}")
 
-    session_dates_strings = cli_args.date
-    if not session_dates_strings:
-        session_dates_strings = input("Session date MMDDYYYY (multiple dates may be separated by spaces): ").strip().split(' ')
-    session_dates = [datetime.strptime(s, "%m%d%Y").date() for s in session_dates_strings]
+    date_strings = cli_args.date
+    if not date_strings:
+        date_strings = input("Session date MMDDYYYY (multiple dates may be separated by spaces): ").strip().split(' ')
+    session_dates = [datetime.strptime(s, "%m%d%Y").date() for s in date_strings]
     session_dates_formated = [str(d) for d in session_dates]
     logging.info(f"Uploading files for session date(s): {session_dates_formated}")
 
@@ -353,7 +383,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             behavior_mat_pattern,
             behavior_hdf5_pattern,
             ephys_path,
-            spikeglx_meta_pattern,
+            spikeglx_run_patterns,
             openephys_oebin_pattern,
             remote_host,
             raw_data_path,
