@@ -51,8 +51,10 @@ Based on the subject id, session date(s), and optional qualifier, the script wil
  - OpenEphys `.oebin` files, and their containing session directories
 
 These patterns may match multiple behavior and ecephys sessions, for the same experimenter, subject, and date.
-In this example, the subject `BH00` had multiple behavior and ephys matcheso on the same date, with session names `nidq1`, `nidq2`, `obx1`, and `obx2`.
-These are test sessions, set up to test different matching patterns for SpikeGlx NIDQ vs OneBox, and different date patterns.
+The script will upload data for all matching sessions.
+
+In this example the subject `BH00` had multiple behavior and ephys matches on the same date, with session names `nidq1`, `nidq2`, `obx1`, and `obx2`.
+These were test sessions, set up to test different matching patterns for SpikeGlx NIDQ vs OneBox, and different date patterns.
 
 ```
 2026-03-12 14:50:07,663 [INFO] Uploading files as remote user: ben
@@ -188,13 +190,13 @@ Password for remote user ben:
 
 ## Results overview
 
-All the matching behavior and ephys files are now uploaded from the original rit to cortex.
+When the script reports `OK`, then all the matching behavior and ephys files should be uploaded to cortex.
 
-The original rig data look like this:
+For this example the original rig data looked like this:
 
 ![Sample behavioral and ecephys data on a rig Windows machine](./upload_data_rig.png)
 
-The data uploaded to cortex look like this, in `/vol/cortex/cd4/geffenalb/raw_data/BH/BH00/02032001/`:
+The same data uploaded to cortex looked like this, within `/vol/cortex/cd4/geffenalb/raw_data/BH/BH00/02032001/`:
 
 ![Sample behavioral and ecephys data on a cortex](./upload_data_cortex.png)
 
@@ -228,7 +230,7 @@ Session date MMDDYYYY (multiple dates may be separated by spaces): 03112025 0312
 
 ## Pattern matching for finding local files to upload
 
-The script uses pattern matching to locate files to upload.  By default it will look for behavior files that end with `.txt` and `.mat`.  It will look for SpikeGlx run directories that contains files ending with `.nidq.meta` or `.obx.bin`, and with dates like `MMDDYYYY` or `YYMMDD`.
+The script uses pattern matching to locate files to upload.  By default it will look for behavior files that end with `.txt` and `.mat`.  It will look for SpikeGlx run directories with files ending like `.nidq.meta` or `.obx.bin`, and with dates formatted like `MMDDYYYY` or `YYMMDD`.
 
 You can supply alternative patterns on the command line.  Here are the relevant parameters and their default values:
 
@@ -239,7 +241,7 @@ You can supply alternative patterns on the command line.  Here are the relevant 
 | `--behavior-mat-pattern` | `<SUBJECT>/**/*_<MM><DD><YY>_*.mat` | upload all matches |
 | `--behavior-hdf5-pattern` | `<SUBJECT>/**/*_<YYYY><MM><DD>_*.hdf5` | upload all matches |
 | `--ephys-root` | `.` (current directory) | searches within for SpikeGlx or OpenEphys pattern matches |
-| `--spikeglx-run-patterns` | `<SUBJECT>/**/*_<MM><DD><YYYY>_*.nidq.meta` `<SUBJECT>/**/*_<MM><DD><YYYY>_*.obx.bin` `<SUBJECT>/**/*_<YY><MM><DD>_*.nidq.meta` `<SUBJECT>/**/*_<YY><MM><DD>_*.obx.bin` | upload SpikeGlx run dirs that contains matching files |
+| `--spikeglx-run-patterns` | `<SUBJECT>/**/*_<MM><DD><YYYY>_*.nidq.meta` `<SUBJECT>/**/*_<MM><DD><YYYY>_*.obx.bin` `<SUBJECT>/**/*_<YY><MM><DD>_*.nidq.meta` `<SUBJECT>/**/*_<YY><MM><DD>_*.obx.bin` | upload SpikeGlx run dirs that contain matching files |
 | `--openephys-oebin-pattern` | `<SUBJECT>/**/<YYYY>-<MM>-<DD>_*/*/*/*/structure.oebin` | upload OpenEphys session dirs that are four levels above mathcing files |
 
 Each of these matching patterns supports wildcards and replacements for flexibility:
@@ -248,17 +250,20 @@ Each of these matching patterns supports wildcards and replacements for flexibil
  - `**`: match zero or more subdirectories
  - `<EXPERIMENTER>`: replaced with the given `--experimenter` (or experimenter entered at prompt)
  - `<SUBJECT>`: replaced with the given `--subject` (or subject entered at prompt)
- - `<YYYY>`: replaced with the four-digit year part of the given `--date` (or date entered at prompt)
- - `<YY>`: replaced with the two-digit year part of the given `--date` (or date entered at prompt)
- - `<MM>`: replaced with the two-digit month part of the given `--date` (or date entered at prompt)
- - `<DD>`: replaced with the two-digit day part of the given `--date` (or date entered at prompt)
+ - `<YYYY>`: replaced with the four-digit part of the given `--date` (or date entered at prompt)
+ - `<YY>`: replaced with the two-digit part of the given `--date` (or date entered at prompt)
+ - `<MM>`: replaced with the two-digit month of the given `--date` (or date entered at prompt)
+ - `<DD>`: replaced with the two-digit day of the given `--date` (or date entered at prompt)
 
 
-Here's an example that would match SpikeGlx OneBox run dirs using a custom date pattern `YYYY-MM-DD`:
+Here's an example that would match behavior and SpikeGlx files using a different date pattern, `YYYY-MM-DD`:
 
 ```
 cd /mnt/c/Users/labuser/Desktop/Data/
 conda activate geffen-pipelines
 
-python ~/geffenlab-ephys-pipeline/scripts/upload_data.py --spikeglx-run-patterns '<SUBJECT>/**/*_<YYYY>-<MM>-<DD>_*.obx.bin'
+python ~/geffenlab-ephys-pipeline/scripts/upload_data.py \
+  --behavior-txt-pattern '<SUBJECT>/**/*_<YYYY>-<MM>-<DD>_*.txt' \
+  --behavior-mat-pattern '<SUBJECT>/**/*_<YYYY>-<MM>-<DD>_*.mat' \
+  --spikeglx-run-patterns '<SUBJECT>/**/*_<YYYY>-<MM>-<DD>_*.obx.bin'
 ```
