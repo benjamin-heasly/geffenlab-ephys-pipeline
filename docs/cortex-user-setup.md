@@ -420,17 +420,22 @@ Date:   Tue Oct 21 15:15:29 2025 +0200
     Update NWB ecephys version
 ```
 
-#### AIND QUALITY_CONTROL version change
+#### AIND JOB_DISPATCH and QUALITY_CONTROL version changes
 
-We have one local change to call out, within the AIND pipeline code repo.
-This is a change to the [capsule_versions](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/blob/main/pipeline/capsule_versions.env#L10C17-L10C57) file, which declares versions of code used in individual processing steps.
+We have some small, local changes to call out, within the AIND pipeline code repo.
+These are in the [capsule_versions](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/blob/main/pipeline/capsule_versions.env#L10C17-L10C57) file, which declares versions of AIND code used in individual processing steps.
+
+The default code and version for the "job dispatch" step is [aind-ephys-job-dispatch version 8210347](https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch/commit/82103472153da7ca25a36f48173e52826825e8cf).
+This version contains a bug where it tries to spike sort the "obx" data as if it were "imec.ap" data.
+The "job dispatch" code itself has been updated to fix this bug, but the fixed version is not yet the default version used by the overall AIND pipeline.
+We made a code change locally, to declare [aind-ephys-job-dispatch version aeee3ca](https://github.com/AllenNeuralDynamics/aind-ephys-processing-qc/tree/99784c262c1d6a9af7a8a28ec380278db403fc17), instead.
 
 The default code and version for the "quality control" step is [aind-ephys-processing-qc version c18647a](https://github.com/AllenNeuralDynamics/aind-ephys-processing-qc/tree/c18647a0246ab6f3d59b4aacf52b3462e56fa20c).
 This version contains a bug for recordings with multiple segments.
 The "quality control" code itself has been updated to fix this bug, but the fixed version is not yet the default version used by the overall AIND pipeline.
-We made a code change locally, to declare [aind-ephys-processing-qc version 99784c2](https://github.com/AllenNeuralDynamics/aind-ephys-processing-qc/tree/99784c262c1d6a9af7a8a28ec380278db403fc17), instead.
+We made a code change locally, to declare [aind-ephys-processing-qc version 99784c2](https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch/commit/aeee3cad42a66214f42d2fb2b958de7b47681d58), instead.
 
-Verify the "quality control" code version used by the AIND pipeline:
+Verify the "job dispatch" and "quality control" code versions used by the AIND pipeline:
 
 ```
 cd /vol/cortex/cd4/geffenlab/nextflow/aind-ephys-pipeline
@@ -438,9 +443,12 @@ git diff
 ```
 
 Expect only one file modified: `pipeline/capsule_versions.env`.
-Expect the diff to show one line changed:
+Expect the diff to show two lines changed:
 
 ```
+-JOB_DISPATCH=82103472153da7ca25a36f48173e52826825e8cf
++JOB_DISPATCH=aeee3cad42a66214f42d2fb2b958de7b47681d58
+
 -QUALITY_CONTROL=c18647a0246ab6f3d59b4aacf52b3462e56fa20c
 +QUALITY_CONTROL=99784c262c1d6a9af7a8a28ec380278db403fc17
 ```
