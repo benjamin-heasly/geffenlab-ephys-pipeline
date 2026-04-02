@@ -135,7 +135,7 @@ print(f"Loaded {len(spikes_df)} spikes among {cluster_count} clusters:")
 print(spikes_df)
 ```
 
-This script has almost no dependenices, just Python 3.12 and NumPy.
+This script has fewer dependenices, just Python 3.12, NumPy, and Pandas.
 You could run it like this:
 
 ```
