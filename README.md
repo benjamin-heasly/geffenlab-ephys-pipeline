@@ -52,6 +52,12 @@ The [geffenlab-spikeglx-tools](https://github.com/benjamin-heasly/geffenlab-spik
 
 It has Python wrappers for calling these tools in a more familiar Python style.
 
+This repo also has custom Python code for aligning OneBox continuous signals to the canonical clock for a session.  The is similar to what TPrime does for discrete events, but for continuous signals (eg treadmill).
+
 ## geffenlab-phy-desktop
 
 The [geffenlab-phy-desktop](https://github.com/benjamin-heasly/geffenlab-phy-desktop) image has a [Phy](https://phy.readthedocs.io/en/latest/) installation that we can use for interactive curation.
+
+## geffenlab-bombcell
+
+The [geffenlab-bombcell](https://github.com/benjamin-heasly/geffenlab-bombcell) has the Python version of [Bombcell](https://github.com/Julie-Fabre/bombcell/tree/main/py_bombcell) for automating curation of spike sorting results.
