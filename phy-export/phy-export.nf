@@ -41,7 +41,7 @@ process geffenlab_ecephys_phy_export {
 // For SpikeGlx recordings, extract events (sync, behavior, stimulus, etc).
 process geffenlab_ecephys_catgt {
     tag 'geffenlab_ecephys_catgt'
-    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.10'
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.11'
 
     publishDir "${params.analysis_path}/phy-export/$params.ecephys_session_name",
         mode: 'copy',
@@ -71,7 +71,7 @@ process geffenlab_ecephys_catgt {
 // For SpikeGlx recordings, align spike times and other events, based on sync events.
 process geffenlab_ecephys_tprime {
     tag 'geffenlab_ecephys_tprime'
-    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.10'
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.11'
 
     publishDir "${params.analysis_path}/phy-export/$params.ecephys_session_name",
         mode: 'copy',
@@ -92,8 +92,6 @@ process geffenlab_ecephys_tprime {
     set -e
 
     mkdir -p results/tprime
-    echo $catgt_results
-    ls -alth $catgt_results
     conda_run python /opt/code/tprime.py \
       $catgt_results \
       $phy_export_results \
@@ -102,6 +100,41 @@ process geffenlab_ecephys_tprime {
       --to-stream $params.tprime_to_stream \
       --from-streams $params.tprime_from_streams \
       --phy-from-pattern $params.tprime_phy_from_pattern
+    """
+}
+
+// Optionally align continuous signal (eg treadmill) timestamps from sync events, similar to TPrime events.
+process geffenlab_ecephys_signal_alignment {
+    tag 'geffenlab_ecephys_signal_alignment'
+    container 'ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.11'
+
+    publishDir "${params.analysis_path}/phy-export/$params.ecephys_session_name",
+        mode: 'copy',
+        overwrite: true,
+        pattern: 'results/*',
+        saveAs: { filename -> file(filename).name }
+
+    input:
+    path raw_data_path
+    path catgt_results
+
+    output:
+    path 'results/*', emit: signal_alignment_results
+
+    script:
+    """
+    #!/usr/bin/env bash
+    set -e
+
+    mkdir -p results/signal-alignment
+    conda_run python /opt/code/signal_alignment.py \
+      --output-dir results/signal-alignment \
+      --bin-pattern $raw_data_path/ecephys/$params.ecephys_session_name/$params.signal_alignment_bin_pattern \
+      --meta-pattern $raw_data_path/ecephys/$params.ecephys_session_name/$params.signal_alignment_meta_pattern \
+      --from-sync-pattern $catgt_results/$params.ecephys_session_name/$params.signal_alignment_from_sync_pattern \
+      --to-sync-pattern $catgt_results/$params.ecephys_session_name/$params.signal_alignment_to_sync_pattern \
+      --channel-index $params.signal_alignment_channel_index \
+      --channel-name $params.signal_alignment_channel_name
     """
 }
 
@@ -165,6 +198,11 @@ workflow {
         raw_data_channel = channel.fromPath(params.raw_data_path)
         catgt_results = geffenlab_ecephys_catgt(raw_data_channel)
         tprime_results = geffenlab_ecephys_tprime(catgt_results, phy_export_results)
+
+        // Optionally extract and align a continuous (eg treadmill) signal channel.
+        if (params.signal_alignment_channel_name) {
+            geffenlab_ecephys_signal_alignment(raw_data_channel, catgt_results)
+        }
 
         // Run bombcell on the TPrime-adjusted phy/ dir.
         geffenlab_ecephys_bombcell(tprime_results, bombcell_params_json)
