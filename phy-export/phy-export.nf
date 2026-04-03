@@ -3,7 +3,7 @@
 // But, this version also has quality metrics and automated curation done by SpikeInterface.
 process geffenlab_ecephys_phy_export {
     tag 'geffenlab_ecephys_phy_export'
-    container 'ghcr.io/benjamin-heasly/geffenlab-ecephys-phy-export:v0.0.12'
+    container 'ghcr.io/benjamin-heasly/geffenlab-ecephys-phy-export:v0.0.13'
 
     publishDir "${params.analysis_path}/phy-export/$params.ecephys_session_name",
         mode: 'copy',
@@ -31,7 +31,10 @@ process geffenlab_ecephys_phy_export {
       --preprocessed-pattern $params.preprocessed_pattern \
       --postprocessed-pattern $params.postprocessed_pattern \
       --curated-pattern $params.curated_pattern \
+      --sparsity-radius-um 40 \
       --compute-pc-features true \
+      --pc-n-components 3 \
+      --pc-mode by_channel_local \
       --copy-binary false \
       --n-jobs $params.n_jobs
     """
