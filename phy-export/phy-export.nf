@@ -31,7 +31,7 @@ process geffenlab_ecephys_phy_export {
       --preprocessed-pattern $params.preprocessed_pattern \
       --postprocessed-pattern $params.postprocessed_pattern \
       --curated-pattern $params.curated_pattern \
-      --sparsity-radius-um 40 \
+      --sparsity-radius-um 60 \
       --compute-pc-features true \
       --pc-n-components 3 \
       --pc-mode by_channel_local \
