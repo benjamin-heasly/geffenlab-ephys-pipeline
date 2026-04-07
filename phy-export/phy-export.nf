@@ -143,7 +143,7 @@ process geffenlab_ecephys_signal_alignment {
 // Do "bombcell" curation and visualization on the SpikeGlx/TPrime or Open Ephys phy/ output.
 process geffenlab_ecephys_bombcell {
     tag 'geffenlab_ecephys_bombcell'
-    container 'ghcr.io/benjamin-heasly/geffenlab-bombcell:v0.0.4'
+    container 'ghcr.io/benjamin-heasly/geffenlab-bombcell:v0.0.5'
 
     // Publish Bombcell results like diagnostic plots.
     publishDir "${params.analysis_path}/phy-export/$params.ecephys_session_name/bombcell/other",
