@@ -133,8 +133,8 @@ process geffenlab_ecephys_signal_alignment {
       --output-dir results/signal-alignment \
       --bin-pattern $raw_data_path/ecephys/$params.ecephys_session_name/$params.signal_alignment_bin_pattern \
       --meta-pattern $raw_data_path/ecephys/$params.ecephys_session_name/$params.signal_alignment_meta_pattern \
-      --from-sync-pattern $catgt_results/$params.ecephys_session_name/$params.signal_alignment_from_sync_pattern \
-      --to-sync-pattern $catgt_results/$params.ecephys_session_name/$params.signal_alignment_to_sync_pattern \
+      --from-sync-pattern $catgt_results/catgt_$params.ecephys_session_name/$params.signal_alignment_from_sync_pattern \
+      --to-sync-pattern $catgt_results/catgt_$params.ecephys_session_name/$params.signal_alignment_to_sync_pattern \
       --channel-index $params.signal_alignment_channel_index \
       --channel-name $params.signal_alignment_channel_name
     """
