@@ -4,7 +4,7 @@ This repo contains [Nextflow](https://www.nextflow.io/) pipelines and Python scr
 
 For each datset:
  - First we want to run the [aind-ephys-pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline).  This will do spike sorting and automated curation based on quality metrics.
- - Then we can run the Geffen lab's [phy-export](./phy-export/phy-export.nf) pipeline.  This will convert the `aind-ephys-pipeline` results to the format expected by Phy, for manual curation.
+ - Then we can run the Geffen lab's [phy-export](./phy-export/phy-export.nf) pipeline.  This will convert the `aind-ephys-pipeline` results to the format expected by Phy, for Bombcell and manual curation.
 
 From there we'll have a few options for manual curation and further processing (work in progress...).
 

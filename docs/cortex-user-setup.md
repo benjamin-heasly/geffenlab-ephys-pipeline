@@ -382,79 +382,16 @@ Expect output like this:
 
 ## pipeline code
 
-We're using two repos with Nexftlow pipelines:
- - the [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) repo for spike sorting and quality metrics
- - our [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline) repo for exporting to Phy and other processing
+This git repo, [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline), contains two Nexftlow pipelines:
+ - [aind-ephys-pipeline/main_multi_backend.nf](../aind-ephys-pipeline/main_multi_backend.nf) contains a version of the [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) repo for spike sorting and quality metrics.
+ - [phy-export/phy-export.nf](../phy-export/phy-export.nf) exports results of the AIND pipeline to Phy for Bombcell, manual curation, and other processing.
 
-We cloned these two Git repos into the geffenlab `nextflow/` subdirectory.
+We cloned this repos into the geffenlab `nextflow/` subdirectory.
 
 ```
 cd /vol/cortex/cd4/geffenlab/nextflow
-git clone https://github.com/AllenNeuralDynamics/aind-ephys-pipeline.git
 git clone https://github.com/benjamin-heasly/geffenlab-ephys-pipeline.git
 ```
-
-### AIND pipeline version
-
-The [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) is actively developed and has different versions over time.
-We've been working with version [5c87528](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/tree/5c875288a2e485b4bdf1b61f4ad48c648691246d), from 21 October 2025.
-We should stick with this version until we need to change it, and we're able to spend time working out any issues that arise from the change.
-
-Verify the version of the AIND pipeline:
-
-```
-cd /vol/cortex/cd4/geffenlab/nextflow/aind-ephys-pipeline
-git log
-```
-
-Expect the log to start with `commit 5c87528`:
-
-```
-commit 5c875288a2e485b4bdf1b61f4ad48c648691246d (HEAD -> main, origin/main, origin/HEAD)
-Merge: 6d8216d 893eb25
-Author: Alessio Buccino <alessio.buccino@alleninstitute.org>
-Date:   Tue Oct 21 15:15:29 2025 +0200
-
-    Merge pull request #66 from AllenNeuralDynamics/fix-nwb-ecephys-electrodes
-    
-    Update NWB ecephys version
-```
-
-#### AIND JOB_DISPATCH and QUALITY_CONTROL version changes
-
-We have some small, local changes to call out, within the AIND pipeline code repo.
-These are in the [capsule_versions](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline/blob/main/pipeline/capsule_versions.env#L10C17-L10C57) file, which declares versions of AIND code used in individual processing steps.
-
-The default code and version for the "job dispatch" step is [aind-ephys-job-dispatch version 8210347](https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch/commit/82103472153da7ca25a36f48173e52826825e8cf).
-This version contains a bug where it tries to spike sort the "obx" data as if it were "imec.ap" data.
-The "job dispatch" code itself has been updated to fix this bug, but the fixed version is not yet the default version used by the overall AIND pipeline.
-We made a code change locally, to declare [aind-ephys-job-dispatch version aeee3ca](https://github.com/AllenNeuralDynamics/aind-ephys-processing-qc/tree/99784c262c1d6a9af7a8a28ec380278db403fc17), instead.
-
-The default code and version for the "quality control" step is [aind-ephys-processing-qc version c18647a](https://github.com/AllenNeuralDynamics/aind-ephys-processing-qc/tree/c18647a0246ab6f3d59b4aacf52b3462e56fa20c).
-This version contains a bug for recordings with multiple segments.
-The "quality control" code itself has been updated to fix this bug, but the fixed version is not yet the default version used by the overall AIND pipeline.
-We made a code change locally, to declare [aind-ephys-processing-qc version 99784c2](https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch/commit/aeee3cad42a66214f42d2fb2b958de7b47681d58), instead.
-
-Verify the "job dispatch" and "quality control" code versions used by the AIND pipeline:
-
-```
-cd /vol/cortex/cd4/geffenlab/nextflow/aind-ephys-pipeline
-git diff
-```
-
-Expect only one file modified: `pipeline/capsule_versions.env`.
-Expect the diff to show two lines changed:
-
-```
--JOB_DISPATCH=82103472153da7ca25a36f48173e52826825e8cf
-+JOB_DISPATCH=aeee3cad42a66214f42d2fb2b958de7b47681d58
-
--QUALITY_CONTROL=c18647a0246ab6f3d59b4aacf52b3462e56fa20c
-+QUALITY_CONTROL=99784c262c1d6a9af7a8a28ec380278db403fc17
-```
-
-We'd prefer not to make changes like this or to keep track of them!
-Hopefully the main pipeline will be updated, and we can update to a version that we can use whole, as-is.
 
 ### Geffen lab repo version
 

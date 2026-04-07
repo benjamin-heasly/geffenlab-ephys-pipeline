@@ -137,7 +137,7 @@ from run_pipeline import main
 
 # Run the AIND ephys sorting pipeline on a minimal dataset, as in docs/run-aind-ephys-pipeline.md.
 aind_ephys_args = [
-  "--workflow", "aind-ephys-pipeline/pipeline/main_multi_backend.nf",
+  "--workflow", "geffenlab-ephys-pipeline/aind-ephys-pipeline/main_multi_backend.nf",
   "--config", "geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config",
   "--experimenter", "BH",
   "--subject", "AS20-minimal3",
@@ -170,7 +170,7 @@ $ python batch_demo.py
 
 2026-03-03 10:49:25,865 [INFO] Writing logs for this script to stdout and /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/logs/main_multi_backend_20260303T154925UTC_run_pipeline.log
 2026-03-03 10:49:25,865 [INFO] From work dir /vol/cortex/cd4/geffenlab/nextflow
-2026-03-03 10:49:25,865 [INFO] Running workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf
+2026-03-03 10:49:25,865 [INFO] Running workflow geffenlab-ephys-pipeline/aind-ephys-pipeline/main_multi_backend.nf
 
 ... etc ...
 
@@ -215,7 +215,7 @@ for (experimenter, subject, date, ecephys_session_name) in sessions:
     try:
         # Run the AIND ephys sorting pipeline, as in docs/run-aind-ephys-pipeline.md.
         aind_ephys_args = [
-            "--workflow", "aind-ephys-pipeline/pipeline/main_multi_backend.nf",
+            "--workflow", "geffenlab-ephys-pipeline/aind-ephys-pipeline/main_multi_backend.nf",
             "--config", "geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config",
             "--experimenter", experimenter,
             "--subject", subject,

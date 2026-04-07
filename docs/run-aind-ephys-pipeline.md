@@ -31,7 +31,7 @@ cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
 conda activate geffen-pipelines
 
 python run_pipeline.py \
-  --workflow aind-ephys-pipeline/pipeline/main_multi_backend.nf \
+  --workflow geffenlab-ephys-pipeline/aind-ephys-pipeline/main_multi_backend.nf \
   --config geffenlab-ephys-pipeline/aind-ephys-pipeline/cortex.config \
   --experimenter BH \
   --subject AS20-minimal3 \

@@ -159,7 +159,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--workflow",
         type=str,
         help="Path to pipeline workflow definition file. (default: %(default)s)",
-        default="aind-ephys-pipeline/pipeline/main_multi_backend.nf"
+        default="geffenlab-ephys-pipeline/aind-ephys-pipeline/main_multi_backend.nf"
     )
     parser.add_argument(
         "--report-template",
