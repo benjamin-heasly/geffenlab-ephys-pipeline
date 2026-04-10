@@ -1,5 +1,8 @@
 version: 0.0.11
 
+# Cortex: proceed run pipeline-poc.yaml --args gpus=[3] user=0:0 raw_data_root=/vol/cortex/cd4/geffenlab/raw_data processed_data_root=/vol/cortex/cd4/geffenlab/processed_data
+# Thinkpad: proceed run proceed/pipeline-poc.yaml --args gpus=false
+
 args:
   raw_data_root: /home/ninjaben/codin/geffen-lab-data/raw_data
   processed_data_root: /home/ninjaben/codin/geffen-lab-data/processed_data
