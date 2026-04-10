@@ -7,4 +7,6 @@ settings.json
 
 __pycache__/
 
+proceed_out/
+
 scratch.sh
