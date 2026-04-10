@@ -25,6 +25,7 @@ steps:
       $raw_data_root/$experimenter/$subject/$date/ecephys/,
       $processed_data_root/$experimenter/$subject/$date/catgt,
       "-prb_fld",
+      "-out_prb_fld",
       "-ni",
       "-ap",
       "-apfilter=butter,12,300,10000",
