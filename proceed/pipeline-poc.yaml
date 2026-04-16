@@ -49,7 +49,6 @@ steps:
 
   - name: tprime
     image: ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.14
-    gpus: $gpus
     command: [
       /opt/code/tprime.py,
       $processed_data_root/$experimenter/$subject/$date/catgt,
@@ -62,4 +61,13 @@ steps:
       --probe-sync-pattern, "*/*.ap.*.txt",
       --probe-spikes-pattern, "*/spike_times.npy",
       --probe-params-pattern, "*/params.py"
+    ]
+
+  - name: bombcell
+    image: ghcr.io/benjamin-heasly/geffenlab-bombcell:v0.0.6
+    command: [
+      $processed_data_root/$experimenter/$subject/$date/kilosort4,
+      --probe-ids, imec0, imec1,
+      --probe-params-pattern, "*/params.py",
+      --bombcell-params-pattern, "**/*-bombcell-parameters.json"
     ]
