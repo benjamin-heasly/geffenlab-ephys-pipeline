@@ -1,10 +1,8 @@
-version: 0.0.11
-
 # conda activate geffen-pipelines
 # cd geffenlab-ephys-pipeline
-# Thinkpad: proceed run proceed/pipeline-poc.yaml --args gpus=false
+# Thinkpad: proceed run proceed/pipeline-poc.yaml
 # Cortex: proceed run proceed/pipeline-poc.yaml --args gpus=[3] user=0:0 raw_data_root=/vol/cortex/cd4/geffenlab/raw_data processed_data_root=/vol/cortex/cd4/geffenlab/processed_data
-
+version: 0.0.11
 args:
   user: "self"
   gpus: false
@@ -65,6 +63,8 @@ steps:
 
   - name: bombcell
     image: ghcr.io/benjamin-heasly/geffenlab-bombcell:v0.0.6
+    environment:
+      LOKY_MAX_CPU_COUNT: "3"
     command: [
       $processed_data_root/$experimenter/$subject/$date/kilosort4,
       --probe-ids, imec0, imec1,

@@ -63,6 +63,8 @@ steps:
 
   - name: bombcell
     image: ghcr.io/benjamin-heasly/geffenlab-bombcell:v0.0.6
+    environment:
+      LOKY_MAX_CPU_COUNT: "10"
     command: [
       $processed_data_root/$experimenter/$subject/$date/kilosort4,
       --probe-ids, imec0, imec1,
