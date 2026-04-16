@@ -1,21 +1,21 @@
 # On cortex:
 # conda activate geffen-pipelines
 # cd geffenlab-ephys-pipeline
-# proceed run proceed/as-nidq.yaml --args experimenter=AS subject=AS20 date="03112025"
-# proceed run proceed/as-nidq.yaml --args experimenter=AS subject=AS40 date="01062026"
+# proceed run proceed/as-nidq.yaml --args experimenter=AD subject=AD025 date="03102026"
+# proceed run proceed/as-nidq.yaml --args experimenter=AD subject=AD025 date="03112026"
 version: 0.0.11
 args:
   user: "0:0"
   gpus: [3]
   raw_data_root: /vol/cortex/cd4/geffenlab/raw_data
   processed_data_root: /vol/cortex/cd4/geffenlab/processed_data
-  experimenter: AS
-  subject: AS20
-  date: "03112025"
-  catgt_args: "-prb_fld -out_prb_fld -ni -ap -apfilter=butter,12,300,10000 -lffilter=butter,12,1,500 -gblcar -gfix=0.4,0.1,0.02 -xa=0,0,0,1,3,500 -xia=0,0,1,3,3,0 -xd=0,0,8,3,0 -xid=0,0,-1,2,1.7 -xid=0,0,-1,3,5"
+  experimenter: AD
+  subject: AD025
+  date: "03102026"
+  catgt_args: "-prb_fld -out_prb_fld -ap -ob -obx=0 -apfilter=butter,12,300,9000 -gblcar -gfix=0.40,0.10,0.02 -xd=1,0,13,6,500 -xa=1,0,0,0,0,0 -supercat_skip_ni_ob_bin
   tprime_to_sync_pattern: "*/*.imec0.ap.*.txt"
-  tprime_events_sync_pattern: "*.nidq.xd_8_4_500.txt"
-  tprim_events_pattern: "*.nidq.*.txt"
+  tprime_events_sync_pattern: "*.obx.xd_13_6_500.txt"
+  tprim_events_pattern: "*.obx.*.txt"
 
 prototype:
   user: $user
@@ -60,6 +60,20 @@ steps:
       --probe-sync-pattern, "*/*.ap.*.txt",
       --probe-spikes-pattern, "*/spike_times.npy",
       --probe-params-pattern, "*/params.py"
+    ]
+
+  - name: signal-alignment
+    image: ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.14
+    command: [
+      /opt/code/signal_alignment.py,
+      $processed_data_root/$experimenter/$subject/$date/catgt,
+      $processed_data_root/$experimenter/$subject/$date/signal-alignment,
+      --bin-pattern, "*.bin",
+      --meat-pattern, "*.meta",
+      --to-sync-pattern, $tprime_to_sync_pattern,
+      --from-sync-pattern, $tprime_events_sync_pattern,
+      --channel-index, 7,
+      --channel-name, treadmill
     ]
 
   - name: bombcell
