@@ -129,10 +129,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         default=None
     )
     parser.add_argument(
-        "--analysis-root",
+        "--data-root",
         type=str,
-        help="Root folder with the lab's take-home analysis products. (default: %(default)s)",
-        default="/vol/cortex/cd4/geffenlab/analysis"
+        help="Root folder with results from Kilosort/Phy/Bombcell. (default: %(default)s)",
+        default="/vol/cortex/cd4/geffenlab/processed_data"
     )
     parser.add_argument(
         "--experimenter",
@@ -155,14 +155,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument(
         "--params-py-pattern", "-p",
         type=str,
-        help="Glob pattern to locate Phy params.py file(s) within ANALYSYS_ROOT/EXPERIMENTER/SUBJECT/DATE/ (default: %(default)s)",
+        help="Glob pattern to locate Phy params.py file(s) within DATA_ROOT/EXPERIMENTER/SUBJECT/DATE/ (default: %(default)s)",
         default="**/params.py"
     )
 
     cli_args = parser.parse_args(argv)
 
     # Write logs to the sessions processed output subdirectory.
-    data_path = Path(cli_args.analysis_root, cli_args.experimenter, cli_args.subject, cli_args.date)
+    data_path = Path(cli_args.data_root, cli_args.experimenter, cli_args.subject, cli_args.date)
     execution_time = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%Z')
     script_log_path = Path(data_path, f"run_phy_{execution_time}.log")
     set_up_logging(script_log_path)
