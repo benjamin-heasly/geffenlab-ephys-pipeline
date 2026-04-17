@@ -1,13 +1,13 @@
 # Cortex User Setup
 
-This doc should help you configure your local lab machine and your cortex user account for running Geffen lab pipelines with Nextflow.
+This doc should help you configure your local lab machine and your cortex user account for running Geffen lab pipelines with [Proceed](https://github.com/benjamin-heasly/proceed).
 
 # Overview
 
 Our workflow has a few steps to it which will run from local lab machines or cortex:
  - Uploading data to cortex runs from a local lab machine, using a Python script, from the local terminal.
- - Processing pipelines run on cortex, using a Python script, from a remote desktop session.
- - Manual cluser curation with Phy runs on cortex, using the interactive Phy GUI, from a remote desktop session.
+ - Pipeline processing runs on cortex using the `proceed` command in the terminal.
+ - Manual cluser curation with Phy can run on cortex or locally, after downloading some pipeline results.
  - Downloading logs and results runs on a local lab machine, using a Python script, from the local terminal.
 
 The steps below should help you set up both your local lab machine and your Cortex user account.
@@ -88,24 +88,30 @@ conda --version
 ## local Conda environment
 
 With conda installed we can create our own conda environment for running lab Python scripts.
-The environment is defined here in this repo in [geffen-pipelines.yml](./geffen-pipelines.yml).
+The environment is defined here in this repo in [geffen-pipelines.yml](../geffen-pipelines.yml).
 To create and activate the environment in WSL:
 
 ```
 cd ~
 git clone https://github.com/benjamin-heasly/geffenlab-ephys-pipeline.git
-conda env create -f geffenlab-ephys-pipeline/geffen-pipelines.yml
+
+cd ~/geffenlab-ephys-pipeline
+conda env create -f geffen-pipelines.yml
+```
+
+Check that the environment is active and has the expected versions of Python and Proceed
+
+```
 conda activate geffen-pipelines
-```
 
-Check that the environment is active and has the expected version of Python
-
-```
 python --version
-# expect Python 3.13.5
+# expect Python 3.13.x
+
+proceed --version
+# expect Proceed v0.0.11
 ```
 
-With this environment in place, you'll be set up to upload to and dowload from cortex, as in [cortex-moving-data.md](./cortex-moving-data.md).
+With this environment in place, you'll be set up to upload and dowload from cortex, as in [cortex-moving-data.md](./cortex-moving-data.md).
 
 # Your cortex user account
 
@@ -124,7 +130,7 @@ Fill in your cortex user name and password, and press `OK`.
 
 You should get an Ubuntu Desktop!
 You might be prompted to do first-time Ubuntu user setup.
-You can chose "skip" or "proceed" to get passed this.
+You can chose "skip" or "proceed" to move past this.
 
 ## cortex remote desktop settings
 
@@ -158,7 +164,7 @@ Docker is already installed on Cortex, but you may need to do some one-time steu
 See the brainsadmin Slack channel and find the canvas with instructions for [Rootles Docker](https://pesaranlab.slack.com/docs/T0481N8KH0A/F09JMHTJKA6).
 Follow the instructions in this document.
 
-The process will go somethign like this:
+The process will go something like this:
  - Ask ask Bijan or Jarl for admin help setting up rootless docker.
  - Tell them your cortex user name.
  - As admins they will do the first part, adding your user to the system config files `/etc/subuid` and `/etc/subgid`.
@@ -280,25 +286,29 @@ conda --version
 
 ## cortex Conda environment
 
-With conda installed we can create our own conda environment for running Nextflow pipelines.
-The environment is defined here in this repo in [geffen-pipelines.yml](./geffen-pipelines.yml).
+With conda installed we can create our own environment with Python and Proceed.
+The environment is defined here in this repo in [geffen-pipelines.yml](../geffen-pipelines.yml).
 It's the same environment we used above, for your local lab machine.
 To create and activate the environment on cortex:
 
 ```
-cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline
+cd /geffenlab-ephys-pipeline
 conda env create -f geffen-pipelines.yml
+```
+
+As above, verity expected Python and Proceed versions.
+
+```
 conda activate geffen-pipelines
+
+python --version
+# expect Python 3.13.x
+
+proceed --version
+# expect Proceed v0.0.11
 ```
 
-Verify that the environment is active and has the expected version of Java installed:
-
-```
-java -version
-# expect openjdk version "17.0.14" 2025-01-21 LTS
-```
-
-After all of this, you should be able to go on to [cortex-first-run.md](./cortex-first-run.md) to try a pipeline run with known data.
+After all of this, you should be able to go on to [pipeline-test-run.md](./pipeline-test-run.md) to try a pipeline run with known data.
 
 # Other cortex setup for Geffen lab
 
@@ -310,10 +320,9 @@ You don't need to run the steps below yourself, but we do want the lab to have t
 The Geffen lab is assigned the following storage directory on cortex: `/vol/cortex/cd4/geffenlab/`.
 
 We created several subdirectories to organized things:
- - `/vol/cortex/cd4/geffenlab/nextflow`: pipelines code, Nextflow executable, and Nextflow logs and working directories (shared by all lab members)
- - `/vol/cortex/cd4/geffenlab/raw_data`: raw nerual and behavioral data uploaded from lab machines (subdirectories per experimenter, subject, and session date)
- - `/vol/cortex/cd4/geffenlab/processed_data`: intermediate pipeline outputs and logs (subdirectories per experimenter, subject, and session date)
- - `/vol/cortex/cd4/geffenlab/analysis`: pipeline results, downloadable figures and data pickles (subdirectories per experimenter, subject, and session date)
+ - `/vol/cortex/cd4/geffenlab/raw_data`: raw nerual and behavioral data uploaded from lab machines
+ - `/vol/cortex/cd4/geffenlab/processed_data`: intermediate pipeline outputs
+ - `/vol/cortex/cd4/geffenlab/analysis`: final pipeline outputs to be downloaded for further analysis
 
 ## AWS account setup
 
@@ -351,77 +360,3 @@ We copied the access key to a location on cortex where users in the `geffenlab` 
  - `cp -r ~/.aws/ /vol/cortex/cd4/geffenlab/`
  - `chmod g+r /vol/cortex/cd4/geffenlab/.aws/credentials`
  - `chmod g+r /vol/cortex/cd4/geffenlab/.aws/config`
-
-## Nextflow
-
-We installed the [Nextflow](https://www.nextflow.io/) pipeline tool into the geffenlab `nextflow/` subdirectory.
-
-```
-cd /vol/cortex/cd4/geffenlab/nextflow
-wget https://github.com/nextflow-io/nextflow/releases/download/v25.04.6/nextflow-25.04.6-dist
-chmod +x nextflow-25.04.6-dist
-```
-
-Verify that nextflow is working:
-
-```
-cd /vol/cortex/cd4/geffenlab/nextflow
-conda activate geffen-pipelines
-./nextflow-25.04.6-dist -version
-```
-
-Expect output like this:
-
-```
-#      N E X T F L O W
-#      version 24.10.6 build 5937
-#      created 23-04-2025 16:53 UTC (12:53 EDT)
-#      cite doi:10.1038/nbt.3820
-#      http://nextflow.io
-```
-
-## pipeline code
-
-This git repo, [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline), contains two Nexftlow pipelines:
- - [aind-ephys-pipeline/main_multi_backend.nf](../aind-ephys-pipeline/main_multi_backend.nf) contains a version of the [AIND ephys pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline) repo for spike sorting and quality metrics.
- - [phy-export/phy-export.nf](../phy-export/phy-export.nf) exports results of the AIND pipeline to Phy for Bombcell, manual curation, and other processing.
-
-We cloned this repos into the geffenlab `nextflow/` subdirectory.
-
-```
-cd /vol/cortex/cd4/geffenlab/nextflow
-git clone https://github.com/benjamin-heasly/geffenlab-ephys-pipeline.git
-```
-
-### Geffen lab repo version
-
-We've been actively developing and debugging in our own [Geffen lab ephys pipeline](https://github.com/benjamin-heasly/geffenlab-ephys-pipeline) repo.
-When things are settled, we should choose a release tag to check out on cortex, and use for all processing.
-Meanwhile, we should try to keep this repo up to date with the latest on GitHub.
-
-Check what version is currently on cortex:
-
-```
-cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline
-git log
-```
-
-GitHub should be the source of truth for this pipeline.
-We should not have local changes on cortex that are not captured in version control on GitHub.
-Otherwise, we won't know how our data was processed and we won't be sure the processing can be reproduced.
-
-Verify no local changes on cortex:
-
-```
-cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline
-git status
-```
-
-Expect output like this:
-
-```
-On branch master
-Your branch is up to date with 'origin/master'.
-
-nothing to commit, working tree clean
-```
