@@ -69,7 +69,7 @@ steps:
       $processed_data_root/$experimenter/$subject/$date/catgt,
       $processed_data_root/$experimenter/$subject/$date/signal-alignment,
       --bin-pattern, "*.bin",
-      --meat-pattern, "*.meta",
+      --meta-pattern, "*.meta",
       --to-sync-pattern, $tprime_to_sync_pattern,
       --from-sync-pattern, $tprime_events_sync_pattern,
       --channel-index, 7,
