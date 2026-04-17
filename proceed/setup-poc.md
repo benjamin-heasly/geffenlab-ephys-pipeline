@@ -81,8 +81,14 @@ proceed --help
 
 # Run a pipeline with small data
 
-Test one of our pipelines with a small dataset.
+We can test a full pipeline run using a small dataset.
 
+First, remove outputs from previous testing.
+```
+rm -rf /vol/cortex/cd4/geffenlab/processed_data/BH/AS20-minimal3/03112025/
+```
+
+Then run the pipeline with proceed.
 ```
 conda activate geffen-pipelines
 cd ~/geffenlab-ephys-pipeline
@@ -90,7 +96,14 @@ cd ~/geffenlab-ephys-pipeline
 proceed run proceed/as-nidq.yaml --args experimenter=BH subject=AS20-minimal3 date="03112025"
 ```
 
-This should take several minutes, but not an hour, to complete.
+This should take several minutes, but not many, to complete.
+
+Proceed prints a lot of logging information to the console.
+It also saves the same logging information, and more, in a local `proceed_out` subdirectory.
+Within there logs are organized by pipeline name, date, and step name.
+
+The pipeline writes results into `/vol/cortex/cd4/geffenlab/processed_data`.
+Within there outputs are organized by experimenter, subject, date, step name, SpikeGLX run, and probe.
 
 # View the results in Phy
 
@@ -107,7 +120,7 @@ python run_phy.py --experimenter BH --subject AS20-minimal3 --date "03112025"
 
 # Process full-sized sessions
 
-We can use the same pipeline to process a full session for AS.
+We can use the same pipeline to process full NIDQ sessions for AS.
 
 ```
 conda activate geffen-pipelines
@@ -125,7 +138,7 @@ python run_phy.py --experimenter AS --subject AS20 --date "03112025"
 python run_phy.py --experimenter AS --subject AS20 --AS40 "01062026"
 ```
 
-We can use a similar but different pipeline YAML to process OneBox-and-treadmill sessions for AD.
+We can use a similar but different pipeline YAML to process full OneBox-plus-treadmill sessions for AD.
 
 ```
 conda activate geffen-pipelines
