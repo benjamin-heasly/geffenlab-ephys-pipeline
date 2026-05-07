@@ -15,7 +15,7 @@ args:
   catgt_args: "-prb_fld -out_prb_fld -ap -ob -obx=0 -apfilter=butter,12,300,9000 -gblcar -gfix=0.40,0.10,0.02 -xd=1,0,13,6,500 -xa=1,0,0,0,0,0 -supercat_skip_ni_ob_bin"
   tprime_to_sync_pattern: "*/*.imec0.ap.*.txt"
   tprime_events_sync_pattern: "*.obx.xd_13_6_500.txt"
-  tprim_events_pattern: "*.obx.*.txt"
+  tprime_events_pattern: "*.obx.*.txt"
 
 prototype:
   user: $user
@@ -55,7 +55,7 @@ steps:
       $processed_data_root/$experimenter/$subject/$date/tprime,
       --to-sync-pattern, $tprime_to_sync_pattern,
       --events-sync-pattern, $tprime_events_sync_pattern,
-      --events-pattern, $tprim_events_pattern,
+      --events-pattern, $tprime_events_pattern,
       --probe-ids, imec0, imec1,
       --probe-sync-pattern, "*/*.ap.*.txt",
       --probe-spikes-pattern, "*/spike_times.npy",
