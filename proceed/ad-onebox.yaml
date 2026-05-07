@@ -34,6 +34,12 @@ steps:
       $processed_data_root/$experimenter/$subject/$date/catgt,
       $catgt_args
     ]
+    progress_file: $processed_data_root/$experimenter/$subject/$date/catgt/progress.txt
+    match_in:
+     - "ecephys/**/*.meta"
+    match_out:
+     - "catgt/**/*.meta"
+     - "catgt/**/*.txt"
 
   - name: kilosort4
     image: ghcr.io/benjamin-heasly/geffenlab-kilosort4:v0.0.3
@@ -45,6 +51,17 @@ steps:
       --kilosort-settings-pattern, "$raw_data_root/$experimenter/$subject/**/*-kilosort4-settings.json",
       --results-dir, $processed_data_root/$experimenter/$subject/$date/kilosort4,
     ]
+    progress_file: $processed_data_root/$experimenter/$subject/$date/kilosort4/progress.txt
+    match_in:
+     - "catgt/**/*.meta"
+    match_out:
+     - "kilosort4/**/params.py"
+     - "kilosort4/**/*.prb"
+     - "kilosort4/**/*.tsv"
+     - "kilosort4/**/*.png"
+     - "kilosort4/**/templates.npy"
+     - "kilosort4/**/spike_clusters.npy"
+     - "kilosort4/**/spike_times.npy"
 
   - name: tprime
     image: ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.17
@@ -61,6 +78,15 @@ steps:
       --probe-spikes-pattern, "*/spike_times.npy",
       --probe-params-pattern, "*/params.py"
     ]
+    progress_file: $processed_data_root/$experimenter/$subject/$date/tprime/progress.txt
+    match_in:
+     - "catgt/**/*.txt"
+     - "kilosort4/**/spike_times.npy"
+    match_out:
+     - "kilosort4/**/spike_times.npy"
+     - "kilosort4/**/spike_times_original.npy"
+     - "tprime/**/*.txt"
+     - "tprime/**/*.npy"
 
   - name: signal-alignment
     image: ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.17
@@ -76,6 +102,13 @@ steps:
       --channel-index, 7,
       --channel-name, treadmill
     ]
+    progress_file: $processed_data_root/$experimenter/$subject/$date/signal-alignment/progress.txt
+    match_in:
+     - "catgt/**/*.txt"
+     - "kilosort4/**/spike_times.npy"
+    match_out:
+     - "signal-alignment/**/*.txt"
+     - "signal-alignment/**/*.npy"
 
   - name: bombcell
     image: ghcr.io/benjamin-heasly/geffenlab-bombcell:v0.0.6
@@ -87,3 +120,15 @@ steps:
       --probe-params-pattern, "*/params.py",
       --bombcell-params-pattern, "**/*-bombcell-parameters.json"
     ]
+    progress_file: $processed_data_root/$experimenter/$subject/$date/bombcell/progress.txt
+    match_in:
+     - "kilosort4/**/params.py"
+     - "kilosort4/**/*.tsv"
+     - "kilosort4/**/*.png"
+     - "kilosort4/**/templates.npy"
+     - "kilosort4/**/spike_clusters.npy"
+     - "kilosort4/**/spike_times.npy"
+     - "kilosort4/**/spike_times_original.npy"
+    match_out:
+     - "kilosort4/**/*.tsv"
+     - "kilosort4/**/*.png"
