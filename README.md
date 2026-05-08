@@ -1,12 +1,6 @@
 # geffenlab-ephys-pipeline
 
-This repo contains [Nextflow](https://www.nextflow.io/) pipelines and Python scripts for processing Geffen lab ephys data.
-
-For each datset:
- - First we want to run the [aind-ephys-pipeline](https://github.com/AllenNeuralDynamics/aind-ephys-pipeline).  This will do spike sorting and automated curation based on quality metrics.
- - Then we can run the Geffen lab's [phy-export](./phy-export/phy-export.nf) pipeline.  This will convert the `aind-ephys-pipeline` results to the format expected by Phy, for Bombcell and manual curation.
-
-From there we'll have a few options for manual curation and further processing (work in progress...).
+This repo contains [Proceed](https://benjamin-heasly.github.io/proceed/) pipelines and Python scripts for processing Geffen lab ephys data.
 
 # Getting started on cortex
 
@@ -39,12 +33,6 @@ When you're done with local Phy curation, you can upload the curated data back t
 All of the steps in the Geffen lab ephys pipeline are all based on [Docker images](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/).  Each image contains custom Python code, bundled into a reproducible environment along with the Python runtime and other dependencies.
 
 Each of our Docker images lives in its own repostory, described below.
-
-## geffenlab-ecephys-phy-export
-
-The [geffenlab-ecephys-phy-export](https://github.com/benjamin-heasly/geffenlab-ecephys-phy-export) image has code to convert AIND ephys pipeline results to the Phy format, using [SpikeInterface](https://spikeinterface.readthedocs.io/en/stable/).
-
-It also creates a default `cluster_info.tsv`, which makes it optional to do manual curation via Phy.
 
 ## geffenlab-spikeglx-tools
 

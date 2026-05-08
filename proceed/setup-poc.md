@@ -55,7 +55,7 @@ We should be able to work in our home dirs.
 
 ```
 cd ~
-git clone https://github.com/benjamin-heasly/geffenlab-ephys-pipeline.git
+git clone https://github.com/geffenlab/geffenlab-ephys-pipeline.git
 ```
 
 # Conda environment

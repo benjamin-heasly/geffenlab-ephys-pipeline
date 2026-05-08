@@ -93,7 +93,7 @@ To create and activate the environment in WSL:
 
 ```
 cd ~
-git clone https://github.com/benjamin-heasly/geffenlab-ephys-pipeline.git
+git clone https://github.com/geffenlab/geffenlab-ephys-pipeline.git
 
 cd ~/geffenlab-ephys-pipeline
 conda env create -f geffen-pipelines.yml
