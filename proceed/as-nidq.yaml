@@ -123,7 +123,7 @@ steps:
      - "kilosort4/**/*.png"
 
   - name: summary
-    image: ghcr.io/benjamin-heasly/geffenlab-data-summary:v0.0.2
+    image: ghcr.io/benjamin-heasly/geffenlab-data-summary:v0.0.3
     command: [
       --raw-data-root, $raw_data_root,
       --processed-data-root, $processed_data_root,
@@ -132,6 +132,7 @@ steps:
       --subject, $subject,
       --date, $date,
       --event-times-pattern, $summary_events_pattern,
+      --session-key-words, testing, training,
       --stim-edges, "-0.5", "1.0", "0.02",
       --resp-edges, "-1.0", "1.0", "0.02",
       --interneuron-search,
