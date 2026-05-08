@@ -27,7 +27,7 @@ prototype:
 steps:
 
   - name: catgt
-    image: ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.17
+    image: ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.18
     command: [
       /opt/code/catgt.py,
       $raw_data_root/$experimenter/$subject/$date/ecephys/,
@@ -64,7 +64,7 @@ steps:
      - "kilosort4/**/spike_times.npy"
 
   - name: tprime
-    image: ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.17
+    image: ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.18
     command: [
       /opt/code/tprime.py,
       $processed_data_root/$experimenter/$subject/$date/catgt,
@@ -89,7 +89,7 @@ steps:
      - "tprime/**/*.npy"
 
   - name: signal-alignment
-    image: ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.17
+    image: ghcr.io/benjamin-heasly/geffenlab-spikeglx-tools:v0.0.18
     command: [
       /opt/code/signal_alignment.py,
       $raw_data_root/$experimenter/$subject/$date/ecephys/,

@@ -22,7 +22,7 @@ List the currently installed Docker images.
 docker images
 ```
 
-We want these images:
+We want these images or later:
 ```
 IMAGE                                                      ID             DISK USAGE   CONTENT SIZE
 ghcr.io/benjamin-heasly/geffenlab-bombcell:v0.0.6          9f3b4dc71b37       3.08GB             0B
