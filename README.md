@@ -1,51 +1,50 @@
 # geffenlab-ephys-pipeline
 
-This repo contains [Proceed](https://benjamin-heasly.github.io/proceed/) pipelines and Python scripts for processing Geffen lab ephys data.
+This repository contains [Proceed](https://benjamin-heasly.github.io/proceed/) [pipelines](./proceed/) and Python [scripts](./scripts/) for processing Geffen lab ephys data.
 
-# Getting started on cortex
+This repository goes with several other repositories that define inividual processing steps and Docker images:
+ - [geffenlab-spikeglx-tools](https://github.com/benjamin-heasly/geffenlab-spikeglx-tools): CatGT, TPrime, Python scripts
+ - [geffenlab-kilosort4](https://github.com/benjamin-heasly/geffenlab-kilosort4): Kilosort4, NVIDIA and CUDA dependencies, ProbeInterface
+ - [geffenlab-bombcell](https://github.com/benjamin-heasly/geffenlab-bombcell): Bombcell
+ - [geffenlab-phy-desktop](https://github.com/benjamin-heasly/geffenlab-phy-desktop): interactive Phy environment
+ - [geffenlab-data-summary](https://github.com/benjamin-heasly/geffenlab-data-summary): population analysis data summary and plots
+ - [geffenlab-minimal-data](https://github.com/benjamin-heasly/geffenlab-minimal-data): utilities for preparing small test datasets
 
-First, you should go through our [cortex-user-setup.md](./docs/cortex-user-setup.md) docs, to get your local and cortex environments set up.
+# Getting started
+
+To set up your local and cortex environment for running pipelines, see [cortex-user-setup.md](./docs/cortex-user-setup.md).
 
 # Running pipelines
 
-Here are docs for several steps that should be working so far:
- - Upload session data to cortex: [cortex-upload-data.md](./docs/upload-data.md)
- - Run the AIND sorting pipeline: [run-aind-ephys-pipeline.md](./docs/run-aind-ephys-pipeline.md)
- - Run the phy-export pipeline: [run-phy-export.md](./docs/run-phy-export.md)
+Here's the general, intended workflow along with relevant [docs/](./docs/).
 
-The steps above will save sorting results in Phy format, on cortex.
-From there we have some options.
+## Intended workflow
 
-You can do Phy curation on cortex, via remote desktop.  This should work, but might be slow (for now):
- - Phy curation on cortex: [phy-on-cortex-remote-desktop](./docs/run-phy.md#phy-on-cortex-remote-desktop)
+### upload data to cortex
+Behavioral and neural data would be created on a rig machine.  See [upload-data.md](./docs/upload-data.md) to locate data for each session and upload to cortex using standardized directory structure and file permissions.
 
-When you're done with Phy on cortex (or if you skip that step) you can download results from cortex:
- - Download results from cortex: [cortex-download-results.md](./docs/download-results.md)
+### run a pipeline on cortex
+On cortex process data for each session using the `proceed` command and a [pipeline YAML file](./proceed/).  See [pipeline-test-run.md](./docs/pipeline-test-run.md) and [setup-poc.md](./proceed/setup-poc.md).  WIP -- these should be combined.
 
-You can also to the Phy curation locally, using the results you downloaded:
- - Local Phy curation: [phy-local-with-data-download](./docs/run-phy.md#phy-local-with-data-download)
+### configure Kilosort4 and Bombcell with JSON
+Both Kilosort4 and Bombcell accept dozens of configuration options / parameters that guide their behavior.  You can specify these per probe, with JSON files.  If you locate the JSON files near the raw data and name them according to a convention, then the pipeline will automatically apply these to the relevent steps.  See [pipeline-config.md](./docs/pipeline-config.md).
 
-When you're done with local Phy curation, you can upload the curated data back to cortex:
- - Upload analysys back to cortex: [upload-analysis.md](./docs/upload-analysis.md)
+### run Phy on cortex
+The pipieline will run Kilosort 4 and Bombcell.  You can view and revise the results with Phy, see [run-phy.md](./docs/run-phy.md).
 
-# Pipeline steps and Docker images 
+### re-run pipeline steps on cortex
+You might need to re-run one or more pipeline steps, for example after manual curation.  See [reprocessing.md](./docs/reprocessing.md).  WIP -- this doesn't exist yet.
 
-All of the steps in the Geffen lab ephys pipeline are all based on [Docker images](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/).  Each image contains custom Python code, bundled into a reproducible environment along with the Python runtime and other dependencies.
+### download `analysis` results locally
+Pipelines deal with large files of raw data and intermediate processing results.  They should produce relatively small results in an `analysis` subdirectory.  See [download-results.md](./docs/download-results.md) to download the `analysis` subdirectory for a session.
 
-Each of our Docker images lives in its own repostory, described below.
+### archive data from cortex
+If you decide to archive a dataset, you can copy the raw behavioral and neural data to Amazon S3.  You can optionally delete these from cortex as well.  See [archive-data.md](./docs/archive-data.md).
 
-## geffenlab-spikeglx-tools
+# Docker images
 
-The [geffenlab-spikeglx-tools](https://github.com/benjamin-heasly/geffenlab-spikeglx-tools) image has tools for processing SpikeGLX outputs, like [CatGT](https://billkarsh.github.io/SpikeGLX/#catgt) and [TPrime](https://billkarsh.github.io/SpikeGLX/#tprime).
+Our pipeline steps are based on [Docker images](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/).  Each image contains custom Python code along with the Python runtime and other dependencies, bundled into a portable, reproducible environment.
 
-It has Python wrappers for calling these tools in a more familiar Python style.
+The repositories mentioned at the top of this page are responsible for defining and producing these Docker images.  See the readme for each repository for details like where to find the Docker images on Github, and how to create new versions.
 
-This repo also has custom Python code for aligning OneBox continuous signals to the canonical clock for a session.  The is similar to what TPrime does for discrete events, but for continuous signals (eg treadmill).
-
-## geffenlab-phy-desktop
-
-The [geffenlab-phy-desktop](https://github.com/benjamin-heasly/geffenlab-phy-desktop) image has a [Phy](https://phy.readthedocs.io/en/latest/) installation that we can use for interactive curation.
-
-## geffenlab-bombcell
-
-The [geffenlab-bombcell](https://github.com/benjamin-heasly/geffenlab-bombcell) has the Python version of [Bombcell](https://github.com/Julie-Fabre/bombcell/tree/main/py_bombcell) for automating curation of spike sorting results.
+When running pipelines we download relevant Docker images and run commands within Docker containers.  Some Docker images are large, multiple GB.  See [docker-images.md](./docs/docker-images.md) for tips on how to manage Docker images and disk usage.
