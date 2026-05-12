@@ -7,16 +7,16 @@ This doc should help you configure your local lab machine and your cortex user a
 Our workflow has a few steps to it which will run from local lab machines or cortex:
  - Uploading data to cortex runs from a local lab machine, using a Python script, from the local terminal.
  - Pipeline processing runs on cortex using the `proceed` command in the terminal.
- - Manual cluser curation with Phy can run on cortex or locally, after downloading some pipeline results.
- - Downloading logs and results runs on a local lab machine, using a Python script, from the local terminal.
+ - Manual cluser curation with Phy runs on cortex using the [run_phy.py](../scripts/run_phy.py) Python script.
+ - Downloading results runs on a local lab machine, using a Python script, from the local terminal.
 
 The steps below should help you set up both your local lab machine and your Cortex user account.
 
 # Your local lab machine
 
-Let's set up your local lab machine for uploading data and downloading logs and pipeline results.
+Let's set up your local lab machine for uploading raw data and downloading pipeline results.
 These instructions assume you're using Windows and WSL (Linux that runs within Windows).
-Regular Linux and macOS should work too, but would require some adjustments to these steps.
+Regular Linux and macOS should work too, but might require small adjustments to these steps.
 
 ## local WSL
 
@@ -292,11 +292,14 @@ It's the same environment we used above, for your local lab machine.
 To create and activate the environment on cortex:
 
 ```
-cd /geffenlab-ephys-pipeline
+cd ~
+git clone https://github.com/geffenlab/geffenlab-ephys-pipeline.git
+
+cd ~/geffenlab-ephys-pipeline
 conda env create -f geffen-pipelines.yml
 ```
 
-As above, verity expected Python and Proceed versions.
+As above, verify expected Python and Proceed versions.
 
 ```
 conda activate geffen-pipelines
