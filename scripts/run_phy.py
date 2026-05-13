@@ -44,7 +44,7 @@ def run_phy_in_docker(
         gpus = []
 
     if x11:
-        x11_args = ["--volume", "/tmp/.X11-unix:/tmp/.X11-unix", "--env", "DISPLAY"]
+        x11_args = ["--volume", "/tmp/.X11-unix:/tmp/.X11-unix", "--env", "DISPLAY", "--net", "host"]
         if "XAUTHORITY" in environ:
             x_authority_host = Path(environ["XAUTHORITY"]).absolute().as_posix()
             x_authority_container = "/var/.Xauthority"
