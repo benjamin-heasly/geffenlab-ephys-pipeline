@@ -3,12 +3,12 @@
 This repository contains [Proceed](https://benjamin-heasly.github.io/proceed/) [pipelines](./proceed/) and Python [scripts](./scripts/) for processing Geffen lab ephys data.
 
 This repository goes with several other repositories that define inividual processing steps and Docker images:
+
  - [geffenlab-spikeglx-tools](https://github.com/benjamin-heasly/geffenlab-spikeglx-tools): CatGT, TPrime, Python scripts
  - [geffenlab-kilosort4](https://github.com/benjamin-heasly/geffenlab-kilosort4): Kilosort4, NVIDIA and CUDA dependencies, ProbeInterface
  - [geffenlab-bombcell](https://github.com/benjamin-heasly/geffenlab-bombcell): Bombcell
  - [geffenlab-phy-desktop](https://github.com/benjamin-heasly/geffenlab-phy-desktop): interactive Phy environment
  - [geffenlab-data-summary](https://github.com/benjamin-heasly/geffenlab-data-summary): population analysis data summary and plots
- - [geffenlab-minimal-data](https://github.com/benjamin-heasly/geffenlab-minimal-data): utilities for preparing small test datasets
 
 # Getting started
 
@@ -48,3 +48,12 @@ Our pipeline steps are based on [Docker images](https://docs.docker.com/get-star
 The repositories mentioned at the top of this page are responsible for defining and producing these Docker images.  See the readme for each repository for details like where to find the Docker images on Github, and how to create new versions.
 
 When running pipelines we download relevant Docker images and run commands within Docker containers.  Some Docker images are large, multiple GB.  See [docker-images.md](./docs/docker-images.md) for tips on how to manage Docker images and disk usage.
+
+# Minimal testing data
+
+We have one more repository related Geffen lab pipelines:
+
+ - [geffenlab-minimal-data](https://github.com/benjamin-heasly/geffenlab-minimal-data): utilities for preparing small test datasets
+
+This repository has scripts for creating reduced-size test data, by extracting a few trials from a larger, real dataset.
+Having a smaller dataset speeds up testing, debugging, and interating on code changes.
