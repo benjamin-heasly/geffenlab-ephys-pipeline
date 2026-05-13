@@ -46,7 +46,12 @@ def run_phy_in_docker(
     if x11:
         x11_args = ["--volume", "/tmp/.X11-unix:/tmp/.X11-unix", "--env", "DISPLAY", "--net", "host"]
         if "XAUTHORITY" in environ:
-            x_authority_host = Path(environ["XAUTHORITY"]).absolute().as_posix()
+            x_authority_path = Path(environ["XAUTHORITY"])
+        else:
+            x_authority_path = Path("~/.Xauthority").expanduser()
+
+        if x_authority_path.exists():
+            x_authority_host = x_authority_path.absolute().as_posix()
             x_authority_container = "/var/.Xauthority"
             x11_args += ["--volume", f"{x_authority_host}:{x_authority_container}", "--env", f"XAUTHORITY={x_authority_container}"]
     else:
