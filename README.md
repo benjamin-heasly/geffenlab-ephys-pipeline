@@ -24,7 +24,7 @@ Here's the general, intended workflow along with relevant [docs/](./docs/).
 See [upload-data.md](./docs/upload-data.md) to locate behavioral and neural data on a rig machine, for a given subject and date, and upload to cortex using standardized directory structure and file permissions.
 
 ### run a pipeline on cortex
-Process data for each session using the `proceed` command and a [pipeline YAML file](./proceed/).  See [pipeline-test-run.md](./docs/pipeline-test-run.md) and [setup-poc.md](./proceed/setup-poc.md).  WIP -- these should be combined.
+Process data for each session using the `proceed` command and one of our [pipeline YAML files](./proceed/).  See [run-proceed.md](./docs/run-proceed.md).
 
 ### configure Kilosort4 and Bombcell with JSON
 Both Kilosort4 and Bombcell accept dozens of configuration options / parameters that guide their behavior.  You can specify these, per probe, using JSON files and a naming convention.  See [pipeline-config.md](./docs/pipeline-config.md).
@@ -33,7 +33,7 @@ Both Kilosort4 and Bombcell accept dozens of configuration options / parameters 
 The pipieline will run Kilosort 4 and Bombcell.  You can do interactive review and curation with Phy, see [run-phy.md](./docs/run-phy.md).
 
 ### re-run pipeline steps on cortex
-You might need to re-run one or more pipeline steps, for example after manual curation.  See [reprocessing.md](./docs/reprocessing.md).  WIP -- this doesn't exist yet.
+You might need to re-run one or more pipeline steps, for example after manual curation.  See [reprocessing-a-datset](./docs/run-proceed.md#reprocessing-a-datset).
 
 ### download `analysis` results locally
 Pipelines deal with large raw data files and intermediate processing results.  They should produce relatively small results into an `analysis` subdirectory.  See [download-results.md](./docs/download-results.md) to download the `analysis` subdirectory for a subject and date.
