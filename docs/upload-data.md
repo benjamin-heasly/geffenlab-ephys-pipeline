@@ -127,9 +127,9 @@ Password for remote user ben:
 
 ## Results overview
 
-When the script reports `OK`, then all the matching behavior and ephys files should be uploaded to cortex.
+When the script reports `OK`, then all the matching raw data files should be uploaded to cortex.
 
-The uploaded data will use a standard directory layout based on the experimenter, subject, date, and data modality:
+The uploaded data will use a standard directory layout based on the experimenter, subject, date, and data modality (`behavior` or `ecephys`):
 
 ![Ubuntu Files view of a raw_data/ directory containing behavioral and neural data](./cortex-data.png)
 
@@ -154,11 +154,13 @@ python ~/geffenlab-ephys-pipeline/scripts/upload_data.py --help
 
 For the `--date` command line option, or when prompted interactively for session dates, you can provide one or more session dates separated by spaces for the script to search and upload.
 
-For example:
+For example with command line args:
 
 ```
 python ~/geffenlab-ephys-pipeline/scripts/upload_data.py --date 03112025 03122025 03132025
 ```
+
+Or with the interactive prompt:
 
 ```
 Session date MMDDYYYY (multiple dates may be separated by spaces): 03112025 03122025 03132025
@@ -166,7 +168,7 @@ Session date MMDDYYYY (multiple dates may be separated by spaces): 03112025 0312
 
 ## Pattern matching for finding local files to upload
 
-The script uses pattern matching to locate files to upload.  By default it will look for behavior files that end with `.txt` and `.mat`.  It will look for SpikeGlx run directories with files ending like `.nidq.meta` or `.obx.bin`, and with dates formatted like `MMDDYYYY` or `YYMMDD`.
+The script uses pattern matching to locate files to upload.  By default it will look for behavior files that end with `.txt` and `.mat`.  It will look for SpikeGlx run directories that contain files ending like `.nidq.meta` or `.obx.bin`, and with dates formatted like `MMDDYYYY` or `YYMMDD`.
 
 You can supply alternative patterns on the command line.  Here are the relevant parameters and their default values:
 
