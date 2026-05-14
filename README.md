@@ -36,7 +36,7 @@ The pipieline will run Kilosort 4 and Bombcell.  You can do interactive review a
 You might need to re-run one or more pipeline steps, for example after manual curation.  See [reprocessing-a-datset](./docs/run-proceed.md#reprocessing-a-datset).
 
 ### download `analysis` results locally
-Pipelines deal with large raw data files and intermediate processing results.  They should produce relatively small results into an `analysis` subdirectory.  See [download-results.md](./docs/download-results.md) to download the `analysis` subdirectory for a subject and date.
+Pipelines deal with large raw data files and intermediate processing results.  They should produce relatively small results into an `analysis` subdirectory.  See [download-analysis.md](./docs/download-analysis.md) to download the `analysis` subdirectory for a subject and date.
 
 ### archive data from cortex
 If you decide to archive a dataset, you can copy the raw behavioral and neural data to Amazon S3.  You can optionally delete these from cortex as well.  See [archive-data.md](./docs/archive-data.md).

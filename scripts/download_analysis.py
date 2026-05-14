@@ -70,7 +70,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--local-root", "-L",
         type=str,
         help="Local root directory to receive donwloads. (default: %(default)s)",
-        default="./pipeline-results/"
+        default="./pipeline-analysis/"
     )
     parser.add_argument(
         "--remote-host", "-r",
