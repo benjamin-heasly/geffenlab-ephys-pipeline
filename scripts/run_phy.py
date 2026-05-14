@@ -1,3 +1,28 @@
+"""
+This script is for running the interactive Phy GUI from a Docker image.
+
+It should support several usage scenarios lile:
+ - running on cortex via remote desktop
+ - running on cortex via Xpra
+ - running locally
+
+It retrieves Phy as a Docker image, in which Phy and its dependencies are installed.
+The default image is maintained here: https://github.com/benjamin-heasly/geffenlab-phy-desktop
+
+It attempts to configure GPU access and X11 display access for the Docker container.
+
+For configuration options:
+
+    conda activate geffen-pipelines
+    python python run_phy.py --help
+
+See also:
+
+    docs/run-phy.md
+"""
+
+
+
 import sys
 from os import getuid, getgid, environ
 from argparse import ArgumentParser, BooleanOptionalAction
@@ -34,15 +59,17 @@ def run_phy_in_docker(
     user: str,
     params_py: Path
 ) -> int:
+    """Launch Phy via Docker and make the given params_py available inside the container."""
     logging.info("Starting Phy run.\n")
 
-    phy_dir = params_py.parent.absolute().as_posix()
-
+    # Configure GPU access for the Docker container.
     if gpu_device and gpu_device != 'none':
         gpus = ["--gpus", f"'device=${gpu_device}'"]
     else:
         gpus = []
 
+    # Configure X11 display access for the Docker container.
+    # This should direct, local display access as well as X display forwarding via Xpra or "ssh -X".
     if x11:
         x11_args = ["--volume", "/tmp/.X11-unix:/tmp/.X11-unix", "--env", "DISPLAY", "--net", "host"]
         if "XAUTHORITY" in environ:
@@ -56,7 +83,8 @@ def run_phy_in_docker(
             x11_args += ["--volume", f"{x_authority_host}:{x_authority_container}", "--env", f"XAUTHORITY={x_authority_container}"]
     else:
         x11_args = []
-    
+
+    # Configure which user the container will run as -- this is to avoid creating files as root.
     if not user:
         user_args = []
     elif user == 'self':
@@ -64,6 +92,8 @@ def run_phy_in_docker(
     else:
         user_args = ["--user", user]
 
+    # Build up a command line including "docker run" and arguments for launching Phy inside the container.
+    phy_dir = params_py.parent.absolute().as_posix()
     step_args = [
         "--data-root", phy_dir,
         "--params-py-pattern", params_py.name,
@@ -80,6 +110,7 @@ def run_phy_in_docker(
 
     logging.info(f"Running Phy with Docker command: {docker_run_command}.")
 
+    # Invoke Docker and Phy using the command we just built up.
     process = subprocess.Popen(
         docker_run_command,
         stdout=subprocess.PIPE,
@@ -88,10 +119,11 @@ def run_phy_in_docker(
         bufsize=1
     )
 
-    # Tail the container output as it comes.
+    # Read each line of ouptut from Phy as it comes, log it to the console and a log file.
     for line in process.stdout:
         logging.info(line.strip())
 
+    # Check the exit code from Phy when the container exits.
     exit_code = process.wait()
     if exit_code == 0:
         logging.info(f"OK\n")
