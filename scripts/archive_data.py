@@ -17,6 +17,7 @@ See also:
     docs/archive-data.md
 """
 
+
 import sys
 from os import environ
 from argparse import ArgumentParser, BooleanOptionalAction
@@ -150,14 +151,14 @@ def run_main(
         logging.warning("No files to archive.")
         return
 
-    # List files before uploading.
+    # List files before archiving.
     logging.info(f"Planning to archive {len(to_archive)} files within {subject_path}:")
     for (raw_relative, tags) in to_archive:
         full_path = Path(raw_data_path, raw_relative)
         subject_relative = full_path.relative_to(subject_path)
         logging.info(f"  {subject_relative}")
 
-    # Confirm before uploading.
+    # Confirm before archiving.
     go_ahead = input(f"Do you want to archive these {len(to_archive)} files?  Type 'yes' to proceed: ").strip()
     if go_ahead != "yes":
         logging.warning("Stopping without to_archive files.")

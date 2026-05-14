@@ -22,7 +22,6 @@ See also:
 """
 
 
-
 import sys
 from os import getuid, getgid, environ
 from argparse import ArgumentParser, BooleanOptionalAction

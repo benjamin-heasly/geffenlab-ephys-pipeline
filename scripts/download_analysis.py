@@ -15,6 +15,7 @@ See also:
     docs/download-analysis.md
 """
 
+
 import sys
 from argparse import ArgumentParser
 from typing import Optional, Sequence

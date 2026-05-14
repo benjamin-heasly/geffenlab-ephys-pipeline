@@ -1,3 +1,23 @@
+"""
+This script is for uploading raw data from a rig machine to cortex.
+
+It searches a local directories for behavior and/or ecephys files for a given experimenter, subject, and date.
+It uses several glob patterns to match files and directories of interest.
+It can apply experimenter-, session-, and date-specific placeholders to the glob patterns.
+It copies files found to cortex, using a standard directory structure expected by pipelines.
+It sets file permissions on the uploaded files, so only geffenlab members can read and write.
+
+For configuration options:
+
+    conda activate geffen-pipelines
+    python upload_data.py --help
+
+See also:
+
+    docs/upload-data.md
+"""
+
+
 import sys
 from argparse import ArgumentParser
 from typing import Optional, Sequence
@@ -11,6 +31,7 @@ from fabric import Connection
 
 
 def set_up_logging():
+    """Enable console logging."""
     logging.basicConfig(
         stream=sys.stdout,
         level=logging.INFO,
@@ -21,7 +42,7 @@ def set_up_logging():
 def walk_flat(
     path: Path
 ) -> list[Path]:
-    """walk() the given path and return a flat list of regular files."""
+    """Find regular files within the given path, recursively."""
     flat_list = []
     for parent, dirs, files in path.walk():
         for file in files:
@@ -70,9 +91,14 @@ def run_main(
     group_permissions: str,
     other_permissions: str,
 ):
+    """
+    Search the given behavior_path and ephys_path for files that match patterns of interest, upload them to cortex.
+    """
+
     # Collect files to upload as a list of (source_root, source_relative, destination_relative, session_mmddyyyy)
     to_upload = []
 
+    # Look for one or more session dates for the same experimenter and subject.
     for session_date in session_dates:
         session_mmddyyyy = session_date.strftime("%m%d%Y")
         logging.info(f"Looking for session date: {session_date} AKA {session_mmddyyyy}")
@@ -102,6 +128,7 @@ def run_main(
             destination_relative = Path(experimenter, subject, session_mmddyyyy, "behavior", mat_match.name)
             to_upload.append((behavior_path, mat_relative, destination_relative, session_mmddyyyy))
 
+        # Locate behavior .hdf5 within behavior_path.
         logging.info(f"Searching local behavior_root for .hdf5 like: {behavior_hdf5_pattern}")
         for hdf5_match in behavior_path.glob(behavior_hdf5_pattern):
             hdf5_relative = hdf5_match.relative_to(behavior_path)
@@ -153,6 +180,7 @@ def run_main(
                 )
                 to_upload.append((ephys_path, openephys_relative, destination_relative, session_mmddyyyy))
 
+    # Optionally filter files that were found, using a given qualifier to match file names.
     if qualifier:
         logging.info(f"Keeping only files that match qualifier: {qualifier}")
         to_upload = [item for item in to_upload if qualifier in item[1].as_posix()]
@@ -161,11 +189,12 @@ def run_main(
         logging.warning("No files to upload.")
         return
 
+    # List files before uploading.
     logging.info(f"Planning to create {len(to_upload)} files in remote dir {raw_data_path}:")
     for source_root, source_relative, destination_relative, session_mmddyyyy in to_upload:
         logging.info(f"  {destination_relative}")
 
-    # Confirm before uploading
+    # Confirm before uploading.
     go_ahead = input(f"Do you want to upload these {len(to_upload)} files?  Type 'yes' to proceed: ").strip()
     if go_ahead != "yes":
         logging.warning("Stopping without uploading files.")
