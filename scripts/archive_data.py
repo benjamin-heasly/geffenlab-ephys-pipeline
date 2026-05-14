@@ -1,3 +1,22 @@
+"""
+This script is for archiving raw session data from cortex to the lab's S3 bucket.
+
+It searches on cortex within the lab's raw_data directory (/vol/cortex/cd5/geffenlab/raw_data/),
+to find data for a given experimenter, subject, and date.
+It copies the session data to S3, using the lab's standard directory layout.
+It adds tags to uploaded data including the year and a given project_name.
+It looks for UPenn/AWS service account credentials that are already installed on cortex.
+
+For configuration options:
+
+    conda activate geffen-pipelines
+    python archive_data.py --help
+
+See also:
+
+    docs/archive-data.md
+"""
+
 import sys
 from os import environ
 from argparse import ArgumentParser, BooleanOptionalAction
@@ -11,6 +30,7 @@ import boto3
 
 
 def set_up_logging():
+    """Enable console logging."""
     logging.basicConfig(
         stream=sys.stdout,
         level=logging.INFO,
@@ -21,7 +41,7 @@ def set_up_logging():
 def walk_flat(
     path: Path
 ) -> list[Path]:
-    """walk() the given path and return a flat list of regular files."""
+    """Find regular files within the given path, recursively."""
     flat_list = []
     for parent, dirs, files in path.walk():
         for file in files:
@@ -39,6 +59,11 @@ def archive(
     local_relative: Path,
     dry_run: bool
 ):
+    """
+    Archive the file at the given {local_root}/{local_relative}, to S3 at {bucket_name}/{bucket_path_prefix}/{local_relative}.
+
+    Add the given tags to the file in S3.
+    """
     local_path = Path(local_root, local_relative)
     s3_key = f"{bucket_path_prefix}/{local_relative}"
     s3_url = f"s3://{bucket_name}/{s3_key}"
@@ -79,15 +104,21 @@ def run_main(
     delete: bool,
     dry_run: bool
 ):
+    """
+    Search the given {raw_data_path}/{experimenter}/{subject}/{session_date(s)} for files to archive, and optionally delete.
+    """
     # Collect files to archive, relative to the raw_data_path.
     to_archive = []
 
+    # Look for files by experimenter and subject.
     subject_path = session_path = Path(raw_data_path, experimenter, subject)
 
+    # Look for one or more session dates for the same experimenter and subject.
     for session_date in session_dates:
         session_mmddyyyy = session_date.strftime("%m%d%Y")
         logging.info(f"Looking for session date: {session_date} AKA {session_mmddyyyy}")
 
+        # Add tags to the uploaded data, especially the year and the given project_name.
         tags = {
             "experimenter": experimenter,
             "subject": subject,
@@ -98,6 +129,7 @@ def run_main(
         }
         logging.info(f"Using these tags for this date: {tags}")
 
+        # Locate multiple files for this session.
         session_path = Path(subject_path, session_mmddyyyy)
         session_files = walk_flat(session_path)
         logging.info(f"Found {len(session_files)} files within: {session_path}")
@@ -105,6 +137,7 @@ def run_main(
             raw_relative = file.relative_to(raw_data_path)
             to_archive.append((raw_relative, tags))
 
+    # Optionally filter files that were found, using a given qualifier to match file names.
     if qualifier:
         logging.info(f"Keeping only files that match qualifier: {qualifier}")
         to_archive = [
@@ -117,13 +150,14 @@ def run_main(
         logging.warning("No files to archive.")
         return
 
+    # List files before uploading.
     logging.info(f"Planning to archive {len(to_archive)} files within {subject_path}:")
     for (raw_relative, tags) in to_archive:
         full_path = Path(raw_data_path, raw_relative)
         subject_relative = full_path.relative_to(subject_path)
         logging.info(f"  {subject_relative}")
 
-    # Confirm before uploading
+    # Confirm before uploading.
     go_ahead = input(f"Do you want to archive these {len(to_archive)} files?  Type 'yes' to proceed: ").strip()
     if go_ahead != "yes":
         logging.warning("Stopping without to_archive files.")
@@ -132,12 +166,15 @@ def run_main(
     logging.warning("Proceeding to archive files.")
 
     # The boto3 client should find env vars we set earlier: AWS_SHARED_CREDENTIALS_FILE and AWS_CONFIG_FILE.
+    # These credentials should already be stored on cortex.
+    # See also: docs/cortex-user-setup.md, "AWS account setup"
     s3_client = boto3.client("s3")
     for (raw_relative, tags) in to_archive:
         archive(s3_client, bucket, bucket_path_prefix, storage_class, tags, raw_data_path, raw_relative, dry_run)
 
     logging.info(f"Archived {len(to_archive)} files")
 
+    # Only delete files if the user explicitly asked to!
     if delete:
         logging.warning("Proceeding to delete local files.")
         for (raw_relative, tags) in to_archive:
