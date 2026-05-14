@@ -253,7 +253,7 @@ You can close the window by clicking the `x` any time.
 Docker images can take up a lot of space and consume your cortex home directory quota.
 See [docker-images.md](./docker-images.md) for tips on managing Docker images and home directory usage.
 
-[docker-images.md#moving-the-docker-data-directory](./docker-images.md#moving-the-docker-data-directory) has instructions for moving Docker image storage out of your home directory, into `/vol/cortex/cd4/geffenlab`.  You can do this now or wait until quota becomes a problem.
+[docker-images.md#moving-the-docker-data-directory](./docker-images.md#moving-the-docker-data-directory) has instructions for moving Docker image storage out of your home directory, into `/vol/cortex/cd5/geffenlab`.  You can do this now or wait until quota becomes a problem.
 
 ## cortex Conda
 
@@ -320,12 +320,12 @@ You don't need to run the steps below yourself, but we do want the lab to have t
 
 ## data directories
 
-The Geffen lab is assigned the following storage directory on cortex: `/vol/cortex/cd4/geffenlab/`.
+The Geffen lab is assigned the following storage directory on cortex: `/vol/cortex/cd5/geffenlab/`.
 
 We created several subdirectories to organized things:
- - `/vol/cortex/cd4/geffenlab/raw_data`: raw nerual and behavioral data uploaded from lab machines
- - `/vol/cortex/cd4/geffenlab/processed_data`: intermediate pipeline outputs
- - `/vol/cortex/cd4/geffenlab/analysis`: final pipeline outputs to be downloaded for further analysis
+ - `/vol/cortex/cd5/geffenlab/raw_data`: raw nerual and behavioral data uploaded from lab machines
+ - `/vol/cortex/cd5/geffenlab/processed_data`: intermediate pipeline outputs
+ - `/vol/cortex/cd5/geffenlab/analysis`: final pipeline outputs to be downloaded for further analysis
 
 ## AWS account setup
 
@@ -360,6 +360,6 @@ $ aws sts get-caller-identity
 ```
 
 We copied the access key to a location on cortex where users in the `geffenlab` group can access it:
- - `cp -r ~/.aws/ /vol/cortex/cd4/geffenlab/`
- - `chmod g+r /vol/cortex/cd4/geffenlab/.aws/credentials`
- - `chmod g+r /vol/cortex/cd4/geffenlab/.aws/config`
+ - `cp -r ~/.aws/ /vol/cortex/cd5/geffenlab/`
+ - `chmod g+r /vol/cortex/cd5/geffenlab/.aws/credentials`
+ - `chmod g+r /vol/cortex/cd5/geffenlab/.aws/config`

@@ -11,7 +11,7 @@ This repo has a Python script [archive.py](../scripts/archive_data.py) that shou
 Connect to cortex via remote desktop, open a terminal window, and run this script:
 
 ```
-cd /vol/cortex/cd4/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
+cd /vol/cortex/cd5/geffenlab/nextflow/geffenlab-ephys-pipeline/scripts
 conda activate geffen-pipelines
 
 python archive_data.py --delete
@@ -29,7 +29,7 @@ For example:
 ```
 $ python archive_data.py --delete
 
-2026-03-12 11:26:31,382 [INFO] Archiving files within raw data root: /vol/cortex/cd4/geffenlab/raw_data
+2026-03-12 11:26:31,382 [INFO] Archiving files within raw data root: /vol/cortex/cd5/geffenlab/raw_data
 Experimenter initials: BH
 2026-03-12 11:26:33,557 [INFO] Archiving files for experimenter: BH
 Subject ID: AS20-tags-test
@@ -43,8 +43,8 @@ Project name (for tag 'project_name' on stored objects): tags-test
 2026-03-12 11:27:04,762 [INFO] Using S3 bucket: upenn-research.geffen-lab-01.us-east-1
 2026-03-12 11:27:04,762 [INFO] Using S3 bucket path prefix: cortex/raw_data
 2026-03-12 11:27:04,762 [INFO] Using S3 storage class: DEEP_ARCHIVE
-2026-03-12 11:27:04,762 [INFO] Using AWS credentials from: /vol/cortex/cd4/geffenlab/.aws/credentials
-2026-03-12 11:27:04,762 [INFO] Using AWS config from: /vol/cortex/cd4/geffenlab/.aws/config
+2026-03-12 11:27:04,762 [INFO] Using AWS credentials from: /vol/cortex/cd5/geffenlab/.aws/credentials
+2026-03-12 11:27:04,762 [INFO] Using AWS config from: /vol/cortex/cd5/geffenlab/.aws/config
 2026-03-12 11:27:04,762 [WARNING] Deleting local files after archiving.
 ```
 
@@ -57,8 +57,8 @@ Before archiving, the script will show which files it plans to archive to S3, al
 ```
 2026-03-12 11:27:04,762 [INFO] Looking for session date: 2025-03-11 AKA 03112025
 2026-03-12 11:27:04,762 [INFO] Using these tags for this date: {'experimenter': 'BH', 'subject': 'AS20-tags-test', 'year': '2025', 'month': '03', 'day': '11', 'project_name': 'tags-test'}
-2026-03-12 11:27:04,762 [INFO] Found 10 files within: /vol/cortex/cd4/geffenlab/raw_data/BH/AS20-tags-test/03112025
-2026-03-12 11:27:04,763 [INFO] Planning to archive 10 files within /vol/cortex/cd4/geffenlab/raw_data/BH/AS20-tags-test:
+2026-03-12 11:27:04,762 [INFO] Found 10 files within: /vol/cortex/cd5/geffenlab/raw_data/BH/AS20-tags-test/03112025
+2026-03-12 11:27:04,763 [INFO] Planning to archive 10 files within /vol/cortex/cd5/geffenlab/raw_data/BH/AS20-tags-test:
 2026-03-12 11:27:04,763 [INFO]   03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
 2026-03-12 11:27:04,763 [INFO]   03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
 2026-03-12 11:27:04,763 [INFO]   03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta
@@ -78,7 +78,7 @@ If you do type `yes` the script will upload files to S3.:
 
 ```
 2026-03-12 11:27:14,343 [WARNING] Proceeding to archive files.
-2026-03-12 11:27:14,364 [INFO] Found credentials in shared credentials file: /vol/cortex/cd4/geffenlab/.aws/credentials
+2026-03-12 11:27:14,364 [INFO] Found credentials in shared credentials file: /vol/cortex/cd5/geffenlab/.aws/credentials
 2026-03-12 11:27:14,453 [INFO] Archiving s3://upenn-research.geffen-lab-01.us-east-1/cortex/raw_data/BH/AS20-tags-test/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.bin
 2026-03-12 11:27:23,890 [INFO] Archiving s3://upenn-research.geffen-lab-01.us-east-1/cortex/raw_data/BH/AS20-tags-test/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.nidq.meta
 2026-03-12 11:27:24,058 [INFO] Archiving s3://upenn-research.geffen-lab-01.us-east-1/cortex/raw_data/BH/AS20-tags-test/03112025/ecephys/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_imec0/AS20_03112025_trainingSingle6Tone2024_Snk3.1_g0_t0.imec0.ap.meta

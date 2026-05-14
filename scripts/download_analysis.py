@@ -88,7 +88,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--analysis-root", "-A",
         type=str,
         help="Remote root directory containing lab analysis results. (default: %(default)s)",
-        default="/vol/cortex/cd4/geffenlab/analysis/"
+        default="/vol/cortex/cd5/geffenlab/analysis/"
     )
     parser.add_argument(
         "--experimenter", "-e",

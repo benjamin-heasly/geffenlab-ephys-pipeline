@@ -127,7 +127,7 @@ Those are the file system snapshots that make up our Docker images and provide r
 # Moving the Docker data directory
 
 You can configure your rootless Docker to save images and other data to a different location, outside of your home directory.
-On cortex you can choose a location within `/vol/cortex/cd4/geffenlab/`.
+On cortex you can choose a location within `/vol/cortex/cd5/geffenlab/`.
 
 ## confirm the Docker data directory
 
@@ -187,18 +187,18 @@ failed to connect to the docker API at unix:///run/user/10078/docker.sock; check
 ## move your Docker data directory
 
 Create a new directory to hold your Docker images and other data.
-A directory within `/vol/cortex/cd4/geffenlab/` won't count against your home directory quota.
+A directory within `/vol/cortex/cd5/geffenlab/` won't count against your home directory quota.
 
 Replace the username `ben` with your own cortex username.
 
 ```
-$ mkdir -p /vol/cortex/cd4/geffenlab/docker-data/ben
+$ mkdir -p /vol/cortex/cd5/geffenlab/docker-data/ben
 ```
 
 Move your existing Docker data to the new location.
 
 ```
-$ mv ~/.local/share/docker /vol/cortex/cd4/geffenlab/docker-data/ben/docker
+$ mv ~/.local/share/docker /vol/cortex/cd5/geffenlab/docker-data/ben/docker
 ```
 
 ## create a link from old location to new
@@ -206,17 +206,17 @@ $ mv ~/.local/share/docker /vol/cortex/cd4/geffenlab/docker-data/ben/docker
 Create a file system link from the old Docker data location to the new location.
 
 ```
-$ ln -s /vol/cortex/cd4/geffenlab/docker-data/ben/docker ~/.local/share/docker
+$ ln -s /vol/cortex/cd5/geffenlab/docker-data/ben/docker ~/.local/share/docker
 ```
 
-Docker will still look for `~/.local/share/docker` when it wants to store data.  But now, it will find that this is a link to the new location within `/vol/cortex/cd4/geffenlab`.
+Docker will still look for `~/.local/share/docker` when it wants to store data.  But now, it will find that this is a link to the new location within `/vol/cortex/cd5/geffenlab`.
 
 You can confirm the link with `ls`:
 
 ```
 $ ls -alth ~/.local/share/docker
 
-lrwxrwxrwx 1 ben geffenlab 48 Feb 27 15:29 /home/ben/.local/share/docker -> /vol/cortex/cd4/geffenlab/docker-data/ben/docker
+lrwxrwxrwx 1 ben geffenlab 48 Feb 27 15:29 /home/ben/.local/share/docker -> /vol/cortex/cd5/geffenlab/docker-data/ben/docker
 ```
 
 ## restart Docker
@@ -253,10 +253,10 @@ Finally, confirm that Docker is storing data in the new location:
 
 ```
 $ docker info | grep "Docker Root Dir"
-Docker Root Dir: /vol/cortex/cd4/geffenlab/docker-data/ben/docker
+Docker Root Dir: /vol/cortex/cd5/geffenlab/docker-data/ben/docker
 ```
 
-This confirms that Docker found the link from the old location to the new location, and is now saving images and other data within `/vol/cortex/cd4/geffenlab/docker-data/ben/docker`.
+This confirms that Docker found the link from the old location to the new location, and is now saving images and other data within `/vol/cortex/cd5/geffenlab/docker-data/ben/docker`.
 
 You should be able to list the image(s) in the new location:
 

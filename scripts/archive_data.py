@@ -157,7 +157,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--raw-data-root", "-R",
         type=str,
         help="Remote root directory containing lab raw data. (default: %(default)s)",
-        default="/vol/cortex/cd4/geffenlab/raw_data/"
+        default="/vol/cortex/cd5/geffenlab/raw_data/"
     )
     parser.add_argument(
         "--experimenter", "-e",
@@ -212,13 +212,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--aws-shared-credentials-file", "-C",
         type=str,
         help="Location of AWS credentials, eg from 'aws configure'. (default: %(default)s)",
-        default="/vol/cortex/cd4/geffenlab/.aws/credentials"
+        default="/vol/cortex/cd5/geffenlab/.aws/credentials"
     )
     parser.add_argument(
         "--aws-config-file", "-c",
         type=str,
         help="Location of AWS config, eg from 'aws configure'. (default: %(default)s)",
-        default="/vol/cortex/cd4/geffenlab/.aws/config"
+        default="/vol/cortex/cd5/geffenlab/.aws/config"
     )
     parser.add_argument(
         "--delete",
