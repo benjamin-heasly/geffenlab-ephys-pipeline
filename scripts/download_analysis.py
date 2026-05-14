@@ -1,3 +1,20 @@
+"""
+This script is for downloading pipeline analysis results from cortex to your local machine.
+
+It searches on cortex within the lab's analysis directory (/vol/cortex/cd5/geffenlab/analysis/),
+to find results for a given experimenter, subject, and date.
+It copies the session results to a local directory, like ./pipeline-analysis/
+
+For configuration options:
+
+    conda activate geffen-pipelines
+    python download_analysis.py --help
+
+See also:
+
+    docs/download-analysis.md
+"""
+
 import sys
 from argparse import ArgumentParser
 from typing import Optional, Sequence
@@ -10,6 +27,7 @@ from fabric import Connection
 
 
 def set_up_logging():
+    """Enable console logging."""
     logging.basicConfig(
         stream=sys.stdout,
         level=logging.INFO,
@@ -27,6 +45,9 @@ def run_main(
     username: str,
     password: str
 ):
+    """
+    Search for pipeine results in {remote_host}:{analysis_path}/{experimenter}/{subject_id}/{session_date} and download to {local_path}.
+    """
     # Use consistent date formatting like MMDDYYYY.
     date_string = session_date.strftime("%m%d%Y")
 
