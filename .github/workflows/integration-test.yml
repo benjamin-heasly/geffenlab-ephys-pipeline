@@ -49,7 +49,7 @@ jobs:
     - name: Proceed pipeline
       shell: bash -el {0}
       run: |
-        proceed run proceed/ci-nidq.yaml
+        proceed run proceed/ci-nidq.yaml --args raw_data_root=$PWD/raw_data processed_data_root=$PWD/processed_data analysis_root=$PWD/analysis
 
     - name: Upload Results
       uses: actions/upload-artifact@v4
