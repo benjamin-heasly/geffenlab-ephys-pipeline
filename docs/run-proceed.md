@@ -154,3 +154,141 @@ Rerunning steps like these might be useful following interactive curation with P
 
 The names of the steps are declared in each pipeline YAML file.
 Each block of text in the `steps:` section of the YAML begins with a name, like `- name: bombcell` or `- name: summary`.
+
+# Scripting batches of multiple datasets
+
+Each of our pipeline runs is focused on processing one dataset at a time, for a given experimenter, subject, and date.
+But you can use a script to process multiple datasets in an unattended batch.
+
+## handling disconnections and network interruptions
+
+When running long batches make sure that you can disconnect your local machine and reconnect later, without interrupting the processing.
+There are a few good ways to do this:
+ - connect via remote desktop, as in [cortex-remote-desktop-connection](./cortex-user-setup.md#cortex-remote-desktop-connection)
+ - connect via `ssh` and use [tmux](https://github.com/tmux/tmux/wiki)
+ - connect via `ssh` and use [screen](https://www.gnu.org/software/screen/manual/screen.html)
+
+If you don't do one of these then a network interruption, or just turning off your local machine (eg to go home) would cause processing to stop -- and that would defeat the goal of running long batches!
+
+## shell scripting
+
+A plain old shell script is one way to script up a batch.
+You can put multiple `proceed run ...` calls in a shell script and run this from the terminal.
+
+For example, you could save the following script as `my-proceed-batch.sh` in your home folder on cortex:
+
+```shell
+#!/bin/sh
+
+# Process two or more sessions.
+proceed run ~/geffenlab-ephys-pipeline/proceed/as-nidq.yaml --args experimenter=BH subject=AS20-demo date="03112025"
+proceed run ~/geffenlab-ephys-pipeline/proceed/as-nidq.yaml --args experimenter=BH subject=AS20-minimal3-plus date="03112025"
+```
+
+Then you could run the script from a cortex terminal:
+
+```shell
+conda activate geffen-pipelines
+
+cd ~
+
+chmod +x my-proceed-batch.sh
+./my-proceed-batch.sh
+```
+
+This should work and it might be be all you need.
+On the other hand, it might not be robust in case of errors.
+
+## Python scripting
+
+Alternatively, you can call proceed via a Python script.
+This might make it easier to organize parameters and handle errors.
+
+For example, you could save the following script as `my-proceed-batch.py` in your home folder on cortex:
+
+```python
+import logging
+import sys
+
+from proceed.cli import main
+
+
+# Enable formatted console logging for this script.
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
+
+# Choose which pipeline to run.
+pipeline_yaml = "geffenlab-ephys-pipeline/proceed/as-nidq.yaml"
+
+# Choose datasets to process as (experimenter, subject, date).
+datasets = [
+    ("BH", "AS20-demo", "03112025"),
+    ("BH", "AS20-minimal3-plus", "03112025"),
+]
+
+logging.info(f"Processing {len(datasets)} datasets.")
+
+# Process each dataset and collect exceptions as (dataset, exception).
+exceptions = []
+for index, dataset in enumerate(datasets):
+    try:
+        logging.info(f"Starting on dataset {index + 1}/{len(datasets)}: {dataset}\n")
+
+        # Call proceed -- this is equivalent to "proceed run ..." from the command line.
+        # You could add other command line arguments here, including --force-rerun or --step-names.
+        (experimenter, subject, date) = dataset
+        proceed_args = [
+            "run", pipeline_yaml,
+            "--args", f"experimenter={experimenter}", f"subject={subject}", f"date={date}"
+        ]
+        exit_code = main(proceed_args)
+
+        if exit_code != 0:
+            raise ValueError(f"Proceed gave nonzero exit code {exit_code}, please see logs in proceed_out/")
+
+        logging.info(f"Finished dataset {index + 1}/{len(datasets)}: {dataset}\n")
+
+    except Exception as e:
+        logging.error(f"Error processing dataset {index + 1}/{len(datasets)}: {dataset}:")
+        logging.error(f"{e}\n")
+        exceptions.append((dataset, e))
+
+# How did it go?
+logging.info(f"Done processing {len(datasets)} datasets.")
+if exceptions:
+    logging.error(f"{len(exceptions)} datasets had errors:\n")
+    for (dataset, e) in exceptions:
+        logging.error(f"For dataset {dataset}:")
+        logging.error(f"{e}\n")
+else:
+    logging.info("No errors detected.")
+```
+
+Then you could run the Python script from a cortex terminal:
+
+```shell
+conda activate geffen-pipelines
+
+cd ~
+
+python my-proceed-batch.py
+```
+
+The Python `try:` block will trap errors during processing, including errors in the script itself and errors reported by Proceed.
+The script will collect errors as they come, move on to the next dataset, and summarize any errors at the end.
+
+## reviewing batch results
+
+At the end of a long processing batch you can review results printed in the console.
+This might be a lot of text.
+
+You can also see results broken down by processing run and by step, in the `proceed_out/` subdir of your current directory.
+Proceed writes logs and other outputs into this subdir whenever it runs.
+The logs are organized by pipeline name, processing date-time, and step name.
+
+![Ubuntu Files view of a proceed_out/ directory containing processing logs](./proceed_out.png)
+
+It might be easier to review these one at a time, especially in case of errors.
