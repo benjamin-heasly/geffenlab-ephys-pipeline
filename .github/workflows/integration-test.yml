@@ -33,73 +33,23 @@ jobs:
         environment-file: geffen-pipelines.yml
         activate-environment: geffen-pipelines
 
-    - name: Install Nextflow
-      shell: bash -el {0}
-      run: |
-        mkdir $GITHUB_WORKSPACE/nextflow
-        cd $GITHUB_WORKSPACE/nextflow
-        wget https://github.com/nextflow-io/nextflow/releases/download/v25.04.6/nextflow-25.04.6-dist
-        chmod +x nextflow-25.04.6-dist
-        ./nextflow-25.04.6-dist -version
-
     - name: Fetch Input Data
       shell: bash -el {0}
       run: |
-        mkdir $GITHUB_WORKSPACE/raw_data/
-        mkdir $GITHUB_WORKSPACE/processed_data/
-        mkdir $GITHUB_WORKSPACE/analysis/
+        mkdir -p raw_data/CI
+        mkdir -p processed_data/
+        mkdir -p analysis/
 
-        mkdir $GITHUB_WORKSPACE/raw_data/BH/
-        cd $GITHUB_WORKSPACE/raw_data/BH/
+        cd raw_data/CI/
         wget https://storage.googleapis.com/tripledip-geffenlab/AS20-minimal3.zip
         unzip AS20-minimal3.zip
-
-        cd $GITHUB_WORKSPACE/raw_data
         pwd
         ls -althR
 
-    - name: Nextflow AIND ephys pipeline
+    - name: Proceed pipeline
       shell: bash -el {0}
       run: |
-        cd $GITHUB_WORKSPACE/scripts
-        conda activate geffen-pipelines
-
-        python run_pipeline.py \
-        --work-dir $GITHUB_WORKSPACE/nextflow \
-        --workflow $GITHUB_WORKSPACE/aind-ephys-pipeline/main_multi_backend.nf \
-        --config $GITHUB_WORKSPACE/aind-ephys-pipeline/cortex.config \
-        --experimenter BH \
-        --subject AS20-minimal3 \
-        --date 03112025 \
-        --raw-data-root $GITHUB_WORKSPACE/raw_data/ \
-        --processed-data-root $GITHUB_WORKSPACE/processed_data/ \
-        --analysis-root $GITHUB_WORKSPACE/analysis/ \
-        --n_jobs 4 \
-        --memory '7 GB' \
-        --gpu_device none \
-        --params_file $GITHUB_WORKSPACE/aind-ephys-pipeline/spikeglx-ks4-default.json \
-        --report-template $GITHUB_WORKSPACE/scripts/process-detail-template.md
-
-    - name: Geffen lab ephys pipeline
-      shell: bash -el {0}
-      run: |
-        cd $GITHUB_WORKSPACE/scripts
-        conda activate geffen-pipelines
-
-        python run_pipeline.py \
-        --work-dir $GITHUB_WORKSPACE/nextflow \
-        --workflow $GITHUB_WORKSPACE/phy-export/phy-export.nf \
-        --config $GITHUB_WORKSPACE/phy-export/cortex.config \
-        --experimenter BH \
-        --subject AS20-minimal3 \
-        --date 03112025 \
-        --raw-data-root $GITHUB_WORKSPACE/raw_data/ \
-        --processed-data-root $GITHUB_WORKSPACE/processed_data/ \
-        --analysis-root $GITHUB_WORKSPACE/analysis/ \
-        --n_jobs 4 \
-        --memory '7 GB' \
-        --report-template $GITHUB_WORKSPACE/scripts/process-detail-template.md \
-        --bombcell_params_file $GITHUB_WORKSPACE/phy-export/bombcell-params.json
+        proceed run proceed/ci-nidq.yaml
 
     - name: Upload Results
       uses: actions/upload-artifact@v4
@@ -107,5 +57,5 @@ jobs:
         name: pipeline-logs-and-figures
         retention-days: 7
         path: |
-          processed_data/BH/AS20-minimal3/03112025/logs/
-          analysis/
+          proceed_out/
+          analysis/**/*.png
